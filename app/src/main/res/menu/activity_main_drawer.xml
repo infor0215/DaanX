@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_camera"
+            android:title="首頁" />
+        <item android:id="@+id/nav_post" android:icon="@android:drawable/ic_menu_camera"
+            android:title="最新消息" />
+        <item android:id="@+id/nav_student" android:icon="@android:drawable/ic_menu_gallery"
+            android:title="學生資訊" />
+        <item android:id="@+id/nav_thing" android:icon="@android:drawable/ic_menu_slideshow"
+            android:title="事務查詢" />
+        <item android:id="@+id/nav_law" android:icon="@android:drawable/ic_menu_slideshow"
+            android:title="校規查詢" />
+        <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_slideshow"
+            android:title="校園論壇" />
+        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_manage"
+            android:title="行事曆" />
+    </group>
+
+    <item>
+        <menu>
+            <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_share"
+                android:title="設定" />
+            <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_send"
+                android:title="關於我們" />
+        </menu>
+    </item>
+
+</menu>
