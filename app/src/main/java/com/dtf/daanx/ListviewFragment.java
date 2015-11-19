@@ -5,15 +5,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 
 /**
  * Created by yoyo930021 on 2015/11/9.
  */
-public class FragmentPost extends Fragment {
+public class ListviewFragment extends Fragment {
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_post, container, false);
+        View view = inflater.inflate(R.layout.fragment_listview,container, false);
+        //TextView tvObj = (TextView)view.findViewById(R.id.info);
+        //String str = (String)getArguments().get("type");
+        //tvObj.setText(str);
+        return view;
     }
+
 
 }

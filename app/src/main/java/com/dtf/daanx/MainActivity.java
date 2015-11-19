@@ -4,6 +4,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,18 @@ import android.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,8 +60,29 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest = new StringRequest("",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<ArrayList<Post>>() {}.getType();
+                        ArrayList<Post> jsonArr = gson.fromJson(response, listType);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }
+        });
+        mQueue.add(stringRequest);
+
+
+
+
         FragmentTransaction ft=getFragmentManager().beginTransaction();
-        ft.replace(R.id.main_layout, new FragmentMain(), "f_m");
+        ft.replace(R.id.main_layout, new MainFragment(), "f_m");
         ft.commit();
     }
 
@@ -73,34 +107,35 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
         FragmentTransaction ft=getFragmentManager().beginTransaction();
 
+        Bundle bundle;
+        Fragment fg;
+
         switch (id){
             case R.id.nav_main:
-                ft.replace(R.id.main_layout,new FragmentMain(),"f_m");
-                break;
-            case R.id.nav_post:
-                ft.replace(R.id.main_layout,new FragmentPost(),"f_p");
-                break;
-            case R.id.nav_student:
-                ft.replace(R.id.main_layout,new FragmentStudent(),"f_t");
-                break;
-            case R.id.nav_thing:
-                ft.replace(R.id.main_layout,new FragmentThing(),"f_t");
-                break;
-            case R.id.nav_law:
-
+                fg=new MainFragment();
+                bundle = new Bundle();
+                bundle.putString("type","Main");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout,fg);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
             case R.id.nav_forum:
-
-                break;
-            case R.id.nav_calendar:
-
+                fg = new ListviewFragment();
+                bundle = new Bundle();
+                bundle.putString("type","forum");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout,fg);
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
         }
 
-        ft.commit();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
