@@ -2,59 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-<<<<<<< HEAD
         <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_compass"
-            android:title="首頁" />
-        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
-            android:title="行事曆" />
-        <!--android:id="@+id/nav_post" android:icon="@drawable/ic_more_horiz_black_24dp"-->
-        <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_edit"
-            android:title="學生論壇" />
-=======
-        <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_camera"
             android:title="@string/stu_homepage" />
-        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_manage"
+        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
             android:title="@string/stu_calendar" />
         <!--android:id="@+id/nav_post" android:icon="@drawable/ic_more_horiz_black_24dp"-->
-        <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_camera"
+        <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/stu_forum" />
->>>>>>> origin/master
         <item
             android:title="@string/stu_information">
             <menu>
                 <item
                     android:id="@+id/nav_timetable"
-<<<<<<< HEAD
                     android:icon="@android:drawable/ic_input_get"
-                    android:title="班級課表"/>
-                <item
-                    android:id="@+id/nav_attend"
-                    android:icon="@android:drawable/ic_menu_recent_history"
-                    android:title="出勤紀錄"/>
-                <item
-                    android:id="@+id/nav_award"
-                    android:icon="@android:drawable/ic_menu_myplaces"
-                    android:title="獎懲紀錄"/>
-                <item
-                    android:id="@+id/nav_grade"
-                    android:icon="@android:drawable/ic_menu_search"
-                    android:title="成績查詢"/>
-=======
-                    android:icon="@android:drawable/ic_menu_gallery"
                     android:title="@string/stu_timetable"/>
                 <item
                     android:id="@+id/nav_attend"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_recent_history"
                     android:title="@string/stu_attend"/>
                 <item
                     android:id="@+id/nav_award"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_myplaces"
                     android:title="@string/stu_award"/>
                 <item
                     android:id="@+id/nav_grade"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_search"
                     android:title="@string/stu_grade"/>
->>>>>>> origin/master
             </menu>
         </item>
         <item
@@ -62,45 +35,24 @@
             <menu>
                 <item
                     android:id="@+id/nav_nowpost"
-<<<<<<< HEAD
-                    android:icon="@android:drawable/ic_menu_view"
-                    android:title="最新公告"/>
-                <item
-                    android:id="@+id/nav_stupost"
-                    android:icon="@android:drawable/ic_menu_view"
-                    android:title="學生公告"/>
-                <item
-                    android:id="@+id/nav_newpost"
-                    android:icon="@android:drawable/ic_menu_view"
-                    android:title="新學期公告"/>
-                <item
-                    android:id="@+id/nav_racepost"
-                    android:icon="@android:drawable/ic_menu_view"
-                    android:title="競賽公告"/>
-                <item
-                    android:id="@+id/nav_bonus"
-                    android:icon="@android:drawable/ic_menu_view"
-                    android:title="獎金補助公告"/>
-=======
                     android:icon="@android:drawable/ic_menu_gallery"
                     android:title="@string/latest_announcement"/>
                 <item
                     android:id="@+id/nav_stupost"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_view"
                     android:title="@string/stu_announcement"/>
                 <item
                     android:id="@+id/nav_newpost"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_view"
                     android:title="@string/semester_announcement"/>
                 <item
                     android:id="@+id/nav_racepost"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_view"
                     android:title="@string/race_announcement"/>
                 <item
                     android:id="@+id/nav_bonus"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_view"
                     android:title="@string/money_announcement"/>
->>>>>>> origin/master
             </menu>
         </item>
         <item
@@ -108,21 +60,12 @@
             <menu>
                 <item
                     android:id="@+id/nav_method"
-<<<<<<< HEAD
                     android:icon="@android:drawable/ic_search_category_default"
-                    android:title="事務查詢"/>
-                <item
-                    android:id="@+id/nav_rule"
-                    android:icon="@android:drawable/ic_search_category_default"
-                    android:title="校規查詢"/>
-=======
-                    android:icon="@android:drawable/ic_menu_gallery"
                     android:title="@string/stu_search"/>
                 <item
                     android:id="@+id/nav_rule"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_search_category_default"
                     android:title="@string/sch_rule"/>
->>>>>>> origin/master
             </menu>
         </item>
     </group>
@@ -131,19 +74,11 @@
         <menu>
             <item  android:icon="@android:drawable/ic_menu_mylocation"
                 android:id="@+id/nav_daanabout"
-<<<<<<< HEAD
-                android:title="大安相關連結" />
-            <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_manage"
-                android:title="設定" />
-            <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_help"
-                android:title="關於我們" />
-=======
                 android:title="@string/daan_link" />
-            <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_share"
+            <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_manage"
                 android:title="@string/app_setting" />
-            <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_send"
+            <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_help"
                 android:title="@string/about_us" />
->>>>>>> origin/master
         </menu>
     </item>
 
