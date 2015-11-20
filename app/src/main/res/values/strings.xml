@@ -4,10 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-<<<<<<< HEAD
-
-    <string name="main">首頁</string>
-=======
     <string name="stu_homepage">首頁</string>
     <string name="stu_calendar">行事曆</string>
     <string name="stu_forum">學生論壇</string>
@@ -34,7 +30,4 @@
     <string name="app_setting">設定</string>
     <string name="about_us">關於我們</string>
 
->>>>>>> d7750f720b94f2e4b1f587e23aee7db64eec1b6f
-
-    <string name="action_settings">Settings</string>
 </resources>
