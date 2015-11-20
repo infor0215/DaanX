@@ -4,5 +4,32 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="stu_homepage">首頁</string>
+    <string name="stu_calendar">行事曆</string>
+    <string name="stu_forum">學生論壇</string>
+
+    <string name="stu_information">學生資訊</string>
+    <string name="stu_timetable">班級課表</string>
+    <string name="stu_attend">出勤紀錄</string>
+    <string name="stu_award">獎懲紀錄</string>
+    <string name="stu_grade">成績查詢</string>
+
+    <string name="sch_announcement">學校公告</string>
+    <string name="latest_announcement">最新公告</string>
+    <string name="stu_announcement">學生公告</string>
+    <string name="semester_announcement">新學期公告</string>
+    <string name="race_announcement">競賽公告</string>
+    <string name="money_announcement">獎金補助公告</string>
+    <string name="sch_life">學校生活</string>
+
+    <string name="stu_search">事務查詢</string>
+    <string name="sch_rule">校規查詢</string>
+
+    <string name="other">其他</string>
+    <string name="daan_link">大安相關連結</string>
+    <string name="app_setting">設定</string>
+    <string name="about_us">關於我們</string>
+
+
     <string name="action_settings">Settings</string>
 </resources>

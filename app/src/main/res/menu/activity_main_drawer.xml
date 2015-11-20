@@ -3,82 +3,82 @@
 
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_camera"
-            android:title="首頁" />
+            android:title="@string/stu_homepage" />
         <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_manage"
-            android:title="行事曆" />
+            android:title="@string/stu_calendar" />
         <!--android:id="@+id/nav_post" android:icon="@drawable/ic_more_horiz_black_24dp"-->
         <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_camera"
-            android:title="學生論壇" />
+            android:title="@string/stu_forum" />
         <item
-            android:title="學生資訊">
+            android:title="@string/stu_information">
             <menu>
                 <item
                     android:id="@+id/nav_timetable"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="班級課表"/>
+                    android:title="@string/stu_timetable"/>
                 <item
                     android:id="@+id/nav_attend"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="出勤紀錄"/>
+                    android:title="@string/stu_attend"/>
                 <item
                     android:id="@+id/nav_award"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="獎懲紀錄"/>
+                    android:title="@string/stu_award"/>
                 <item
                     android:id="@+id/nav_grade"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="成績查詢"/>
+                    android:title="@string/stu_grade"/>
             </menu>
         </item>
         <item
-            android:title="學校公告">
+            android:title="@string/sch_announcement">
             <menu>
                 <item
                     android:id="@+id/nav_nowpost"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="最新公告"/>
+                    android:title="@string/latest_announcement"/>
                 <item
                     android:id="@+id/nav_stupost"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="學生公告"/>
+                    android:title="@string/stu_announcement"/>
                 <item
                     android:id="@+id/nav_newpost"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="新學期公告"/>
+                    android:title="@string/semester_announcement"/>
                 <item
                     android:id="@+id/nav_racepost"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="競賽公告"/>
+                    android:title="@string/race_announcement"/>
                 <item
                     android:id="@+id/nav_bonus"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="獎金補助公告"/>
+                    android:title="@string/money_announcement"/>
             </menu>
         </item>
         <item
-            android:title="學校生活">
+            android:title="@string/sch_life">
             <menu>
                 <item
                     android:id="@+id/nav_method"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="事務查詢"/>
+                    android:title="@string/stu_search"/>
                 <item
                     android:id="@+id/nav_rule"
                     android:icon="@android:drawable/ic_menu_gallery"
-                    android:title="校規查詢"/>
+                    android:title="@string/sch_rule"/>
             </menu>
         </item>
-
     </group>
-    <item>
+
+    <item android:title="@string/other">
         <menu>
             <item  android:icon="@android:drawable/ic_menu_gallery"
                 android:id="@+id/nav_daanabout"
-                android:title="大安相關連結" />
+                android:title="@string/daan_link" />
             <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_share"
-                android:title="設定" />
+                android:title="@string/app_setting" />
             <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_send"
-                android:title="關於我們" />
+                android:title="@string/about_us" />
         </menu>
     </item>
 
