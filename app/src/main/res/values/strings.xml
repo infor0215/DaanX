@@ -29,5 +29,6 @@
     <string name="daan_link">大安相關連結</string>
     <string name="app_setting">設定</string>
     <string name="about_us">關於我們</string>
+    <string name="title_activity_grade">GradeActivity</string>
 
 </resources>

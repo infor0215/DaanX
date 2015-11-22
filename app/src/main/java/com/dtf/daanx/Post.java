@@ -39,7 +39,7 @@ public class Post {
     }
 
     public String getWriter() {
-        return writer;
+        return writer.substring(0,0);
     }
 
     public void setWriter(String writer) {

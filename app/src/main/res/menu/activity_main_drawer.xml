@@ -2,17 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-<<<<<<< HEAD
-        <item android:id="@+id/nav_main"
-            android:title="@string/main" />
-        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_manage"
-            android:title="行事曆" />
-=======
         <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/stu_homepage" />
         <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
             android:title="@string/stu_calendar" />
->>>>>>> d7750f720b94f2e4b1f587e23aee7db64eec1b6f
         <!--android:id="@+id/nav_post" android:icon="@drawable/ic_more_horiz_black_24dp"-->
         <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_edit"
             android:title="@string/stu_forum" />

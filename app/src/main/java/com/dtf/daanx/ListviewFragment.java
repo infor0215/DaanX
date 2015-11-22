@@ -34,7 +34,8 @@ public class ListviewFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         //TextView tvObj = (TextView)view.findViewById(R.id.info);
         String str = (String)getArguments().get("type");
-        if(Objects.equals(str, "forum")){
+        if(str==null) str="";
+        if(str.equals("forum")){
             try {
                 RequestQueue mQueue = Volley.newRequestQueue(getActivity());
                 StringRequest stringRequest = new StringRequest("",
@@ -46,10 +47,12 @@ public class ListviewFragment extends Fragment {
                                 }.getType();
                                 ArrayList<Post> jsonArr = gson.fromJson(response, listType);
                                 ArrayList<HashMap<String, Object>> itemList = new ArrayList<>();
+                                int ret=0;
                                 for (Post obj:jsonArr) {
                                     HashMap<String, Object> temp = new HashMap<>();
                                     temp.put("title", obj.getTitle());
-                                    temp.put("writer", obj.getWriter());
+                                    if(obj.getWriter().equals("教")) ret=R.drawable.post_bg_green;
+                                    temp.put("writer", ret);
                                     temp.put("content", obj.getContent());
                                     itemList.add(temp);
                                 }
