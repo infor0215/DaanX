@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         app:layout_heightPercent="10%"
         app:layout_marginTopPercent="1.5%"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="5dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         app:layout_heightPercent="27%"
         app:layout_marginTopPercent="12%"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="@dimen/card_radius">
 
         <ImageView android:layout_width="match_parent"
             android:src="@color/green_500"
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         app:layout_heightPercent="27%"
         app:layout_marginTopPercent="40%"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="@dimen/card_radius">
 
         <ImageView android:layout_width="match_parent"
             android:src="@color/yellow_800"
@@ -77,7 +77,7 @@
         android:layout_width="match_parent"
         app:layout_heightPercent="27%"
         app:layout_marginTopPercent="68%"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="@dimen/card_radius">
 
         <ImageView android:layout_width="match_parent"
             android:src="@color/blue_300"
