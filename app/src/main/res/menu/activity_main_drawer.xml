@@ -26,7 +26,7 @@
                     android:title="@string/stu_award"/>
                 <item
                     android:id="@+id/nav_grade"
-                    android:icon="@android:drawable/ic_menu_search"
+                    android:icon="@android:drawable/ic_menu_sort_by_size"
                     android:title="@string/stu_grade"/>
             </menu>
         </item>
@@ -35,11 +35,11 @@
             <menu>
                 <item
                     android:id="@+id/nav_nowpost"
-                    android:icon="@android:drawable/ic_menu_gallery"
+                    android:icon="@android:drawable/ic_menu_today"
                     android:title="@string/latest_announcement"/>
                 <item
                     android:id="@+id/nav_stupost"
-                    android:icon="@android:drawable/ic_menu_view"
+                    android:icon="@android:drawable/ic_menu_my_calendar"
                     android:title="@string/stu_announcement"/>
                 <item
                     android:id="@+id/nav_newpost"
@@ -51,7 +51,7 @@
                     android:title="@string/race_announcement"/>
                 <item
                     android:id="@+id/nav_bonus"
-                    android:icon="@android:drawable/ic_menu_view"
+                    android:icon="@android:drawable/ic_menu_send"
                     android:title="@string/money_announcement"/>
             </menu>
         </item>
