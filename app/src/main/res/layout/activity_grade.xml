@@ -26,7 +26,7 @@
             app:tabSelectedTextColor="@color/white"
             app:tabTextAppearance="@style/MineCustomTabText"
             android:layout_alignTop="@id/toolbar"
-            />
+            android:fillViewport="false" />
 
     </android.support.design.widget.AppBarLayout>
 

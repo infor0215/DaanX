@@ -132,7 +132,7 @@ public class GradeActivity extends AppCompatActivity {
                             /*連線 開始*/
                             Response res = Jsoup
                                     .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
-                                    .data("txtS_NO", "0215128", "txtPerno", "A130118561")
+                                    .data("txtS_NO", "0215127", "txtPerno", "A130841403")
                                     .method(Method.POST)
                                     .timeout(5000)
                                     .execute();
@@ -279,7 +279,7 @@ public class GradeActivity extends AppCompatActivity {
                     frontt.add(num.get(i));
                 }
             }
-            int rows=grade.size()/5+1;
+            int rows=sum/5+1;
             for(int y=0;y<rows;y++) {
                 LinearLayout row = new LinearLayout(GradeActivity.this);
                 LinearLayout.LayoutParams txtParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

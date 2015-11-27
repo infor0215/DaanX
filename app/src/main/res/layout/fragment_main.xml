@@ -57,7 +57,7 @@
         card_view:cardCornerRadius="@dimen/card_radius">
 
         <ImageView android:layout_width="match_parent"
-            android:src="@color/yellow_800"
+            android:src="@color/amber_600"
             android:layout_height="80dp" />
         <TextView
             android:layout_width="match_parent"

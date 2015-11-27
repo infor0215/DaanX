@@ -16,7 +16,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/grey_500"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -49,7 +49,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/yellow_800"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -81,7 +81,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -113,7 +113,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/light_blue_500"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -145,7 +145,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/indigo_500"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -177,7 +177,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/grey_500"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -210,7 +210,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/yellow_800"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -242,7 +242,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/cyan_A400"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -274,7 +274,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/light_blue_500"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -306,7 +306,7 @@
             card_view:cardCornerRadius="@dimen/card_radius">
 
             <ImageView android:layout_width="match_parent"
-                android:src="@color/blue_300"
+                android:src="@color/indigo_500"
                 android:layout_height="50dp" />
             <TextView
                 android:layout_width="match_parent"
