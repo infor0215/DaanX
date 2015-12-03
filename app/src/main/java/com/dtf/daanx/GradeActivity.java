@@ -66,6 +66,8 @@ public class GradeActivity extends AppCompatActivity {
     private ArrayList<String> back3;
     private ArrayList<String> backusl;
     private ArrayList<String> backavg;
+    private int timeout;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,14 +89,17 @@ public class GradeActivity extends AppCompatActivity {
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mTabs = (TabLayout) findViewById(R.id.tabs);
-        mTabs.addTab(mTabs.newTab().setText("月考成績"));
-        mTabs.addTab(mTabs.newTab().setText("學期成績"));
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         SamplePagerAdapter pagerAdapter=new SamplePagerAdapter();
         mViewPager.setAdapter(pagerAdapter);
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
+        //mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
+
+        mTabs = (TabLayout) findViewById(R.id.tabs);
+        mTabs.setupWithViewPager(mViewPager);
+        mTabs.getTabAt(0).setText("月考成績");
+        mTabs.getTabAt(1).setText("學期成績");
+
     }
 
 
@@ -121,98 +126,15 @@ public class GradeActivity extends AppCompatActivity {
                 //月考成績
                 final View view = getLayoutInflater().inflate(R.layout.tab_grade,
                         container, false);
-                final ProgressDialog dialog=ProgressDialog.show(GradeActivity.this, "讀取網路中", "請稍後");
-                //開新線程
+                timeout=0;
+                final int position1=position;
+                //網路連線
                 new Thread(new Runnable() {
                     @Override
                     public final void run() {
-                        try {
-                            trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
-
-                            /*連線 開始*/
-                            Response res = Jsoup
-                                    .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
-                                    .data("txtS_NO", "0215127", "txtPerno", "A130841403")
-                                    .method(Method.POST)
-                                    .timeout(5000)
-                                    .execute();
-
-                            Map<String, String> loginCookies = res.cookies();
-                            //抓取資料分析並儲存
-                            Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stscore.asp")
-                                    .timeout(5000)
-                                    .cookies(loginCookies)
-                                    .get();
-                            Elements temps=doc.select("tbody");
-                            temps=temps.select("tr");
-                            grade = new ArrayList<String>(){};
-                            front1 = new ArrayList<String>(){};
-                            front2 = new ArrayList<String>(){};
-                            front3 = new ArrayList<String>(){};
-                            frontusl = new ArrayList<String>(){};
-                            frontavg = new ArrayList<String>(){};
-                            back1 = new ArrayList<String>(){};
-                            back2 = new ArrayList<String>(){};
-                            back3 = new ArrayList<String>(){};
-                            backusl = new ArrayList<String>(){};
-                            backavg = new ArrayList<String>(){};
-                            for(int i=2;i<temps.size();i++){
-                                Elements temp=temps.get(i).select("td");
-                                grade.add(temp.get(0).text());
-                                front1.add(temp.get(2).text());
-                                front2.add(temp.get(3).text());
-                                front3.add(temp.get(4).text());
-                                frontusl.add(temp.get(5).text());
-                                frontavg.add(temp.get(6).text());
-                                back1.add(temp.get(7).text());
-                                back2.add(temp.get(8).text());
-                                back3.add(temp.get(9).text());
-                                backusl.add(temp.get(10).text());
-                                backavg.add(temp.get(10).text());
-                            }
-                            /*連線 結束*/
-
-                            /*填入UI中 開始*/
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //上學期第一次段考
-                                    writeInUI(view,grade,front1,R.id.front1);
-                                    //上學期第二次段考
-                                    writeInUI(view,grade,front2,R.id.front2);
-                                    //上學期第三次段考
-                                    writeInUI(view,grade,front3,R.id.front3);
-                                    //上學期平時成績
-                                    writeInUI(view,grade,frontusl,R.id.frontusl);
-                                    //上學期期末平均
-                                    writeInUI(view,grade,frontavg,R.id.frontavg);
-                                    
-                                    //下學期第一次段考
-                                    writeInUI(view,grade,back1,R.id.back1);
-                                    //下學期第二次段考
-                                    writeInUI(view,grade,back2,R.id.back2);
-                                    //下學期第三次段考
-                                    writeInUI(view,grade,back3,R.id.back3);
-                                    //下學期平時成績
-                                    writeInUI(view,grade,backusl,R.id.backusl);
-                                    //下學期期末平均
-                                    writeInUI(view,grade,backavg,R.id.backavg);
-                                }
-                            });
-                            dialog.dismiss();
-                            /*填入UI中 結束*/
-                        }catch (IOException e){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(GradeActivity.this, "network error", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
+                        networkRun(view, position1);
                     }
                 }).start();
-
-
 
                 container.addView(view);
                 return view;
@@ -334,4 +256,114 @@ public class GradeActivity extends AppCompatActivity {
             }
         }
 
+        private void networkRun(final View view, final int postion){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dialog=ProgressDialog.show(GradeActivity.this, "讀取網路中", "請稍後");
+                }
+            });
+            try{
+                Thread.sleep(1000);
+            }catch(InterruptedException c){/**/}
+            if(postion==0){
+                try {
+                    trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                    /*連線 開始*/
+                    Response res = Jsoup
+                            .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
+                            .data("txtS_NO", "0215127", "txtPerno", "A130841403")
+                            .method(Method.POST)
+                            .timeout(5000)
+                            .execute();
+
+                    Map<String, String> loginCookies = res.cookies();
+                    //抓取資料分析並儲存
+                    Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stscore.asp")
+                            .timeout(5000)
+                            .cookies(loginCookies)
+                            .get();
+                    Elements temps=doc.select("tbody");
+                    temps=temps.select("tr");
+                    grade = new ArrayList<String>(){};
+                    front1 = new ArrayList<String>(){};
+                    front2 = new ArrayList<String>(){};
+                    front3 = new ArrayList<String>(){};
+                    frontusl = new ArrayList<String>(){};
+                    frontavg = new ArrayList<String>(){};
+                    back1 = new ArrayList<String>(){};
+                    back2 = new ArrayList<String>(){};
+                    back3 = new ArrayList<String>(){};
+                    backusl = new ArrayList<String>(){};
+                    backavg = new ArrayList<String>(){};
+                    for(int i=2;i<temps.size();i++){
+                        Elements temp=temps.get(i).select("td");
+                        grade.add(temp.get(0).text());
+                        front1.add(temp.get(2).text());
+                        front2.add(temp.get(3).text());
+                        front3.add(temp.get(4).text());
+                        frontusl.add(temp.get(5).text());
+                        frontavg.add(temp.get(6).text());
+                        back1.add(temp.get(7).text());
+                        back2.add(temp.get(8).text());
+                        back3.add(temp.get(9).text());
+                        backusl.add(temp.get(10).text());
+                        backavg.add(temp.get(10).text());
+                    }
+                    /*連線 結束*/
+
+                    /*填入UI中 開始*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //上學期第一次段考
+                            writeInUI(view,grade,front1,R.id.front1);
+                            //上學期第二次段考
+                            writeInUI(view,grade,front2,R.id.front2);
+                            //上學期第三次段考
+                            writeInUI(view,grade,front3,R.id.front3);
+                            //上學期平時成績
+                            writeInUI(view,grade,frontusl,R.id.frontusl);
+                            //上學期期末平均
+                            writeInUI(view,grade,frontavg,R.id.frontavg);
+
+                            //下學期第一次段考
+                            writeInUI(view,grade,back1,R.id.back1);
+                            //下學期第二次段考
+                            writeInUI(view,grade,back2,R.id.back2);
+                            //下學期第三次段考
+                            writeInUI(view,grade,back3,R.id.back3);
+                            //下學期平時成績
+                            writeInUI(view,grade,backusl,R.id.backusl);
+                            //下學期期末平均
+                            writeInUI(view,grade,backavg,R.id.backavg);
+                        }
+                    });
+                    dialog.dismiss();
+                    /*填入UI中 結束*/
+                }catch (IOException e){
+                    dialog.dismiss();
+                    timeout++;
+                    if(timeout<5){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                        try{
+                            Thread.sleep(5000);
+                        }catch(InterruptedException c){/**/}
+                        networkRun(view, postion);
+                    }else{
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_INDEFINITE).show();
+                            }
+                        });
+                    }
+                }
+            }
+        }
     }
