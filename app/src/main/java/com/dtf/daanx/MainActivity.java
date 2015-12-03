@@ -2,6 +2,7 @@ package com.dtf.daanx;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,8 +32,13 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import javax.xml.xpath.XPath;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    SharedPreferences preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        preference=getSharedPreferences("setting",0);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -52,6 +60,8 @@ public class MainActivity extends AppCompatActivity
         });
         */
 
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -61,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        /*
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest stringRequest = new StringRequest("",
                 new Response.Listener<String>() {
@@ -77,8 +87,12 @@ public class MainActivity extends AppCompatActivity
                 Log.e("TAG", error.getMessage(), error);
             }
         });
-        mQueue.add(stringRequest);
+        mQueue.add(stringRequest);*/
 
+
+        //TextView lbl_name=(TextView) findViewById(R.id.lbl_name);
+        //lbl_name.setText(preference.getString("stu_name",""));
+        //lbl_name.setText("你好");
 
 
 

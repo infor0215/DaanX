@@ -1,6 +1,7 @@
 package com.dtf.daanx;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
@@ -53,6 +54,7 @@ import javax.net.ssl.X509TrustManager;
 public class GradeActivity extends AppCompatActivity {
 
     private TabLayout mTabs;
+    SharedPreferences preference;
 
     private ViewPager mViewPager;
     private ArrayList<String> grade;
@@ -153,31 +155,7 @@ public class GradeActivity extends AppCompatActivity {
         }
     }
 
-        public static void trustEveryone() {
-            try {
-                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                    public boolean verify(String hostname, SSLSession session) {
-                        return true;
-                    }
-                });
 
-                SSLContext context = SSLContext.getInstance("TLSV1");
-                context.init(null, new X509TrustManager[]{new X509TrustManager() {
-                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    }
-
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                }}, new SecureRandom());
-                HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-            } catch (Exception e) {
-                // e.printStackTrace();
-            }
-        }
 
         boolean tryParseInt(String value) {
             try {
@@ -270,9 +248,12 @@ public class GradeActivity extends AppCompatActivity {
                 try {
                     trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                     /*連線 開始*/
+                    preference=getSharedPreferences("setting",0);
+                    String stu_id=preference.getString("stu_id","");
+                    String stu_pwd=preference.getString("stu_pwd","");
                     Response res = Jsoup
                             .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
-                            .data("txtS_NO", "0215127", "txtPerno", "A130841403")
+                            .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
                             .method(Method.POST)
                             .timeout(5000)
                             .execute();
@@ -364,6 +345,35 @@ public class GradeActivity extends AppCompatActivity {
                         });
                     }
                 }
+            }
+        }
+
+
+
+
+        public static void trustEveryone() {
+            try {
+                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                    public boolean verify(String hostname, SSLSession session) {
+                        return true;
+                    }
+                });
+
+                SSLContext context = SSLContext.getInstance("TLSV1");
+                context.init(null, new X509TrustManager[]{new X509TrustManager() {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                }}, new SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+            } catch (Exception e) {
+                // e.printStackTrace();
             }
         }
     }
