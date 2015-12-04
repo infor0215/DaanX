@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity
 
         Bundle bundle;
         Fragment fg;
+        Intent intent;
 
         switch (id){
             case R.id.nav_main:
@@ -149,8 +150,13 @@ public class MainActivity extends AppCompatActivity
                 ft.commit();
                 break;
             case R.id.nav_grade:
-                Intent intent=new Intent();
+                intent=new Intent();
                 intent.setClass(MainActivity.this,GradeActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_config:
+                intent=new Intent();
+                intent.setClass(MainActivity.this,ConfigActivity.class);
                 startActivity(intent);
                 break;
         }

@@ -38,30 +38,33 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_login);
-        setContentView(contentView=View.inflate(this, R.layout.activity_login, null));
-
         preference=getSharedPreferences("setting",0);
         String stu_id=preference.getString("stu_id","noid");
         if(!stu_id.equals("noid")){
-
+            super.onCreate(savedInstanceState);
+            //setContentView(R.layout.activity_login);
+            setContentView(contentView=View.inflate(this, R.layout.activity_flag, null));
+            /*
             try{
-                Thread.sleep(500);
-            }catch(InterruptedException c){/**/}
+                Thread.sleep(1500);
+            }catch(InterruptedException c){}
             Intent intent=new Intent();
             intent.setClass(LoginActivity.this,MainActivity.class);
             LoginActivity.this.finish();
-            startActivity(intent);/*
+            startActivity(intent);*/
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                     LoginActivity.this.finish();
                 }
-            }, 700);*/
+            }, 1000);
         }else{
+            super.onCreate(savedInstanceState);
+            //setContentView(R.layout.activity_login);
+            setContentView(contentView=View.inflate(this, R.layout.activity_login, null));
             if(getSupportActionBar()!=null) getSupportActionBar().hide();
         }
     }
