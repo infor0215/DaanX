@@ -21,7 +21,7 @@
                     android:icon="@android:drawable/ic_menu_recent_history"
                     android:title="@string/stu_attend"/>
                 <item
-                    android:id="@+id/nav_award"
+                    android:id="@+id/nav_prize"
                     android:icon="@android:drawable/ic_menu_myplaces"
                     android:title="@string/stu_award"/>
                 <item

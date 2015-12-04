@@ -154,6 +154,15 @@ public class MainActivity extends AppCompatActivity
                 intent.setClass(MainActivity.this,GradeActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_prize:
+                fg = new PrizeFragment();
+                bundle = new Bundle();
+                bundle.putString("type", "prize");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout, fg);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
             case R.id.nav_config:
                 intent=new Intent();
                 intent.setClass(MainActivity.this,ConfigActivity.class);
