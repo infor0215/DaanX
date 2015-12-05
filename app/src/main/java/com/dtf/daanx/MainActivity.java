@@ -1,42 +1,17 @@
 package com.dtf.daanx;
 
-import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.app.Fragment;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-
-import javax.xml.xpath.XPath;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,12 +22,17 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //region viewStart
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //endregion
 
+        //region preference
         preference=getSharedPreferences("setting",0);
+        //endregion
+
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -65,8 +45,7 @@ public class MainActivity extends BaseActivity
         });
         */
 
-
-
+        //region Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -75,6 +54,12 @@ public class MainActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        TextView lbl_name=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_name);
+        lbl_name.setText(preference.getString("stu_name",""));
+        TextView lbl_email=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
+        lbl_email.setText(preference.getString("stu_email",""));
+        //endregion
 
         /*
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
@@ -94,17 +79,13 @@ public class MainActivity extends BaseActivity
         });
         mQueue.add(stringRequest);*/
 
-
-        TextView lbl_name=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_name);
-        lbl_name.setText(preference.getString("stu_name",""));
-        TextView lbl_email=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
-        lbl_email.setText(preference.getString("stu_email",""));
-
+        //region defaultFg
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.replace(R.id.main_layout, new MainFragment(), "f_m");
         ft.addToBackStack("main");
         mainin=0;
         ft.commit();
+        //endregion
     }
 
 
@@ -113,7 +94,7 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(getFragmentManager().getBackStackEntryCount()!=1) {
+        }else if(getFragmentManager().getBackStackEntryCount()!=1) {//回上一層Fg
             getFragmentManager().popBackStack();
         }else {
             super.onBackPressed();

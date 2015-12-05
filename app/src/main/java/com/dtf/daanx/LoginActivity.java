@@ -1,22 +1,16 @@
 package com.dtf.daanx;
 
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -24,17 +18,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Map;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509TrustManager;
 
 public class LoginActivity extends BaseActivity {
 
@@ -46,21 +30,15 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         preference=getSharedPreferences("setting",0);
         String stu_id=preference.getString("stu_id","noid");
-        if(!stu_id.equals("noid")){
+        if(!stu_id.equals("noid")){//判斷是否第一次開啟App
+            //過場動畫
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_flag, null));
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            /*
-            try{
-                Thread.sleep(1500);
-            }catch(InterruptedException c){}
-            Intent intent=new Intent();
-            intent.setClass(LoginActivity.this,MainActivity.class);
-            LoginActivity.this.finish();
-            startActivity(intent);*/
+            //切換到主界面
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -71,6 +49,7 @@ public class LoginActivity extends BaseActivity {
                 }
             }, 1000);
         }else{
+            //註冊畫面
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_login, null));
@@ -84,12 +63,16 @@ public class LoginActivity extends BaseActivity {
     }
 
     public void btn_login(View view){
+        //註冊
         Log.i("status","btn");
+        //region 使用者輸入資料
         final String stu_id=((TextView)findViewById(R.id.stu_id)).getText().toString();
         final String stu_pwd=((TextView)findViewById(R.id.stu_pwd)).getText().toString();
         final String stu_year=((TextView)findViewById(R.id.stu_year)).getText().toString();
         final String stu_nick=((TextView)findViewById(R.id.stu_nick)).getText().toString();
         final String stu_email=((TextView)findViewById(R.id.stu_email)).getText().toString();
+        //endregion
+        //region 連線
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -104,8 +87,7 @@ public class LoginActivity extends BaseActivity {
                     Thread.sleep(1000);
                 }catch(InterruptedException c){/**/}
                 try {
-                    trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
-                    /*連線 開始*/
+                    trustEveryone();
                     Connection.Response res = Jsoup
                             .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
                             .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
@@ -122,11 +104,7 @@ public class LoginActivity extends BaseActivity {
                         String stu_name=temp.get(4).text().substring(3, temp.get(4).text().length());
                         String stu_tea=temp.get(0).text().substring(3, temp.get(0).text().length());
                         String stu_num=temp.get(2).text().substring(3, temp.get(2).text().length());
-                        /*
-                        System.out.println("班級"+temp.get(1).text().substring(3, temp.get(1).text().length()));
-                        System.out.println("姓名"+temp.get(4).text().substring(3, temp.get(4).text().length()));
-                        System.out.println("老師"+temp.get(0).text().substring(3, temp.get(0).text().length()));
-                        System.out.println("座號"+temp.get(2).text().substring(3, temp.get(2).text().length()));*/
+                        //寫入設定檔
                         writepreference(stu_id,stu_pwd,stu_year,stu_nick,stu_class,stu_name,stu_tea,stu_num,stu_email);
                     }
                     else{
@@ -139,9 +117,7 @@ public class LoginActivity extends BaseActivity {
                             }
                         });
                     }
-                    /*連線 結束*/
                     dialog.dismiss();
-                    /*填入UI中 結束*/
                 }catch (IOException e){
                     dialog.dismiss();
                     runOnUiThread(new Runnable() {
@@ -155,8 +131,10 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         }).start();
+        //endregion
     }
 
+    //寫入設定檔
     public void writepreference(String stu_id,String stu_pwd,String stu_year,String stu_nick,String stu_class,String stu_name,String stu_tea,String stu_num,String stu_email){
         runOnUiThread(new Runnable() {
             @Override
@@ -177,41 +155,14 @@ public class LoginActivity extends BaseActivity {
         editor.putString("stu_num",stu_num);
         editor.putString("stu_email",stu_email);
         editor.apply();
+        //region 進入主界面
         try{
             Thread.sleep(1000);
         }catch(InterruptedException c){/**/}
         Intent intent=new Intent();
         intent.setClass(LoginActivity.this,MainActivity.class);
         startActivity(intent);
-    }
-
-
-
-
-    public static void trustEveryone() {
-        try {
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-
-            SSLContext context = SSLContext.getInstance("TLSV1");
-            context.init(null, new X509TrustManager[]{new X509TrustManager() {
-                public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                }
-
-                public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                }
-
-                public X509Certificate[] getAcceptedIssuers() {
-                    return new X509Certificate[0];
-                }
-            }}, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-        } catch (Exception e) {
-            // e.printStackTrace();
-        }
+        //endregion
     }
 
 }
