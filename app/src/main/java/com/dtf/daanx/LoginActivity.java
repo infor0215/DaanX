@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -47,6 +50,9 @@ public class LoginActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_flag, null));
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
             /*
             try{
                 Thread.sleep(1500);
@@ -69,6 +75,10 @@ public class LoginActivity extends BaseActivity {
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_login, null));
             if(getSupportActionBar()!=null) getSupportActionBar().hide();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            }
         }
 
     }

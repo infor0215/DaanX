@@ -9,9 +9,9 @@
     android:fitsSystemWindows="true"
     tools:context="com.dtf.daanx.LoginActivity">
     <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:background="@color/white"/>
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@mipmap/ic_launcher"/>
 
 
 </LinearLayout>

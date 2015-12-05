@@ -245,7 +245,7 @@ public class GradeActivity extends BaseActivity {
                 }
             });
             try{
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             }catch(InterruptedException c){/**/}
             if(postion==0){
                 try {
