@@ -73,64 +73,65 @@ public class LoginActivity extends BaseActivity {
         final String stu_email=((TextView)findViewById(R.id.stu_email)).getText().toString();
         //endregion
         //region 連線
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("status","thread");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog= ProgressDialog.show(LoginActivity.this, "驗證中", "請稍後");
-                    }
-                });
-                try{
-                    Thread.sleep(1000);
-                }catch(InterruptedException c){/**/}
-                try {
-                    trustEveryone();
-                    Connection.Response res = Jsoup
-                            .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
-                            .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
-                            .method(Connection.Method.POST)
-                            .timeout(5000)
-                            .execute();
-                    if(Integer.parseInt(res.header("Content-Length"))<2500){
-                        Map<String, String> loginCookies = res.cookies();
-                        Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stu_0.ASP")
-                                .cookies(loginCookies)
-                                .get();
-                        Elements temp=doc.select("b");
-                        String stu_class=temp.get(1).text().substring(3, temp.get(1).text().length());
-                        String stu_name=temp.get(4).text().substring(3, temp.get(4).text().length());
-                        String stu_tea=temp.get(0).text().substring(3, temp.get(0).text().length());
-                        String stu_num=temp.get(2).text().substring(3, temp.get(2).text().length());
-                        //寫入設定檔
-                        writepreference(stu_id,stu_pwd,stu_year,stu_nick,stu_class,stu_name,stu_tea,stu_num,stu_email);
-                    }
-                    else{
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Snackbar.make(contentView, "學號或密碼錯誤 請重新嘗試", Snackbar.LENGTH_LONG).show();
-                                //Toast.makeText(LoginActivity.this, "學號或密碼錯誤 請重新嘗試", Toast.LENGTH_LONG).show();
-                                Log.i("status","pwd error");
-                            }
-                        });
-                    }
-                    dialog.dismiss();
-                }catch (IOException e){
-                    dialog.dismiss();
+        if(networkInfo()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i("status", "thread");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(contentView, "系統錯誤 請重新嘗試", Snackbar.LENGTH_LONG).show();
-                            //Toast.makeText(LoginActivity.this, "系統錯誤 請重新嘗試", Toast.LENGTH_LONG).show();
-                            Log.i("status","system error");
+                            dialog = ProgressDialog.show(LoginActivity.this, "驗證中", "請稍後");
                         }
                     });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException c) {/**/}
+                    try {
+                        trustEveryone();
+                        Connection.Response res = Jsoup
+                                .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
+                                .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
+                                .method(Connection.Method.POST)
+                                .timeout(5000)
+                                .execute();
+                        if (Integer.parseInt(res.header("Content-Length")) < 2500) {
+                            Map<String, String> loginCookies = res.cookies();
+                            Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stu_0.ASP")
+                                    .cookies(loginCookies)
+                                    .get();
+                            Elements temp = doc.select("b");
+                            String stu_class = temp.get(1).text().substring(3, temp.get(1).text().length());
+                            String stu_name = temp.get(4).text().substring(3, temp.get(4).text().length());
+                            String stu_tea = temp.get(0).text().substring(3, temp.get(0).text().length());
+                            String stu_num = temp.get(2).text().substring(3, temp.get(2).text().length());
+                            //寫入設定檔
+                            writepreference(stu_id, stu_pwd, stu_year, stu_nick, stu_class, stu_name, stu_tea, stu_num, stu_email);
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Snackbar.make(contentView, "學號或密碼錯誤 請重新嘗試", Snackbar.LENGTH_LONG).show();
+                                    //Toast.makeText(LoginActivity.this, "學號或密碼錯誤 請重新嘗試", Toast.LENGTH_LONG).show();
+                                    Log.i("status", "pwd error");
+                                }
+                            });
+                        }
+                        dialog.dismiss();
+                    } catch (IOException e) {
+                        dialog.dismiss();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(contentView, "系統錯誤 請重新嘗試", Snackbar.LENGTH_LONG).show();
+                                //Toast.makeText(LoginActivity.this, "系統錯誤 請重新嘗試", Toast.LENGTH_LONG).show();
+                                Log.i("status", "system error");
+                            }
+                        });
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        }
         //endregion
     }
 

@@ -32,12 +32,14 @@ public class TimeTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_time_table,container, false);
         preferences=getActivity().getSharedPreferences("setting",0);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                networkRun(view);
-            }
-        }).start();
+        if(((MainActivity)getActivity()).networkInfo()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    networkRun(view);
+                }
+            }).start();
+        }
 
         return view;
     }

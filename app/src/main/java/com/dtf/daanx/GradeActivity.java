@@ -53,7 +53,6 @@ public class GradeActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("成績查詢");
-
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -114,13 +113,14 @@ public class GradeActivity extends BaseActivity {
                 timeout = 0;
                 final int position1 = position;
                 //網路連線
-                new Thread(new Runnable() {
-                    @Override
-                    public final void run() {
-                        networkRun(view, position1);
-                    }
-                }).start();
-
+                if(networkInfo()) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public final void run() {
+                            networkRun(view, position1);
+                        }
+                    }).start();
+                }
                 container.addView(view);
                 return view;
             } else {
@@ -133,90 +133,7 @@ public class GradeActivity extends BaseActivity {
         }
     }
 
-    //判斷數字
-    boolean tryParseInt(String value) {
-        try {
-            Integer.parseInt(value);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private void writeInUI(View view, ArrayList<String> grade, ArrayList<String> num, int postion) {
-        int pixels;//dp
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(postion);
-        int sum = 0;
-        ArrayList<String> gradet = new ArrayList<String>() {
-        };
-        ArrayList<String> frontt = new ArrayList<String>() {
-        };
-        for (int i = 0; i < num.size(); i++) {
-            if (tryParseInt(num.get(i))) {
-                sum++;
-                gradet.add(grade.get(i));
-                frontt.add(num.get(i));
-            }
-        }
-        int rows = sum / 5 + 1;
-        for (int y = 0; y < rows; y++) {//forRow
-            LinearLayout row = new LinearLayout(GradeActivity.this);
-            LinearLayout.LayoutParams txtParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            row.setLayoutParams(txtParams);
-            row.setGravity(Gravity.CENTER);
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            for (int i = y * 5; i < y * 5 + 5; i++) {//forLine
-                if (i < gradet.size()) {
-                    //region forLine
-                    LinearLayout line = new LinearLayout(GradeActivity.this);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-                    txtParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    line.setLayoutParams(txtParams);
-                    line.setOrientation(LinearLayout.VERTICAL);
-
-                    TextView txtsubject = new TextView(GradeActivity.this);
-                    txtParams = new LinearLayout.LayoutParams(pixels, pixels);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    txtParams.setMargins(pixels, 0, pixels, 0);
-                    txtsubject.setLayoutParams(txtParams);
-                    txtsubject.setText(gradet.get(i));
-                    txtsubject.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
-                    txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    txtsubject.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    line.addView(txtsubject);
-
-                    TextView txtgrade = new TextView(GradeActivity.this);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
-                    txtParams = new LinearLayout.LayoutParams(pixels, pixels);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    txtParams.setMargins(pixels, -pixels, pixels, pixels);
-                    txtgrade.setLayoutParams(txtParams);
-                    txtgrade.setText(frontt.get(i));
-                    txtgrade.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.white));
-                    txtgrade.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
-                    int draw = R.drawable.grade_bg_black;
-                    try {
-                        if (Integer.parseInt(frontt.get(i)) < 60) {
-                            draw = R.drawable.grade_bg_red;
-                        } else if (Integer.parseInt(frontt.get(i)) < 70) {
-                            draw = R.drawable.grade_bg_yellow;
-                        } else if (Integer.parseInt(frontt.get(i)) <= 100) {
-                            draw = R.drawable.grade_bg_green;
-                        }
-                    } catch (Exception e) {/**/}
-                    txtgrade.setBackground(ContextCompat.getDrawable(GradeActivity.this, draw));
-                    txtgrade.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
-                    line.addView(txtgrade);
-                    //endregion
-                    row.addView(line);
-                } else {
-                    break;
-                }
-            }
-            linearLayout.addView(row);
-        }
-    }
-
+    //網路連線
     private void networkRun(final View view, final int postion) {
         runOnUiThread(new Runnable() {
             @Override
@@ -330,6 +247,91 @@ public class GradeActivity extends BaseActivity {
                 }
                 //endregion
             }
+        }
+    }
+
+    //填入UI
+    private void writeInUI(View view, ArrayList<String> grade, ArrayList<String> num, int postion) {
+        int pixels;//dp
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(postion);
+        int sum = 0;
+        ArrayList<String> gradet = new ArrayList<String>() {
+        };
+        ArrayList<String> frontt = new ArrayList<String>() {
+        };
+        for (int i = 0; i < num.size(); i++) {
+            if (tryParseInt(num.get(i))) {
+                sum++;
+                gradet.add(grade.get(i));
+                frontt.add(num.get(i));
+            }
+        }
+        int rows = sum / 5 + 1;
+        for (int y = 0; y < rows; y++) {//forRow
+            LinearLayout row = new LinearLayout(GradeActivity.this);
+            LinearLayout.LayoutParams txtParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            row.setLayoutParams(txtParams);
+            row.setGravity(Gravity.CENTER);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            for (int i = y * 5; i < y * 5 + 5; i++) {//forLine
+                if (i < gradet.size()) {
+                    //region forLine
+                    LinearLayout line = new LinearLayout(GradeActivity.this);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                    txtParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    line.setLayoutParams(txtParams);
+                    line.setOrientation(LinearLayout.VERTICAL);
+
+                    TextView txtsubject = new TextView(GradeActivity.this);
+                    txtParams = new LinearLayout.LayoutParams(pixels, pixels);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                    txtParams.setMargins(pixels, 0, pixels, 0);
+                    txtsubject.setLayoutParams(txtParams);
+                    txtsubject.setText(gradet.get(i));
+                    txtsubject.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
+                    txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                    txtsubject.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    line.addView(txtsubject);
+
+                    TextView txtgrade = new TextView(GradeActivity.this);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+                    txtParams = new LinearLayout.LayoutParams(pixels, pixels);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                    txtParams.setMargins(pixels, -pixels, pixels, pixels);
+                    txtgrade.setLayoutParams(txtParams);
+                    txtgrade.setText(frontt.get(i));
+                    txtgrade.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.white));
+                    txtgrade.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
+                    int draw = R.drawable.grade_bg_black;
+                    try {
+                        if (Integer.parseInt(frontt.get(i)) < 60) {
+                            draw = R.drawable.grade_bg_red;
+                        } else if (Integer.parseInt(frontt.get(i)) < 70) {
+                            draw = R.drawable.grade_bg_yellow;
+                        } else if (Integer.parseInt(frontt.get(i)) <= 100) {
+                            draw = R.drawable.grade_bg_green;
+                        }
+                    } catch (Exception e) {/**/}
+                    txtgrade.setBackground(ContextCompat.getDrawable(GradeActivity.this, draw));
+                    txtgrade.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+                    line.addView(txtgrade);
+                    //endregion
+                    row.addView(line);
+                } else {
+                    break;
+                }
+            }
+            linearLayout.addView(row);
+        }
+    }
+
+    //判斷數字
+    boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 

@@ -1,8 +1,15 @@
 package com.dtf.daanx;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -40,8 +47,8 @@ public class BaseActivity extends AppCompatActivity {
     @TargetApi(19)
     protected void setTranslucentStatus() {
         //region 判斷Miui
-        String isMiui=getSystemProperty("ro.miui.ui.version.name");
-        if(isMiui!=null) {
+        String isMiui = getSystemProperty("ro.miui.ui.version.name");
+        if (isMiui != null) {
             if (!isMiui.equals("")) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -54,31 +61,22 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     //讀取system參數
-    public static String getSystemProperty(String propName){
+    public static String getSystemProperty(String propName) {
         String line;
         BufferedReader input = null;
-        try
-        {
+        try {
             Process p = Runtime.getRuntime().exec("getprop " + propName);
             input = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
             line = input.readLine();
             input.close();
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Log.e("status", "Unable to read sysprop " + propName, ex);
             return null;
-        }
-        finally
-        {
-            if(input != null)
-            {
-                try
-                {
+        } finally {
+            if (input != null) {
+                try {
                     input.close();
-                }
-                catch (IOException e)
-                {
+                } catch (IOException e) {
                     Log.e("status", "Exception while closing InputStream", e);
                 }
             }
@@ -110,6 +108,49 @@ public class BaseActivity extends AppCompatActivity {
             HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
         } catch (Exception e) {
             // e.printStackTrace();
+        }
+    }
+
+    //判斷是否有網路連線
+    public boolean networkInfo() {
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+
+        //如果未連線的話，mNetworkInfo會等於null
+        if (mNetworkInfo != null) {
+            if(!(mNetworkInfo.isConnected()||mNetworkInfo.isAvailable())){
+                //region 跳到設定頁
+                AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+                builder.setMessage("無法連線到網際網路");
+                builder.setTitle("無法連線");
+                builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent settintIntent = new Intent(Settings.ACTION_SETTINGS);
+                        startActivity(settintIntent);
+                    }
+                });
+                builder.create().show();
+                return false;
+                //endregion
+            }else {
+                return true;
+            }
+        } else {
+            //region 跳到設定頁
+            AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+            builder.setMessage("無法連線到網際網路");
+            builder.setTitle("無法連線");
+            builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent settintIntent = new Intent(Settings.ACTION_SETTINGS);
+                    startActivity(settintIntent);
+                }
+            });
+            builder.create().show();
+            //endregion
+            return false;
         }
     }
 }
