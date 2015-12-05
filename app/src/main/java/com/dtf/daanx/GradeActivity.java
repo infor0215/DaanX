@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -22,6 +23,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +54,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
-public class GradeActivity extends AppCompatActivity {
+public class GradeActivity extends BaseActivity {
 
     private TabLayout mTabs;
     SharedPreferences preference;
@@ -376,4 +379,5 @@ public class GradeActivity extends AppCompatActivity {
                 // e.printStackTrace();
             }
         }
+
     }

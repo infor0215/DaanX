@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.annotation.TargetApi;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,8 @@ import android.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -28,13 +31,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import javax.xml.xpath.XPath;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -90,11 +94,12 @@ public class MainActivity extends AppCompatActivity
         mQueue.add(stringRequest);*/
 
 
-        //TextView lbl_name=(TextView) findViewById(R.id.lbl_name);
-        //lbl_name.setText(preference.getString("stu_name",""));
-        //lbl_name.setText("你好");
+        TextView lbl_name=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_name);
+        lbl_name.setText(preference.getString("stu_name",""));
+        TextView lbl_email=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
+        lbl_email.setText(preference.getString("stu_email",""));
 
-
+        setTranslucentStatus();
 
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.replace(R.id.main_layout, new MainFragment(), "f_m");
@@ -149,6 +154,15 @@ public class MainActivity extends AppCompatActivity
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
+            case R.id.nav_timetable:
+                fg = new TimeTableFragment();
+                bundle = new Bundle();
+                bundle.putString("type", "timetable");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout, fg);
+                ft.addToBackStack(null);
+                ft.commit();
+                break;
             case R.id.nav_grade:
                 intent=new Intent();
                 intent.setClass(MainActivity.this,GradeActivity.class);
@@ -176,6 +190,7 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
 
 

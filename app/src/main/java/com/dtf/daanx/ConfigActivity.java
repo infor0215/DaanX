@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,10 +12,12 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ConfigActivity extends AppCompatActivity {
+public class ConfigActivity extends BaseActivity {
 
     SharedPreferences preference;
 
@@ -36,6 +39,8 @@ public class ConfigActivity extends AppCompatActivity {
         });*/
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         preference=getSharedPreferences("setting",0);
 
         int pixels;
@@ -140,5 +145,4 @@ public class ConfigActivity extends AppCompatActivity {
         line.addView(txtgrade);
         linearLayout.addView(line);
     }
-
 }

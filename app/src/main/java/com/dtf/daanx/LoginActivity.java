@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +33,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.X509TrustManager;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     SharedPreferences preference;
     ProgressDialog dialog;
@@ -67,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             setContentView(contentView=View.inflate(this, R.layout.activity_login, null));
             if(getSupportActionBar()!=null) getSupportActionBar().hide();
         }
+
     }
 
     public void btn_login(View view){
@@ -75,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         final String stu_pwd=((TextView)findViewById(R.id.stu_pwd)).getText().toString();
         final String stu_year=((TextView)findViewById(R.id.stu_year)).getText().toString();
         final String stu_nick=((TextView)findViewById(R.id.stu_nick)).getText().toString();
+        final String stu_email=((TextView)findViewById(R.id.stu_email)).getText().toString();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
                         System.out.println("姓名"+temp.get(4).text().substring(3, temp.get(4).text().length()));
                         System.out.println("老師"+temp.get(0).text().substring(3, temp.get(0).text().length()));
                         System.out.println("座號"+temp.get(2).text().substring(3, temp.get(2).text().length()));*/
-                        writepreference(stu_id,stu_pwd,stu_year,stu_nick,stu_class,stu_name,stu_tea,stu_num);
+                        writepreference(stu_id,stu_pwd,stu_year,stu_nick,stu_class,stu_name,stu_tea,stu_num,stu_email);
                     }
                     else{
                         runOnUiThread(new Runnable() {
@@ -142,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
 
-    public void writepreference(String stu_id,String stu_pwd,String stu_year,String stu_nick,String stu_class,String stu_name,String stu_tea,String stu_num){
+    public void writepreference(String stu_id,String stu_pwd,String stu_year,String stu_nick,String stu_class,String stu_name,String stu_tea,String stu_num,String stu_email){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -160,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("stu_name",stu_name);
         editor.putString("stu_tea",stu_tea);
         editor.putString("stu_num",stu_num);
+        editor.putString("stu_email",stu_email);
         editor.apply();
         try{
             Thread.sleep(1000);
@@ -197,4 +203,5 @@ public class LoginActivity extends AppCompatActivity {
             // e.printStackTrace();
         }
     }
+
 }

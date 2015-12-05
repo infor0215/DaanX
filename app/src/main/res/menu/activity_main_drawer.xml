@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group  android:checkableBehavior="single">
         <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/stu_homepage" />
         <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
@@ -15,19 +15,23 @@
                 <item
                     android:id="@+id/nav_timetable"
                     android:icon="@android:drawable/ic_input_get"
-                    android:title="@string/stu_timetable"/>
+                    android:title="@string/stu_timetable"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_attend"
                     android:icon="@android:drawable/ic_menu_recent_history"
-                    android:title="@string/stu_attend"/>
+                    android:title="@string/stu_attend"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_prize"
                     android:icon="@android:drawable/ic_menu_myplaces"
-                    android:title="@string/stu_award"/>
+                    android:title="@string/stu_award"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_grade"
                     android:icon="@android:drawable/ic_menu_sort_by_size"
-                    android:title="@string/stu_grade"/>
+                    android:title="@string/stu_grade"
+                    android:checkable="true"/>
             </menu>
         </item>
         <item
@@ -36,23 +40,28 @@
                 <item
                     android:id="@+id/nav_nowpost"
                     android:icon="@android:drawable/ic_menu_today"
-                    android:title="@string/latest_announcement"/>
+                    android:title="@string/latest_announcement"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_stupost"
                     android:icon="@android:drawable/ic_menu_my_calendar"
-                    android:title="@string/stu_announcement"/>
+                    android:title="@string/stu_announcement"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_newpost"
                     android:icon="@android:drawable/ic_menu_view"
-                    android:title="@string/semester_announcement"/>
+                    android:title="@string/semester_announcement"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_racepost"
                     android:icon="@android:drawable/ic_menu_view"
-                    android:title="@string/race_announcement"/>
+                    android:title="@string/race_announcement"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_bonus"
                     android:icon="@android:drawable/ic_menu_send"
-                    android:title="@string/money_announcement"/>
+                    android:title="@string/money_announcement"
+                    android:checkable="true"/>
             </menu>
         </item>
         <item
@@ -61,11 +70,13 @@
                 <item
                     android:id="@+id/nav_method"
                     android:icon="@android:drawable/ic_search_category_default"
-                    android:title="@string/stu_search"/>
+                    android:title="@string/stu_search"
+                    android:checkable="true"/>
                 <item
                     android:id="@+id/nav_rule"
                     android:icon="@android:drawable/ic_search_category_default"
-                    android:title="@string/sch_rule"/>
+                    android:title="@string/sch_rule"
+                    android:checkable="true"/>
             </menu>
         </item>
     </group>
