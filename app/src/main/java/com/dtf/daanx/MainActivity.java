@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity
     }
 
 
+    //覆寫返回鍵事件
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,6 +109,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 */
+    //Drawer Select
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

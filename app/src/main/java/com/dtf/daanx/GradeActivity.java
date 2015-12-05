@@ -306,7 +306,6 @@ public class GradeActivity extends BaseActivity {
                 dialog.dismiss();
                 //endregion
             } catch (IOException e) {
-
                 //region retry
                 dialog.dismiss();
                 timeout++;
@@ -325,7 +324,7 @@ public class GradeActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_INDEFINITE).show();
+                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
                         }
                     });
                 }
