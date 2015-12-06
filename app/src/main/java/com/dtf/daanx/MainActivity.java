@@ -173,6 +173,16 @@ public class MainActivity extends BaseActivity
                 intent.setClass(MainActivity.this,ConfigActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_daanabout:
+                fg = new DaanAboutFragment();
+                bundle = new Bundle();
+                bundle.putString("type", "DaanAbout");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout, fg,"f_m");
+                ft.addToBackStack("DaanAbout");
+                mainin=1;
+                ft.commit();
+                break;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

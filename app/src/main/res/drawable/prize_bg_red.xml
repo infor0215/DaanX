@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/red_A200" />
     <corners
@@ -7,4 +8,26 @@
         android:bottomLeftRadius="50dp"
         android:bottomRightRadius="50dp"
         />
-</shape>
+</shape>-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!-- Bottom 2dp Shadow -->
+<item>
+    <shape>
+        <solid android:color="@color/grey_500" />
+        <corners android:radius="30dp" />
+    </shape>
+</item>
+
+<!-- White Top color -->
+<item>
+    <shape>
+        <solid android:color="@color/red_A200" />
+        <corners
+            android:radius="45dp"
+            />
+    </shape>
+</item>
+
+
+</layer-list>

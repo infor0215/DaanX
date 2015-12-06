@@ -98,6 +98,7 @@ public class TimeTableFragment extends Fragment {
                     WebView webView=(WebView) view.findViewById(R.id.webView);
                     webView.loadDataWithBaseURL(null,html, "text/html",  "utf-8", null);
                     webView.setBackgroundColor(Color.TRANSPARENT);
+                    webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     dialog.dismiss();
                 }
             });

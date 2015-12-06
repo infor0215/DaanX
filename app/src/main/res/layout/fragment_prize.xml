@@ -17,7 +17,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/smallcite"
+                android:tag="嘉獎"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -40,7 +41,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/middlecite"
+                android:tag="小功"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -63,7 +65,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/bigcite"
+                android:tag="大功"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -94,7 +97,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/smallfault"
+                android:tag="警告"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -117,7 +121,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/middlefault"
+                android:tag="小過"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -140,7 +145,8 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
             <TextView
-                android:text="15"
+                android:id="@+id/bigfault"
+                android:tag="大過"
                 android:textSize="25dp"
                 android:layout_height="70dp"
                 android:layout_width="70dp"
@@ -161,50 +167,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/list_prize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!--xml轉java開始-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/prize_bg_list"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:text="104上"
-                        android:textSize="20dp"
-                        android:layout_margin="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="104.11.12"
-                        android:textSize="20dp"
-                        android:layout_margin="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:text="小功１次嘉獎２次"
-                        android:textSize="18dp"
-                        android:layout_margin="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-                <TextView
-                    android:text="台北市104學年度中等學校學生電腦軟體設計競賽開放組第二名"
-                    android:textSize="20dp"
-                    android:gravity="center"
-                    android:layout_marginTop="-5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <!--xml轉java結束-->
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
+
+    <!--xml轉java開始
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/prize_bg_list"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:text="104上"
+                            android:textSize="20dp"
+                            android:layout_margin="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:text="104.11.12"
+                            android:textSize="20dp"
+                            android:layout_margin="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:text="小功１次嘉獎２次"
+                            android:textSize="18dp"
+                            android:layout_margin="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <TextView
+                        android:text="台北市104學年度中等學校學生電腦軟體設計競賽開放組第二名"
+                        android:textSize="20dp"
+                        android:gravity="center"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                xml轉java結束-->

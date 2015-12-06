@@ -85,7 +85,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     //關掉ssl憑証檢查 與確定使用ssl加密協定版本
-    public static void trustEveryone() {
+    public void trustEveryone() {
         try {
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
                 public boolean verify(String hostname, SSLSession session) {
