@@ -184,6 +184,9 @@ public class MainActivity extends BaseActivity
                 ft.commit();
                 break;
         }
+
+        System.gc();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
