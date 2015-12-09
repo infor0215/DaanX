@@ -140,6 +140,15 @@ public class MainActivity extends BaseActivity
                 intent.setClass(MainActivity.this,GradeActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.nav_attend:
+                fg = new AttendFragment();
+                bundle = new Bundle();
+                bundle.putString("type", "attend");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout, fg,"f_m");
+                ft.addToBackStack("attend");
+                ft.commit();
+                break;
             case R.id.nav_prize:
                 fg = new PrizeFragment();
                 bundle = new Bundle();
