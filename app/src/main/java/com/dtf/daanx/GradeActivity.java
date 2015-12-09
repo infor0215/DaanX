@@ -45,6 +45,7 @@ public class GradeActivity extends BaseActivity {
     private ArrayList<String> backavg;
     private int timeout;
     private ProgressDialog dialog;
+    private TinyDB cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class GradeActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("成績查詢");
+        cache=new TinyDB("grade-cache",this);
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +123,38 @@ public class GradeActivity extends BaseActivity {
                         }
                     }).start();
                 }else {
-                    networkAlert();
+                    grade=cache.getListString("grade");
+                    grade=cache.getListString("front1");
+                    grade=cache.getListString("front2");
+                    grade=cache.getListString("front3");
+                    grade=cache.getListString("frontusl");
+                    grade=cache.getListString("frontavg");
+                    grade=cache.getListString("back1");
+                    grade=cache.getListString("back2");
+                    grade=cache.getListString("back3");
+                    grade=cache.getListString("backusl");
+                    grade=cache.getListString("backavg");
+                    //上學期第一次段考
+                    writeInUI(view, grade, front1, R.id.front1);
+                    //上學期第二次段考
+                    writeInUI(view, grade, front2, R.id.front2);
+                    //上學期第三次段考
+                    writeInUI(view, grade, front3, R.id.front3);
+                    //上學期平時成績
+                    writeInUI(view, grade, frontusl, R.id.frontusl);
+                    //上學期期末平均
+                    writeInUI(view, grade, frontavg, R.id.frontavg);
+
+                    //下學期第一次段考
+                    writeInUI(view, grade, back1, R.id.back1);
+                    //下學期第二次段考
+                    writeInUI(view, grade, back2, R.id.back2);
+                    //下學期第三次段考
+                    writeInUI(view, grade, back3, R.id.back3);
+                    //下學期平時成績
+                    writeInUI(view, grade, backusl, R.id.backusl);
+                    //下學期期末平均
+                    writeInUI(view, grade, backavg, R.id.backavg);
                 }
                 container.addView(view);
                 return view;
@@ -195,7 +228,19 @@ public class GradeActivity extends BaseActivity {
                 }
                 //endregion
 
-
+                //region cacheWrite
+                cache.putListString("grade",grade);
+                cache.putListString("front1",front1);
+                cache.putListString("front2",front2);
+                cache.putListString("front3",front3);
+                cache.putListString("frontusl",frontusl);
+                cache.putListString("frontavg",frontavg);
+                cache.putListString("back1",back1);
+                cache.putListString("back2",back2);
+                cache.putListString("back3",back3);
+                cache.putListString("backusl",backusl);
+                cache.putListString("backavg",backavg);
+                //endregion
 
                 //region 填入UI
                 runOnUiThread(new Runnable() {
