@@ -10,24 +10,37 @@
         />
 </shape>-->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:top="10dp"
+        android:left="10dp">
+        <shape>
+            <solid android:color="#a0000000" />
+            <corners
+                android:radius="80dp"
+                />
+        </shape>
+    </item>
+    <!-- Bottom 2dp Shadow -->
+    <item>
+        <shape>
+            <solid android:color="@color/white" />
+            <corners android:radius="70dp" />
+        </shape>
+    </item>
 
-<!-- Bottom 2dp Shadow -->
-<item>
-    <shape>
-        <solid android:color="@color/grey_500" />
-        <corners android:radius="30dp" />
-    </shape>
-</item>
-
-<!-- White Top color -->
-<item>
-    <shape>
-        <solid android:color="@color/red_A200" />
-        <corners
-            android:radius="45dp"
-            />
-    </shape>
-</item>
+    <!-- White Top color -->
+    <item
+        android:bottom="3dp"
+        android:top="3dp"
+        android:left="3dp"
+        android:right="3dp">
+        <shape>
+            <solid android:color="@color/red_A200" />
+            <corners
+                android:radius="64dp"
+                />
+        </shape>
+    </item>
 
 
 </layer-list>
