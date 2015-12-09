@@ -33,6 +33,7 @@ public class PrizeFragment extends Fragment {
     ProgressDialog dialog;
     SharedPreferences preference;
     private int timeout;
+    private TinyDB cache;
 
     ArrayList<String> year;
     ArrayList<String> date;
@@ -49,7 +50,7 @@ public class PrizeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_prize, container, false);
-
+        cache=new TinyDB("prize-cache",getActivity());
         if(((MainActivity)getActivity()).networkInfo()) {
             new Thread(new Runnable() {
                 @Override
@@ -57,6 +58,21 @@ public class PrizeFragment extends Fragment {
                     networkRun(view);
                 }
             }).start();
+        }else {
+            //cache
+            year = cache.getListString("year");
+            date = cache.getListString("date");
+            status = cache.getListString("status");
+            because = cache.getListString("because");
+
+            smallcite=cache.getInt("smallcite");
+            smallfault=cache.getInt("smallfault");
+            middlecite=cache.getInt("middlecite");
+            middlefault=cache.getInt("middlefault");
+            bigcite=cache.getInt("bigcite");
+            bigfault=cache.getInt("bigfault");
+
+            writeInUi(view);
         }
         return view;
     }
@@ -116,6 +132,19 @@ public class PrizeFragment extends Fragment {
             middlefault=countsum(status,"小過");
             bigcite=countsum(status,"大功");
             bigfault=countsum(status,"大過");
+            //endregion
+
+            //region cacheWrite
+            cache.putListString("year",year);
+            cache.putListString("date",date);
+            cache.putListString("status",status);
+            cache.putListString("because",because);
+            cache.putInt("smallcite", smallcite);
+            cache.putInt("smallfault", smallfault);
+            cache.putInt("middlecite", middlecite);
+            cache.putInt("middlefault", middlefault);
+            cache.putInt("bigcite", bigcite);
+            cache.putInt("bigfault",bigfault);
             //endregion
 
             //region 填入UI

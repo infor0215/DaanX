@@ -120,6 +120,8 @@ public class GradeActivity extends BaseActivity {
                             networkRun(view, position1);
                         }
                     }).start();
+                }else {
+                    networkAlert();
                 }
                 container.addView(view);
                 return view;
@@ -192,6 +194,8 @@ public class GradeActivity extends BaseActivity {
                     backavg.add(temp.get(10).text());
                 }
                 //endregion
+
+
 
                 //region 填入UI
                 runOnUiThread(new Runnable() {

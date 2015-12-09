@@ -131,6 +131,8 @@ public class LoginActivity extends BaseActivity {
                     }
                 }
             }).start();
+        }else{
+            networkAlert();
         }
         //endregion
     }
@@ -163,6 +165,7 @@ public class LoginActivity extends BaseActivity {
         Intent intent=new Intent();
         intent.setClass(LoginActivity.this,MainActivity.class);
         startActivity(intent);
+        LoginActivity.this.finish();
         //endregion
     }
 

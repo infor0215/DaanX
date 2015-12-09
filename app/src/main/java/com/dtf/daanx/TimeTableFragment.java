@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.service.voice.VoiceInteractionService;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +28,13 @@ public class TimeTableFragment extends Fragment {
     private SharedPreferences preferences;
     private ProgressDialog dialog;
     private int timeout;
+    private TinyDB cache;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_time_table,container, false);
         preferences=getActivity().getSharedPreferences("setting",0);
+        cache=new TinyDB("timetable-cache",getActivity());
         if(((MainActivity)getActivity()).networkInfo()) {
             new Thread(new Runnable() {
                 @Override
@@ -39,6 +42,10 @@ public class TimeTableFragment extends Fragment {
                     networkRun(view);
                 }
             }).start();
+        }else {
+            //cacheRead
+            String html=cache.getString("html");
+            writeInUi(view,html);
         }
 
         return view;
@@ -92,13 +99,15 @@ public class TimeTableFragment extends Fragment {
             tr=temp.select("td");
             tr.attr("style","font-size:12px;");
             final String html=temp.outerHtml();//.replace("，"," ");
+
+            //region cacheWrite
+            cache.putString("html",html);
+            //endregion
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    WebView webView=(WebView) view.findViewById(R.id.webView);
-                    webView.loadDataWithBaseURL(null,html, "text/html",  "utf-8", null);
-                    webView.setBackgroundColor(Color.TRANSPARENT);
-                    webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                    writeInUi(view,html);
                     dialog.dismiss();
                 }
             });
@@ -127,5 +136,12 @@ public class TimeTableFragment extends Fragment {
             }
             //endregion
         }
+    }
+
+    private void writeInUi(View view,String html){
+        WebView webView=(WebView) view.findViewById(R.id.webView);
+        webView.loadDataWithBaseURL(null, html, "text/html",  "utf-8", null);
+        webView.setBackgroundColor(Color.TRANSPARENT);
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 }

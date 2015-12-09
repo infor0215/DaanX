@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
@@ -80,6 +81,64 @@ public class ListviewFragment extends Fragment {
         return view;
     }
 
+    public class Post {
+
+        @SerializedName("title")
+        private String title;
+
+        @SerializedName("content")
+        private String content;
+
+        @SerializedName("writer")
+        private String writer;
+
+        @SerializedName("file")
+        private String file;
+
+        @SerializedName("image")
+        private String image;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getWriter() {
+            return writer.substring(0,0);
+        }
+
+        public void setWriter(String writer) {
+            this.writer = writer;
+        }
+
+        public String getFile() {
+            return file;
+        }
+
+        public void setFile(String file) {
+            this.file = file;
+        }
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+    }
 
 }
 

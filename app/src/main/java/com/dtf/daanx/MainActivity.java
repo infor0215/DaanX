@@ -18,7 +18,6 @@ public class MainActivity extends BaseActivity
 
 
     SharedPreferences preference;
-    int mainin=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,11 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        networkInfo();
+        if(networkInfo()){
+            //
+        }else {
+            networkAlert();
+        }
         //endregion
 
         //region preference
@@ -62,29 +65,11 @@ public class MainActivity extends BaseActivity
         lbl_email.setText(preference.getString("stu_email",""));
         //endregion
 
-        /*
-        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-        StringRequest stringRequest = new StringRequest("",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        Type listType = new TypeToken<ArrayList<Post>>() {}.getType();
-                        ArrayList<Post> jsonArr = gson.fromJson(response, listType);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("TAG", error.getMessage(), error);
-            }
-        });
-        mQueue.add(stringRequest);*/
 
         //region defaultFg
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.replace(R.id.main_layout, new MainFragment(), "f_m");
         ft.addToBackStack("main");
-        mainin=0;
         ft.commit();
         //endregion
     }
@@ -130,7 +115,6 @@ public class MainActivity extends BaseActivity
                 fg.setArguments(bundle);
                 ft.replace(R.id.main_layout,fg,"f_m");
                 ft.addToBackStack("main");
-                mainin=0;
                 ft.commit();
                 break;
             case R.id.nav_forum:
@@ -140,7 +124,6 @@ public class MainActivity extends BaseActivity
                 fg.setArguments(bundle);
                 ft.replace(R.id.main_layout, fg,"f_m");
                 ft.addToBackStack("forum");
-                mainin=1;
                 ft.commit();
                 break;
             case R.id.nav_timetable:
@@ -150,7 +133,6 @@ public class MainActivity extends BaseActivity
                 fg.setArguments(bundle);
                 ft.replace(R.id.main_layout, fg,"f_m");
                 ft.addToBackStack("timetable");
-                mainin=1;
                 ft.commit();
                 break;
             case R.id.nav_grade:
@@ -165,7 +147,6 @@ public class MainActivity extends BaseActivity
                 fg.setArguments(bundle);
                 ft.replace(R.id.main_layout, fg,"f_m");
                 ft.addToBackStack("prize");
-                mainin=1;
                 ft.commit();
                 break;
             case R.id.nav_config:
@@ -180,12 +161,10 @@ public class MainActivity extends BaseActivity
                 fg.setArguments(bundle);
                 ft.replace(R.id.main_layout, fg,"f_m");
                 ft.addToBackStack("DaanAbout");
-                mainin=1;
                 ft.commit();
                 break;
         }
 
-        System.gc();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

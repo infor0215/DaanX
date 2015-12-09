@@ -119,38 +119,29 @@ public class BaseActivity extends AppCompatActivity {
         //如果未連線的話，mNetworkInfo會等於null
         if (mNetworkInfo != null) {
             if(!(mNetworkInfo.isConnected()||mNetworkInfo.isAvailable())){
-                //region 跳到設定頁
-                AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-                builder.setMessage("無法連線到網際網路");
-                builder.setTitle("無法連線");
-                builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent settintIntent = new Intent(Settings.ACTION_SETTINGS);
-                        startActivity(settintIntent);
-                    }
-                });
-                builder.create().show();
                 return false;
-                //endregion
             }else {
                 return true;
             }
         } else {
-            //region 跳到設定頁
-            AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-            builder.setMessage("無法連線到網際網路");
-            builder.setTitle("無法連線");
-            builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent settintIntent = new Intent(Settings.ACTION_SETTINGS);
-                    startActivity(settintIntent);
-                }
-            });
-            builder.create().show();
-            //endregion
             return false;
         }
+    }
+
+    //跳到設定頁
+    public void networkAlert(){
+        //region 跳到設定頁
+        AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+        builder.setMessage("無法連線到網際網路");
+        builder.setTitle("無法連線");
+        builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent settintIntent = new Intent(Settings.ACTION_SETTINGS);
+                startActivity(settintIntent);
+            }
+        });
+        builder.create().show();
+        //endregion
     }
 }
