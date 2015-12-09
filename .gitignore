@@ -1,5 +1,8 @@
 <<<<<<< HEAD
 .gradle
+/.idea/gradle.xml
+/app/app.iml
+/.idea/misc.xml
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
