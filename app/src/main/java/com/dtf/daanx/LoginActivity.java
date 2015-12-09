@@ -29,8 +29,8 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preference=getSharedPreferences("setting",0);
-        String stu_id=preference.getString("stu_id","noid");
-        if(!stu_id.equals("noid")){//判斷是否第一次開啟App
+        String stu_id=preference.getString("stu_id","");
+        if(!stu_id.equals("")){//判斷是否第一次開啟App
             //過場動畫
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);

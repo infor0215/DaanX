@@ -172,6 +172,22 @@ public class MainActivity extends BaseActivity
                 ft.addToBackStack("DaanAbout");
                 ft.commit();
                 break;
+            case R.id.nav_logout:
+                SharedPreferences.Editor editor=preference.edit();
+                editor.putString("stu_id","");
+                editor.putString("stu_pwd","");
+                editor.putString("stu_year","");
+                editor.putString("stu_nick","");
+                editor.putString("stu_class","");
+                editor.putString("stu_name","");
+                editor.putString("stu_tea","");
+                editor.putString("stu_num","");
+                editor.putString("stu_email","");
+                editor.apply();
+                intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+                MainActivity.this.finish();
+                break;
         }
 
 

@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,20 +39,22 @@ public class AttendFragment extends Fragment {
 
     ArrayList<String> year;
     ArrayList<String> date;
-    ArrayList<String> status;
-    ArrayList<String> because;
-    int smallcite;
-    int middlecite;
-    int bigcite;
-    int smallfault;
-    int middlefault;
-    int bigfault;
+    ArrayList<ArrayList<String>> body;
+
+    int public_leave;
+    int sick_leave;
+    int thing_leave;
+    int dead_leave;
+    int absence;
+    int late;
+    int cutting;
+
     LinearLayout linearLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_prize, container, false);
-        cache=new TinyDB("prize-cache",getActivity());
+        final View view = inflater.inflate(R.layout.fragment_attend, container, false);
+        cache=new TinyDB("attend-cache",getActivity());
         if(((MainActivity)getActivity()).networkInfo()) {
             new Thread(new Runnable() {
                 @Override
@@ -62,15 +66,16 @@ public class AttendFragment extends Fragment {
             //cache
             year = cache.getListString("year");
             date = cache.getListString("date");
-            status = cache.getListString("status");
-            because = cache.getListString("because");
+            //body = cache.getListString("body");
 
-            smallcite=cache.getInt("smallcite");
-            smallfault=cache.getInt("smallfault");
-            middlecite=cache.getInt("middlecite");
-            middlefault=cache.getInt("middlefault");
-            bigcite=cache.getInt("bigcite");
-            bigfault=cache.getInt("bigfault");
+
+            public_leave=cache.getInt("public_leave");
+            sick_leave=cache.getInt("sick_leave");
+            thing_leave=cache.getInt("thing_leave");
+            dead_leave=cache.getInt("dead_leave");
+            absence=cache.getInt("absence");
+            late=cache.getInt("late");
+            cutting=cache.getInt("cutting");
 
             writeInUi(view);
         }
@@ -104,10 +109,11 @@ public class AttendFragment extends Fragment {
 
             Map<String, String> loginCookies = res.cookies();
             //抓取資料分析並儲存
-            Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/ds.asp")
+            Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/work.asp")
                     .cookies(loginCookies)
                     .timeout(5000)
                     .get();
+            //Log.i("status",doc.text());
 
             Elements temps=doc.select("tr[onmouseout=OMOut(this);]");
 
@@ -116,35 +122,41 @@ public class AttendFragment extends Fragment {
 
             year = new ArrayList<String>() {};
             date = new ArrayList<String>() {};
-            status = new ArrayList<String>() {};
-            because = new ArrayList<String>() {};
+            body = new ArrayList<ArrayList<String>>() {};
 
             for(int i=0;i<temps.size();i++){
                 temp=temps.get(i).select("td");
                 year.add(temp.get(0).text());
                 date.add(temp.get(3).text());
-                status.add(temp.get(5).text());
-                because.add(temp.get(6).text().replace("、",""));
+                ArrayList<String> tmp=new ArrayList<String>(){};
+                for(int y=5;y<19;y++){
+                    tmp.add(temp.get(y).text());
+                }
+                body.add(tmp);
             }
-            smallcite=countsum(status,"嘉獎");
-            smallfault=countsum(status,"警告");
-            middlecite=countsum(status,"小功");
-            middlefault=countsum(status,"小過");
-            bigcite=countsum(status,"大功");
-            bigfault=countsum(status,"大過");
+
+            
+
+            public_leave=NumberOfKeywords(temps.text(), "公");
+            sick_leave=NumberOfKeywords(temps.text(), "病");
+            thing_leave=NumberOfKeywords(temps.text(), "事");
+            dead_leave=NumberOfKeywords(temps.text(), "喪");
+            absence=NumberOfKeywords(temps.text(), "缺");
+            late=NumberOfKeywords(temps.text(), "遲");
+            cutting=NumberOfKeywords(temps.text(), "曠");
             //endregion
 
             //region cacheWrite
             cache.putListString("year",year);
             cache.putListString("date",date);
-            cache.putListString("status",status);
-            cache.putListString("because",because);
-            cache.putInt("smallcite", smallcite);
-            cache.putInt("smallfault", smallfault);
-            cache.putInt("middlecite", middlecite);
-            cache.putInt("middlefault", middlefault);
-            cache.putInt("bigcite", bigcite);
-            cache.putInt("bigfault",bigfault);
+            //cache.putListString("body",body);
+            cache.putInt("public_leave", public_leave);
+            cache.putInt("sick_leave", sick_leave);
+            cache.putInt("thing_leave", thing_leave);
+            cache.putInt("dead_leave", dead_leave);
+            cache.putInt("absence", absence);
+            cache.putInt("late", late);
+            cache.putInt("cutting", cutting);
             //endregion
 
             //region 填入UI
@@ -186,48 +198,56 @@ public class AttendFragment extends Fragment {
     private void writeInUi(final View view){
 
         //region 上面欄位
-        TextView textView=(TextView) view.findViewById(R.id.smallcite);
-        textView.setText(String.valueOf(smallcite));
+        TextView textView=(TextView) view.findViewById(R.id.public_leave);
+        textView.setText(String.valueOf(public_leave));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.middlecite);
-        textView.setText(String.valueOf(middlecite));
+        textView=(TextView) view.findViewById(R.id.sick_leave);
+        textView.setText(String.valueOf(sick_leave));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.bigcite);
-        textView.setText(String.valueOf(bigcite));
+        textView=(TextView) view.findViewById(R.id.thing_leave);
+        textView.setText(String.valueOf(thing_leave));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.smallfault);
-        textView.setText(String.valueOf(smallfault));
+        textView=(TextView) view.findViewById(R.id.dead_leave);
+        textView.setText(String.valueOf(dead_leave));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.middlefault);
-        textView.setText(String.valueOf(middlefault));
+        textView=(TextView) view.findViewById(R.id.absence);
+        textView.setText(String.valueOf(absence));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.bigfault);
-        textView.setText(String.valueOf(bigfault));
+        textView=(TextView) view.findViewById(R.id.late);
+        textView.setText(String.valueOf(late));
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                select(v);
+            }
+        });
+        textView=(TextView) view.findViewById(R.id.cutting);
+        textView.setText(String.valueOf(cutting));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,471 +256,165 @@ public class AttendFragment extends Fragment {
         });
         //endregion
 
-        //region 全部列表
-        int pixels;//dp
-        linearLayout = (LinearLayout) view.findViewById(R.id.list_prize);
-        for(int i=0;i<year.size();i++) {
-
-            LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-            linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-            linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-            linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-            LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            linearLayout_479.setLayoutParams(layout_84);
-
-            LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-            linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-            LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            linearLayout_987.setLayoutParams(layout_128);
-
-            TextView textView_1 = new TextView(getActivity());
-            textView_1.setText(year.get(i));
-            textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
-            LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_830.setMargins(pixels,pixels,pixels,pixels);
-            textView_1.setLayoutParams(layout_830);
-            linearLayout_987.addView(textView_1);
-
-            TextView textView_727 = new TextView(getActivity());
-            textView_727.setText(date.get(i));
-            textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
-            LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_966.setMargins(pixels,pixels,pixels,pixels);
-            textView_727.setLayoutParams(layout_966);
-            linearLayout_987.addView(textView_727);
-
-            TextView textView_408 = new TextView(getActivity());
-            textView_408.setText(status.get(i));
-            textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP,18);
-            LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_951.setMargins(pixels,pixels,pixels,pixels);
-            textView_408.setLayoutParams(layout_951);
-            linearLayout_987.addView(textView_408);
-            linearLayout_479.addView(linearLayout_987);
-
-            TextView textView_298 = new TextView(getActivity());
-            textView_298.setText(because.get(i));
-            textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
-            textView_298.setGravity(Gravity.CENTER);
-            LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-            layout_588.topMargin = pixels;
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-            layout_588.leftMargin = pixels;
-            pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-            layout_588.rightMargin = pixels;
-            textView_298.setLayoutParams(layout_588);
-            linearLayout_479.addView(textView_298);
-
-            linearLayout.addView(linearLayout_479);
-        }
-        //endregion
+        writeInList(view,"");
     }
 
-    public int countsum(ArrayList<String> from, String key) {
-        int sum=0;
-        for(int i=0;i<from.size();i++){
-            if(from.get(i).contains(key)){
-                sum+=Integer.parseInt(alltohalf(String.valueOf(from.get(i).charAt(from.get(i).indexOf(key)+2))));
+    public int NumberOfKeywords(String strKeywords, String strkey){
+        int spcount =0;
+        String strTmp;
+        for(int j=0;j<strKeywords.length();j++){
+            strTmp = String.valueOf(strKeywords.charAt(j));
+            if(strTmp.equals(strkey)){
+                spcount++;
             }
         }
-        return sum;
-    }
-
-    public static String alltohalf(String str){
-        for(char c:str.toCharArray()){
-            str = str.replaceAll("　", " ");
-            if((int)c >= 65281 && (int)c <= 65374){
-                str = str.replace(c, (char)(((int)c)-65248));
-            }
-        }
-        return str;
+        return spcount;
     }
 
     private void select(View view){
-        int pixels;
         TextView textView=(TextView) view;
-        if(textView.getTag().toString().equals("嘉獎")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("嘉獎")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
-        }else if(textView.getTag().toString().equals("小功")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("小功")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
-        }else if(textView.getTag().toString().equals("大功")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("大功")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
-        }else if(textView.getTag().toString().equals("警告")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("警告")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
-        }else if(textView.getTag().toString().equals("小過")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("小過")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
-        }else if(textView.getTag().toString().equals("大過")){
-            linearLayout.removeAllViews();
-            //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("大過")) {
-                    LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                    linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                    linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                    LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_479.setLayoutParams(layout_84);
-
-                    LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                    linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                    LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    linearLayout_987.setLayoutParams(layout_128);
-
-                    TextView textView_1 = new TextView(getActivity());
-                    textView_1.setText(year.get(i));
-                    textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_830.setMargins(pixels, pixels, pixels, pixels);
-                    textView_1.setLayoutParams(layout_830);
-                    linearLayout_987.addView(textView_1);
-
-                    TextView textView_727 = new TextView(getActivity());
-                    textView_727.setText(date.get(i));
-                    textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_966.setMargins(pixels, pixels, pixels, pixels);
-                    textView_727.setLayoutParams(layout_966);
-                    linearLayout_987.addView(textView_727);
-
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(status.get(i));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                    layout_951.setMargins(pixels, pixels, pixels, pixels);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_987.addView(textView_408);
-                    linearLayout_479.addView(linearLayout_987);
-
-                    TextView textView_298 = new TextView(getActivity());
-                    textView_298.setText(because.get(i));
-                    textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    textView_298.setGravity(Gravity.CENTER);
-                    LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
-                    layout_588.topMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
-                    layout_588.leftMargin = pixels;
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    layout_588.rightMargin = pixels;
-                    textView_298.setLayoutParams(layout_588);
-                    linearLayout_479.addView(textView_298);
-
-                    linearLayout.addView(linearLayout_479);
-                }
-            }
-            //endregion
+        if(textView.getTag().toString().equals("公假")){
+            writeInList(view, "公");
+        }else if(textView.getTag().toString().equals("病假")){
+            writeInList(view,"病");
+        }else if(textView.getTag().toString().equals("事假")){
+            writeInList(view,"事");
+        }else if(textView.getTag().toString().equals("喪假")){
+            writeInList(view,"喪");
+        }else if(textView.getTag().toString().equals("缺席")){
+            writeInList(view,"缺");
+        }else if(textView.getTag().toString().equals("遲到")){
+            writeInList(view,"遲");
+        }else if(textView.getTag().toString().equals("曠課")){
+            writeInList(view,"曠");
         }
+    }
+
+    private void writeInList(View view,String key){
+        int pixels;
+        linearLayout=(LinearLayout) getActivity().findViewById(R.id.list_attend);
+        if(!key.equals("")) linearLayout.removeAllViews();
+        for(int i=0;i<year.size();i++) {
+            if(key.equals("")) {
+                LinearLayout linearLayout_479 = new LinearLayout(getActivity());
+                linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
+                linearLayout_479.setOrientation(LinearLayout.VERTICAL);
+                linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
+                LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                linearLayout_479.setLayoutParams(layout_84);
+
+                LinearLayout linearLayout_987 = new LinearLayout(getActivity());
+                linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
+                LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                linearLayout_987.setLayoutParams(layout_128);
+
+                TextView textView_1 = new TextView(getActivity());
+                textView_1.setText(year.get(i));
+                textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_830.setMargins(pixels, pixels, pixels, pixels);
+                textView_1.setLayoutParams(layout_830);
+                linearLayout_987.addView(textView_1);
+
+                TextView textView_727 = new TextView(getActivity());
+                textView_727.setText(date.get(i));
+                textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_966.setMargins(pixels, pixels, pixels, pixels);
+                textView_727.setLayoutParams(layout_966);
+                linearLayout_987.addView(textView_727);
+
+                LinearLayout linearLayout_100 = new LinearLayout(getActivity());
+                linearLayout_100.setOrientation(LinearLayout.HORIZONTAL);
+                LinearLayout.LayoutParams layout_100 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_100.setMargins(pixels, 0, pixels, pixels);
+                linearLayout_100.setLayoutParams(layout_100);
+                for (int y = 0; y < body.get(i).size(); y++) {
+                    TextView textView_408 = new TextView(getActivity());
+                    textView_408.setText(body.get(i).get(y));
+                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                    textView_408.setGravity(Gravity.CENTER);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
+                    textView_408.setWidth(pixels);
+                    int draw=drawer(body.get(i).get(y));
+                    textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
+                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    textView_408.setLayoutParams(layout_951);
+                    linearLayout_100.addView(textView_408);
+                }
+                linearLayout_479.addView(linearLayout_987);
+                linearLayout_479.addView(linearLayout_100);
+                linearLayout.addView(linearLayout_479);
+            }else if(body.get(i).contains(key)){
+                LinearLayout linearLayout_479 = new LinearLayout(getActivity());
+                linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
+                linearLayout_479.setOrientation(LinearLayout.VERTICAL);
+                linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
+                LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+                linearLayout_479.setLayoutParams(layout_84);
+
+                LinearLayout linearLayout_987 = new LinearLayout(getActivity());
+                linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
+                LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                linearLayout_987.setLayoutParams(layout_128);
+
+                TextView textView_1 = new TextView(getActivity());
+                textView_1.setText(year.get(i));
+                textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_830.setMargins(pixels, pixels, pixels, pixels);
+                textView_1.setLayoutParams(layout_830);
+                linearLayout_987.addView(textView_1);
+
+                TextView textView_727 = new TextView(getActivity());
+                textView_727.setText(date.get(i));
+                textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_966.setMargins(pixels, pixels, pixels, pixels);
+                textView_727.setLayoutParams(layout_966);
+                linearLayout_987.addView(textView_727);
+
+                LinearLayout linearLayout_100 = new LinearLayout(getActivity());
+                linearLayout_100.setOrientation(LinearLayout.HORIZONTAL);
+                LinearLayout.LayoutParams layout_100 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
+                layout_100.setMargins(pixels, 0, pixels, pixels);
+                linearLayout_100.setLayoutParams(layout_100);
+                for (int y = 0; y < body.get(i).size(); y++) {
+                    TextView textView_408 = new TextView(getActivity());
+                    textView_408.setText(body.get(i).get(y));
+                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
+                    textView_408.setWidth(pixels);
+                    int draw=drawer(body.get(i).get(y));
+                    textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
+                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    textView_408.setLayoutParams(layout_951);
+                    linearLayout_100.addView(textView_408);
+                }
+                linearLayout_479.addView(linearLayout_987);
+                linearLayout_479.addView(linearLayout_100);
+                linearLayout.addView(linearLayout_479);
+            }
+        }
+    }
+
+    private int drawer(String text){
+        int draw=R.drawable.attend_bg_green;
+        if(text.equals("曠")){
+            draw=R.drawable.attend_bg_red;
+        }else if(text.equals("遲")){
+            draw=R.drawable.attend_bg_yellow;
+        }else if(text.equals("缺")) {
+            draw=R.drawable.attend_bg_yellow;
+        }else if(text.equals("　")){
+            draw=R.drawable.attend_bg_white;
+        }
+        return draw;
     }
 }
