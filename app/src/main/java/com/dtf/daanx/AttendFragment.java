@@ -16,14 +16,18 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -37,9 +41,7 @@ public class AttendFragment extends Fragment {
     private int timeout;
     private TinyDB cache;
 
-    ArrayList<String> year;
-    ArrayList<String> date;
-    ArrayList<ArrayList<String>> body;
+    ArrayList<Attend> attends;
 
     int public_leave;
     int sick_leave;
@@ -64,8 +66,8 @@ public class AttendFragment extends Fragment {
             }).start();
         }else {
             //cache
-            year = cache.getListString("year");
-            date = cache.getListString("date");
+            Type listType = new TypeToken<Attend>() {}.getType();
+            attends=cache.getListAttend("attends", listType);
             //body = cache.getListString("body");
 
 
@@ -120,19 +122,20 @@ public class AttendFragment extends Fragment {
             Elements temp;
 
 
-            year = new ArrayList<String>() {};
-            date = new ArrayList<String>() {};
-            body = new ArrayList<ArrayList<String>>() {};
+            attends=new ArrayList<Attend>(){};
 
             for(int i=0;i<temps.size();i++){
                 temp=temps.get(i).select("td");
-                year.add(temp.get(0).text());
-                date.add(temp.get(3).text());
+                Attend attend=new Attend();
+                attend.year=temp.get(0).text();
+                attend.date=temp.get(3).text();
                 ArrayList<String> tmp=new ArrayList<String>(){};
                 for(int y=5;y<19;y++){
                     tmp.add(temp.get(y).text());
                 }
-                body.add(tmp);
+                attend.body=tmp;
+
+                attends.add(attend);
             }
 
             
@@ -147,9 +150,7 @@ public class AttendFragment extends Fragment {
             //endregion
 
             //region cacheWrite
-            cache.putListString("year",year);
-            cache.putListString("date",date);
-            //cache.putListString("body",body);
+            cache.putListObject("attends",attends);
             cache.putInt("public_leave", public_leave);
             cache.putInt("sick_leave", sick_leave);
             cache.putInt("thing_leave", thing_leave);
@@ -203,7 +204,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.sick_leave);
@@ -211,7 +212,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.thing_leave);
@@ -219,7 +220,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.dead_leave);
@@ -227,7 +228,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.absence);
@@ -235,7 +236,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.late);
@@ -243,7 +244,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         textView=(TextView) view.findViewById(R.id.cutting);
@@ -251,7 +252,7 @@ public class AttendFragment extends Fragment {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                select(v);
+                select(v,view);
             }
         });
         //endregion
@@ -271,31 +272,31 @@ public class AttendFragment extends Fragment {
         return spcount;
     }
 
-    private void select(View view){
+    private void select(View view,View viewm){
         TextView textView=(TextView) view;
         if(textView.getTag().toString().equals("公假")){
-            writeInList(view, "公");
+            writeInList(viewm, "公");
         }else if(textView.getTag().toString().equals("病假")){
-            writeInList(view,"病");
+            writeInList(viewm,"病");
         }else if(textView.getTag().toString().equals("事假")){
-            writeInList(view,"事");
+            writeInList(viewm,"事");
         }else if(textView.getTag().toString().equals("喪假")){
-            writeInList(view,"喪");
+            writeInList(viewm,"喪");
         }else if(textView.getTag().toString().equals("缺席")){
-            writeInList(view,"缺");
+            writeInList(viewm,"缺");
         }else if(textView.getTag().toString().equals("遲到")){
-            writeInList(view,"遲");
+            writeInList(viewm,"遲");
         }else if(textView.getTag().toString().equals("曠課")){
-            writeInList(view,"曠");
+            writeInList(viewm,"曠");
         }
     }
 
     private void writeInList(View view,String key){
         int pixels;
-        linearLayout=(LinearLayout) getActivity().findViewById(R.id.list_attend);
+        linearLayout=(LinearLayout) view.findViewById(R.id.list_attend);
         if(!key.equals("")) linearLayout.removeAllViews();
-        for(int i=0;i<year.size();i++) {
-            if(key.equals("")) {
+        for(int i=0;i<attends.size();i++) {
+            if(key.equals("")||attends.get(i).body.contains(key)) {
                 LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                 linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                 linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -309,7 +310,7 @@ public class AttendFragment extends Fragment {
                 linearLayout_987.setLayoutParams(layout_128);
 
                 TextView textView_1 = new TextView(getActivity());
-                textView_1.setText(year.get(i));
+                textView_1.setText(attends.get(i).year);
                 textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                 LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
@@ -318,7 +319,7 @@ public class AttendFragment extends Fragment {
                 linearLayout_987.addView(textView_1);
 
                 TextView textView_727 = new TextView(getActivity());
-                textView_727.setText(date.get(i));
+                textView_727.setText(attends.get(i).date);
                 textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                 LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
@@ -332,66 +333,14 @@ public class AttendFragment extends Fragment {
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
                 layout_100.setMargins(pixels, 0, pixels, pixels);
                 linearLayout_100.setLayoutParams(layout_100);
-                for (int y = 0; y < body.get(i).size(); y++) {
+                for (int y = 0; y < attends.get(i).body.size(); y++) {
                     TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(body.get(i).get(y));
+                    textView_408.setText(attends.get(i).body.get(y));
                     textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                     textView_408.setGravity(Gravity.CENTER);
                     pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
                     textView_408.setWidth(pixels);
-                    int draw=drawer(body.get(i).get(y));
-                    textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
-                    LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    textView_408.setLayoutParams(layout_951);
-                    linearLayout_100.addView(textView_408);
-                }
-                linearLayout_479.addView(linearLayout_987);
-                linearLayout_479.addView(linearLayout_100);
-                linearLayout.addView(linearLayout_479);
-            }else if(body.get(i).contains(key)){
-                LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
-                linearLayout_479.setOrientation(LinearLayout.VERTICAL);
-                linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
-                LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-                linearLayout_479.setLayoutParams(layout_84);
-
-                LinearLayout linearLayout_987 = new LinearLayout(getActivity());
-                linearLayout_987.setOrientation(LinearLayout.HORIZONTAL);
-                LayoutParams layout_128 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                linearLayout_987.setLayoutParams(layout_128);
-
-                TextView textView_1 = new TextView(getActivity());
-                textView_1.setText(year.get(i));
-                textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                layout_830.setMargins(pixels, pixels, pixels, pixels);
-                textView_1.setLayoutParams(layout_830);
-                linearLayout_987.addView(textView_1);
-
-                TextView textView_727 = new TextView(getActivity());
-                textView_727.setText(date.get(i));
-                textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                layout_966.setMargins(pixels, pixels, pixels, pixels);
-                textView_727.setLayoutParams(layout_966);
-                linearLayout_987.addView(textView_727);
-
-                LinearLayout linearLayout_100 = new LinearLayout(getActivity());
-                linearLayout_100.setOrientation(LinearLayout.HORIZONTAL);
-                LinearLayout.LayoutParams layout_100 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-                layout_100.setMargins(pixels, 0, pixels, pixels);
-                linearLayout_100.setLayoutParams(layout_100);
-                for (int y = 0; y < body.get(i).size(); y++) {
-                    TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(body.get(i).get(y));
-                    textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-                    pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
-                    textView_408.setWidth(pixels);
-                    int draw=drawer(body.get(i).get(y));
+                    int draw=drawer(attends.get(i).body.get(y));
                     textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
                     LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                     textView_408.setLayoutParams(layout_951);
@@ -417,4 +366,6 @@ public class AttendFragment extends Fragment {
         }
         return draw;
     }
+
+
 }

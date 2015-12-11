@@ -132,7 +132,7 @@ public class BaseActivity extends AppCompatActivity {
     public void networkAlert(){
         //region 跳到設定頁
         AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-        builder.setMessage("無法連線到網際網路");
+        builder.setMessage("無法連線到網際網路\n學生資訊將使用離線快取");
         builder.setTitle("無法連線");
         builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
             @Override

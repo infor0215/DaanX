@@ -124,16 +124,16 @@ public class GradeActivity extends BaseActivity {
                     }).start();
                 }else {
                     grade=cache.getListString("grade");
-                    grade=cache.getListString("front1");
-                    grade=cache.getListString("front2");
-                    grade=cache.getListString("front3");
-                    grade=cache.getListString("frontusl");
-                    grade=cache.getListString("frontavg");
-                    grade=cache.getListString("back1");
-                    grade=cache.getListString("back2");
-                    grade=cache.getListString("back3");
-                    grade=cache.getListString("backusl");
-                    grade=cache.getListString("backavg");
+                    front1=cache.getListString("front1");
+                    front2=cache.getListString("front2");
+                    front3=cache.getListString("front3");
+                    frontusl=cache.getListString("frontusl");
+                    frontavg=cache.getListString("frontavg");
+                    back1=cache.getListString("back1");
+                    back2=cache.getListString("back2");
+                    back3=cache.getListString("back3");
+                    backusl=cache.getListString("backusl");
+                    backavg=cache.getListString("backavg");
                     //上學期第一次段考
                     writeInUI(view, grade, front1, R.id.front1);
                     //上學期第二次段考
