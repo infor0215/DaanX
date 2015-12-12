@@ -41,7 +41,7 @@ public class AttendFragment extends Fragment {
     private int timeout;
     private TinyDB cache;
 
-    ArrayList<Attend> attends;
+    ArrayList<Object> attends;
 
     int public_leave;
     int sick_leave;
@@ -67,7 +67,7 @@ public class AttendFragment extends Fragment {
         }else {
             //cache
             Type listType = new TypeToken<Attend>() {}.getType();
-            attends=cache.getListAttend("attends", listType);
+            attends=cache.getListObject("attends", listType);
             //body = cache.getListString("body");
 
 
@@ -122,7 +122,7 @@ public class AttendFragment extends Fragment {
             Elements temp;
 
 
-            attends=new ArrayList<Attend>(){};
+            attends=new ArrayList<Object>(){};
 
             for(int i=0;i<temps.size();i++){
                 temp=temps.get(i).select("td");
@@ -296,7 +296,7 @@ public class AttendFragment extends Fragment {
         linearLayout=(LinearLayout) view.findViewById(R.id.list_attend);
         if(!key.equals("")) linearLayout.removeAllViews();
         for(int i=0;i<attends.size();i++) {
-            if(key.equals("")||attends.get(i).body.contains(key)) {
+            if(key.equals("")||((Attend)(attends.get(i))).body.contains(key)) {
                 LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                 linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                 linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -310,7 +310,7 @@ public class AttendFragment extends Fragment {
                 linearLayout_987.setLayoutParams(layout_128);
 
                 TextView textView_1 = new TextView(getActivity());
-                textView_1.setText(attends.get(i).year);
+                textView_1.setText(((Attend)(attends.get(i))).year);
                 textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                 LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
@@ -319,7 +319,7 @@ public class AttendFragment extends Fragment {
                 linearLayout_987.addView(textView_1);
 
                 TextView textView_727 = new TextView(getActivity());
-                textView_727.setText(attends.get(i).date);
+                textView_727.setText(((Attend)(attends.get(i))).date);
                 textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                 LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
@@ -333,14 +333,14 @@ public class AttendFragment extends Fragment {
                 pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
                 layout_100.setMargins(pixels, 0, pixels, pixels);
                 linearLayout_100.setLayoutParams(layout_100);
-                for (int y = 0; y < attends.get(i).body.size(); y++) {
+                for (int y = 0; y < ((Attend)(attends.get(i))).body.size(); y++) {
                     TextView textView_408 = new TextView(getActivity());
-                    textView_408.setText(attends.get(i).body.get(y));
+                    textView_408.setText(((Attend)(attends.get(i))).body.get(y));
                     textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                     textView_408.setGravity(Gravity.CENTER);
                     pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
                     textView_408.setWidth(pixels);
-                    int draw=drawer(attends.get(i).body.get(y));
+                    int draw=drawer(((Attend)(attends.get(i))).body.get(y));
                     textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
                     LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                     textView_408.setLayoutParams(layout_951);

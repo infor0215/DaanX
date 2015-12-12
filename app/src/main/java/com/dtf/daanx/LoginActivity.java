@@ -99,14 +99,21 @@ public class LoginActivity extends BaseActivity {
                             Map<String, String> loginCookies = res.cookies();
                             Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stu_0.ASP")
                                     .cookies(loginCookies)
+                                    .timeout(5000)
                                     .get();
                             Elements temp = doc.select("b");
                             String stu_class = temp.get(1).text().substring(3, temp.get(1).text().length());
                             String stu_name = temp.get(4).text().substring(3, temp.get(4).text().length());
                             String stu_tea = temp.get(0).text().substring(3, temp.get(0).text().length());
                             String stu_num = temp.get(2).text().substring(3, temp.get(2).text().length());
+                            //送往伺服器
+                            Document server=Jsoup.connect("https://api.dacsc.club/daanx/register")
+                                    .data("stu_name",stu_name,"stu_id",stu_id,"stu_nick",stu_nick,"stu_email",stu_email)
+                                    .timeout(5000)
+                                    .post();
+                            String auth=server.text();
                             //寫入設定檔
-                            writepreference(stu_id, stu_pwd, stu_year, stu_nick, stu_class, stu_name, stu_tea, stu_num, stu_email);
+                            writepreference(stu_id, stu_pwd, stu_year, stu_nick, stu_class, stu_name, stu_tea, stu_num, stu_email,auth);
                         } else {
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -118,12 +125,12 @@ public class LoginActivity extends BaseActivity {
                             });
                         }
                         dialog.dismiss();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         dialog.dismiss();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Snackbar.make(contentView, "系統錯誤 請重新嘗試", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(contentView, "系統錯誤 請重新嘗試\n"+e.toString(), Snackbar.LENGTH_LONG).show();
                                 //Toast.makeText(LoginActivity.this, "系統錯誤 請重新嘗試", Toast.LENGTH_LONG).show();
                                 Log.i("status", "system error");
                             }
@@ -138,7 +145,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     //寫入設定檔
-    public void writepreference(String stu_id,String stu_pwd,String stu_year,String stu_nick,String stu_class,String stu_name,String stu_tea,String stu_num,String stu_email){
+    public void writepreference(String stu_id,String stu_pwd,String stu_year,String stu_nick,String stu_class,String stu_name,String stu_tea,String stu_num,String stu_email,String auth){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -157,6 +164,7 @@ public class LoginActivity extends BaseActivity {
         editor.putString("stu_tea",stu_tea);
         editor.putString("stu_num",stu_num);
         editor.putString("stu_email",stu_email);
+        editor.putString("auth",auth);
         editor.apply();
         //region 進入主界面
         try{

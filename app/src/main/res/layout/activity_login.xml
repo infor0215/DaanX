@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:minWidth="168dp"
         android:inputType="number"
-        android:hint="請輸入學年Ex:105"
+        android:hint="請輸入畢業民國年Ex:105"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:textSize="20dp"/>
