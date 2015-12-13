@@ -328,18 +328,7 @@ public class TinyDB {
     	return objects;
     }
 
-    public ArrayList<Attend> getListAttend(String key, Type mClass){
-        Gson gson = new Gson();
 
-        ArrayList<String> objStrings = getListString(key);
-        ArrayList<Attend> objects =  new ArrayList<Attend>();
-
-        for(String jObjString : objStrings){
-            Attend value  = gson.fromJson(jObjString,  mClass);
-            objects.add(value);
-        }
-        return objects;
-    }
 
     
 

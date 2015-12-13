@@ -30,6 +30,8 @@ public class TimeTableFragment extends Fragment {
     private int timeout;
     private TinyDB cache;
 
+    WebView webView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_time_table,container, false);
@@ -139,9 +141,18 @@ public class TimeTableFragment extends Fragment {
     }
 
     private void writeInUi(View view,String html){
-        WebView webView=(WebView) view.findViewById(R.id.webView);
+        webView=(WebView) view.findViewById(R.id.webView);
         webView.loadDataWithBaseURL(null, html, "text/html",  "utf-8", null);
+        //webView.load(null,html);
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (webView != null) {
+            webView.destroy();
+        }
     }
 }

@@ -368,4 +368,15 @@ public class AttendFragment extends Fragment {
     }
 
 
+    public class Attend{
+        public Attend () {
+            this.year = "";
+            this.date = "";
+        }
+        public String year;
+        public String date;
+        public ArrayList<String> body;
+    }
+
+
 }
