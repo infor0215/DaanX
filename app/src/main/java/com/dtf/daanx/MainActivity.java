@@ -5,12 +5,15 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends BaseActivity
@@ -38,16 +41,11 @@ public class MainActivity extends BaseActivity
         //endregion
 
 
-        /*
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
+        fab.setVisibility(View.INVISIBLE);
+
+
 
         //region Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -122,7 +120,7 @@ public class MainActivity extends BaseActivity
                 bundle = new Bundle();
                 bundle.putString("type", "forum");
                 fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg,"f_m");
+                ft.replace(R.id.main_layout, fg, "f_m");
                 ft.addToBackStack("forum");
                 ft.commit();
                 break;
@@ -154,8 +152,17 @@ public class MainActivity extends BaseActivity
                 bundle = new Bundle();
                 bundle.putString("type", "prize");
                 fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg,"f_m");
+                ft.replace(R.id.main_layout, fg, "f_m");
                 ft.addToBackStack("prize");
+                ft.commit();
+                break;
+            case R.id.nav_library:
+                fg = new LibraryFragment();
+                bundle = new Bundle();
+                bundle.putString("type", "library");
+                fg.setArguments(bundle);
+                ft.replace(R.id.main_layout, fg, "f_m");
+                ft.addToBackStack("library");
                 ft.commit();
                 break;
             case R.id.nav_config:
@@ -190,6 +197,21 @@ public class MainActivity extends BaseActivity
                 break;
         }
 
+        if(id==R.id.nav_forum){
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent=new Intent();
+                    intent.setClass(MainActivity.this,ForumCommitActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }else {
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setVisibility(View.INVISIBLE);
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
