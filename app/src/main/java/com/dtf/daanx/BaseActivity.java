@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
 
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,31 +33,10 @@ import javax.net.ssl.X509TrustManager;
  */
 public class BaseActivity extends AppCompatActivity {
 
-    protected SystemBarTintManager mTintManager;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatus();
-        }
-        mTintManager = new SystemBarTintManager(this);
     }
 
-    @TargetApi(19)
-    protected void setTranslucentStatus() {
-        //region 判斷Miui
-        String isMiui = getSystemProperty("ro.miui.ui.version.name");
-        if (isMiui != null) {
-            if (!isMiui.equals("")) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                SystemBarTintManager tintManager = new SystemBarTintManager(this);
-                tintManager.setStatusBarTintResource(R.color.colorPrimary);
-                tintManager.setStatusBarTintEnabled(true);
-            }
-        }
-        //endregion
-    }
 
     //讀取system參數
     public static String getSystemProperty(String propName) {

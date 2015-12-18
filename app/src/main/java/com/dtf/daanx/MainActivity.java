@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -29,22 +30,20 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(networkInfo()){
+        if (networkInfo()) {
             //
-        }else {
+        } else {
             networkAlert();
         }
         //endregion
 
         //region preference
-        preference=getSharedPreferences("setting",0);
+        preference = getSharedPreferences("setting", 0);
         //endregion
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
-
 
 
         //region Drawer
@@ -57,15 +56,15 @@ public class MainActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        TextView lbl_name=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_name);
-        lbl_name.setText(preference.getString("stu_name",""));
-        TextView lbl_email=(TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
-        lbl_email.setText(preference.getString("stu_email",""));
+        TextView lbl_name = (TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_name);
+        lbl_name.setText(preference.getString("stu_name", ""));
+        TextView lbl_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
+        lbl_email.setText(preference.getString("stu_email", ""));
         //endregion
 
 
         //region defaultFg
-        FragmentTransaction ft=getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.main_layout, new MainFragment(), "f_m");
         ft.addToBackStack("main");
         ft.commit();
@@ -79,142 +78,157 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if(getFragmentManager().getBackStackEntryCount()!=1) {//回上一層Fg
+        } else if (getFragmentManager().getBackStackEntryCount() != 1) {//回上一層Fg
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-*/
+
+    /*
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.main, menu);
+            return true;
+        }
+    */
     //Drawer Select
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        FragmentTransaction ft=getFragmentManager().beginTransaction();
+        final int id = item.getItemId();
 
-        Bundle bundle;
-        Fragment fg;
-        Intent intent;
-
-        switch (id){
-            case R.id.nav_main:
-                fg=new MainFragment();
-                bundle = new Bundle();
-                bundle.putString("type","Main");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout,fg,"f_m");
-                ft.addToBackStack("main");
-                ft.commit();
-                break;
-            case R.id.nav_forum:
-                fg = new ListviewFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "forum");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg, "f_m");
-                ft.addToBackStack("forum");
-                ft.commit();
-                break;
-            case R.id.nav_timetable:
-                fg = new TimeTableFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "timetable");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg,"f_m");
-                ft.addToBackStack("timetable");
-                ft.commit();
-                break;
-            case R.id.nav_grade:
-                intent=new Intent();
-                intent.setClass(MainActivity.this,GradeActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_attend:
-                fg = new AttendFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "attend");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg,"f_m");
-                ft.addToBackStack("attend");
-                ft.commit();
-                break;
-            case R.id.nav_prize:
-                fg = new PrizeFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "prize");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg, "f_m");
-                ft.addToBackStack("prize");
-                ft.commit();
-                break;
-            case R.id.nav_library:
-                fg = new LibraryFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "library");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg, "f_m");
-                ft.addToBackStack("library");
-                ft.commit();
-                break;
-            case R.id.nav_config:
-                intent=new Intent();
-                intent.setClass(MainActivity.this,ConfigActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_daanabout:
-                fg = new DaanAboutFragment();
-                bundle = new Bundle();
-                bundle.putString("type", "DaanAbout");
-                fg.setArguments(bundle);
-                ft.replace(R.id.main_layout, fg,"f_m");
-                ft.addToBackStack("DaanAbout");
-                ft.commit();
-                break;
-            case R.id.nav_logout:
-                SharedPreferences.Editor editor=preference.edit();
-                editor.putString("stu_id","");
-                editor.putString("stu_pwd","");
-                editor.putString("stu_year","");
-                editor.putString("stu_nick","");
-                editor.putString("stu_class","");
-                editor.putString("stu_name","");
-                editor.putString("stu_tea","");
-                editor.putString("stu_num","");
-                editor.putString("stu_email","");
-                editor.apply();
-                intent = new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(intent);
-                MainActivity.this.finish();
-                break;
-        }
-
-        if(id==R.id.nav_forum){
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent=new Intent();
-                    intent.setClass(MainActivity.this,ForumCommitActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }else {
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.setVisibility(View.INVISIBLE);
-        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Bundle bundle;
+                Fragment fg;
+                Intent intent;
+                switch (id) {
+                    case R.id.nav_main:
+                        fg = new MainFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "Main");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("main");
+                        ft.commit();
+                        break;
+                    case R.id.nav_forum:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "forum");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("forum");
+                        ft.commit();
+                        break;
+                    case R.id.nav_timetable:
+                        fg = new TimeTableFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "timetable");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("timetable");
+                        ft.commit();
+                        break;
+                    case R.id.nav_grade:
+                        intent = new Intent();
+                        intent.setClass(MainActivity.this, GradeActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_attend:
+                        fg = new AttendFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "attend");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("attend");
+                        ft.commit();
+                        break;
+                    case R.id.nav_prize:
+                        fg = new PrizeFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "prize");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("prize");
+                        ft.commit();
+                        break;
+                    case R.id.nav_nowpost:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "week");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("week");
+                        ft.commit();
+                        break;
+                    case R.id.nav_library:
+                        fg = new LibraryFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "library");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("library");
+                        ft.commit();
+                        break;
+                    case R.id.nav_config:
+                        intent = new Intent();
+                        intent.setClass(MainActivity.this, ConfigActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_daanabout:
+                        fg = new DaanAboutFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "DaanAbout");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("DaanAbout");
+                        ft.commit();
+                        break;
+                    case R.id.nav_logout:
+                        SharedPreferences.Editor editor = preference.edit();
+                        editor.putString("stu_id", "");
+                        editor.putString("stu_pwd", "");
+                        editor.putString("stu_year", "");
+                        editor.putString("stu_nick", "");
+                        editor.putString("stu_class", "");
+                        editor.putString("stu_name", "");
+                        editor.putString("stu_tea", "");
+                        editor.putString("stu_num", "");
+                        editor.putString("stu_email", "");
+                        editor.apply();
+                        intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        MainActivity.this.finish();
+                        break;
+                }
+
+                if (id == R.id.nav_forum) {
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    fab.setVisibility(View.VISIBLE);
+                    fab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent();
+                            intent.setClass(MainActivity.this, ForumCommitActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else {
+                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    fab.setVisibility(View.INVISIBLE);
+                }
+            }
+        }, 200);
         return true;
     }
 

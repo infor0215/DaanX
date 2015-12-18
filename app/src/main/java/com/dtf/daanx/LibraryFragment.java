@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import org.jsoup.Jsoup;
@@ -69,7 +70,7 @@ public class LibraryFragment extends Fragment {
             Element temp=doc.select("#seatTable").get(0);
             Element javascript=doc.select("script").get(3);
             Log.i("status",javascript.outerHtml());
-            final String html="<html>"+head.outerHtml()+temp.outerHtml()+javascript.outerHtml()+"</html>";
+            final String html="<html>"+head.outerHtml()+"<body>"+temp.outerHtml()+javascript.outerHtml()+"</body></html>";
             //temp.attr("width","100%");
 
             getActivity().runOnUiThread(new Runnable() {
@@ -108,12 +109,15 @@ public class LibraryFragment extends Fragment {
 
     private void writeInUi(View view,String html){
         webView=(WebView) view.findViewById(R.id.webView);
-        webView.loadDataWithBaseURL(null, html, "text/html",  "utf-8", null);
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
         //webView.loadData( html, "text/html",  "utf-8");
         webView.getSettings().setJavaScriptEnabled(true);
         //webView.load(null,html);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
     }
 
     @Override
