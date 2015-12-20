@@ -13,8 +13,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends BaseActivity
@@ -227,8 +229,17 @@ public class MainActivity extends BaseActivity
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.setVisibility(View.INVISIBLE);
                 }
+
+                if(id==R.id.nav_forum||id==R.id.nav_nowpost){
+                    LinearLayout linearLayout=(LinearLayout) findViewById(R.id.main_layout);
+                    linearLayout.setPadding(0,0,0,0);
+                }else {
+                    int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+                    LinearLayout linearLayout=(LinearLayout) findViewById(R.id.main_layout);
+                    linearLayout.setPadding(pixels,pixels,pixels,pixels);
+                }
             }
-        }, 200);
+        }, 300);
         return true;
     }
 

@@ -1,22 +1,26 @@
 package com.dtf.daanx;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Html;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.quentindommerc.superlistview.OnMoreListener;
 import com.quentindommerc.superlistview.SuperListview;
 
 import org.jsoup.Jsoup;
@@ -24,7 +28,6 @@ import org.jsoup.nodes.Document;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -33,14 +36,19 @@ import java.util.HashMap;
 public class ListviewFragment extends Fragment {
 
     SharedPreferences preference;
-    ArrayList<PostList> jsonArr;
+    ArrayList<PostList> postLists;
+    PostAdapter postAdapter;
+    ArrayList<ForumList> forumLists;
+    ForumAdapter forumAdapter;
+    private int timeout=1;
     int page=1;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         //TextView tvObj = (TextView)view.findViewById(R.id.info);
         String str = (String)getArguments().get("type");
+        timeout=0;
         preference=getActivity().getSharedPreferences("setting", 0);
         if(str==null) str="";
         if(str.equals("forum")){
@@ -49,37 +57,16 @@ public class ListviewFragment extends Fragment {
                 public void run() {
                     //region forum
                     try {
-                        Document doc = Jsoup.connect("https://api.dacsc.club/daanx/forum/main/"+page)
-                                .timeout(5000)
-                                .data("auth",preference.getString("auth",""))
-                                .get();
-                        String data=doc.text();
-                        Log.i("json",data);
-
                         Gson gson = new Gson();
                         Type listType = new TypeToken<ArrayList<ForumList>>() {
                         }.getType();
-                        ArrayList<ForumList> jsonArr = gson.fromJson(data, listType);
-                        ArrayList<HashMap<String, Object>> itemList = new ArrayList<>();
-                        for (ForumList obj:jsonArr) {
-                            HashMap<String, Object> temp = new HashMap<>();
-                            temp.put("title", obj.getTitle());
-                            temp.put("writer", obj.getWriter().charAt(0));
-                            temp.put("body", obj.getContent());
-                            itemList.add(temp);
-                        }
-                        final SimpleAdapter adapter = new SimpleAdapter(
-                                getActivity(),
-                                itemList,
-                                R.layout.post_row,
-                                new String[]{"title", "writer", "body"},
-                                new int[]{R.id.title, R.id.image, R.id.content}
-                        );
+                        forumLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
+                        forumAdapter = new ForumAdapter(getActivity(),forumLists);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                SuperListview listView = (SuperListview) view.findViewById(R.id.list);
-                                listView.setAdapter(adapter);
+                                final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
+                                listView.setAdapter(forumAdapter);
                                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView arg0, View arg1, int arg2,
@@ -94,6 +81,60 @@ public class ListviewFragment extends Fragment {
 
                                     }
                                 });
+                                listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                    @Override
+                                    public void onRefresh() {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                page=1;
+                                                Gson gson = new Gson();
+                                                Type listType = new TypeToken<ArrayList<ForumList>>() {}.getType();
+                                                forumLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        forumAdapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }
+                                        }).start();
+                                    }
+                                });
+                                listView.setupMoreListener(new OnMoreListener() {
+                                    @Override
+                                    public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                page++;
+                                                Gson gson = new Gson();
+                                                Type listType = new TypeToken<ArrayList<ForumList>>() {}.getType();
+                                                ArrayList<ForumList> temps=gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
+                                                if(!temps.get(0).getContent().equals(" ")) {
+                                                    for (ForumList obj : temps) {
+                                                        forumLists.add(obj);
+                                                    }
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            forumAdapter.notifyDataSetChanged();
+                                                            listView.hideMoreProgress();
+                                                        }
+                                                    });
+                                                }else {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            listView.hideMoreProgress();
+                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }).start();
+                                    }
+                                }, 2);
                             }
                         });
                     }catch (Exception e){
@@ -108,46 +149,15 @@ public class ListviewFragment extends Fragment {
                 public void run() {
                     //region week
                     try {
-                        Document doc = Jsoup.connect("https://api.dacsc.club/daanx/post/week/"+page)
-                                .timeout(5000)
-                                .data("auth",preference.getString("auth",""))
-                                .get();
-                        String data=doc.select("body").text();
-                        Log.i("json",data);
-
                         Gson gson = new Gson();
-                        Type listType = new TypeToken<ArrayList<PostList>>() {
-                        }.getType();
-                        jsonArr = gson.fromJson(data, listType);
-                        ArrayList<HashMap<String, Object>> itemList = new ArrayList<>();
-                        for (PostList obj:jsonArr) {
-                            HashMap<String, Object> temp = new HashMap<>();
-                            temp.put("title", obj.getTitle());
-                            temp.put("writer", obj.getWriter().charAt(0));
-
-//                            String image[]=obj.image.split("|||");
-//                            String images="<br>";
-//                            for(int i=0;i<image.length;i++){
-//                                images+="<img src="+image[i]+" /><br>";
-//                            }
-                            String base64=new String(Base64.decode(obj.getBody().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
-                            doc = Jsoup.parse(base64);
-                            String tempBosy=doc.text();
-                            temp.put("body",tempBosy);
-                            itemList.add(temp);
-                        }
-                        final SimpleAdapter adapter = new SimpleAdapter(
-                                getActivity(),
-                                itemList,
-                                R.layout.post_row,
-                                new String[]{"title", "writer", "body"},
-                                new int[]{R.id.title, R.id.image, R.id.content}
-                        );
+                        Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
+                        postLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
+                        postAdapter=new PostAdapter(getActivity(),postLists);
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                SuperListview listView = (SuperListview) view.findViewById(R.id.list);
-                                listView.setAdapter(adapter);
+                                final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
+                                listView.setAdapter(postAdapter);
                                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView arg0, View arg1, int arg2,
@@ -162,6 +172,60 @@ public class ListviewFragment extends Fragment {
 
                                     }
                                 });
+                                listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                    @Override
+                                    public void onRefresh() {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                page=1;
+                                                Gson gson = new Gson();
+                                                Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
+                                                postLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        postAdapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }
+                                        }).start();
+                                    }
+                                });
+                                listView.setupMoreListener(new OnMoreListener() {
+                                    @Override
+                                    public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                page++;
+                                                Gson gson = new Gson();
+                                                Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
+                                                ArrayList<PostList> temps=gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
+                                                if(!temps.get(0).getBody().equals(" ")) {
+                                                    for (PostList obj : temps) {
+                                                        postLists.add(obj);
+                                                    }
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            postAdapter.notifyDataSetChanged();
+                                                            listView.hideMoreProgress();
+                                                        }
+                                                    });
+                                                }else {
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            listView.hideMoreProgress();
+                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        }).start();
+                                    }
+                                }, 2);
                             }
                         });
                     }catch (Exception e){
@@ -172,6 +236,39 @@ public class ListviewFragment extends Fragment {
             }).start();
         }
         return view;
+    }
+
+    public String networkRun(final View view,String url){
+        try {
+            Document doc = Jsoup.connect(url)
+                    .timeout(5000)
+                    .data("auth", preference.getString("auth", ""))
+                    .get();
+            Log.i("json", doc.select("body").text());
+            return doc.select("body").text();
+        }catch (Exception e){
+            timeout++;
+            if (timeout < 5) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException c) {/**/}
+                return networkRun(view,url);
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+                return "";
+            }
+        }
     }
 
     public class ForumList {
@@ -280,7 +377,139 @@ public class ListviewFragment extends Fragment {
         }
 
     }
-    //                RequestQueue mQueue = Volley.newRequestQueue(getActivity());
+
+    public class PostAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private ArrayList<PostList> list;
+
+        public PostAdapter(Context context,ArrayList<PostList> lists){
+            this.inflater=LayoutInflater.from(context);
+            this.list=lists;
+        }
+
+        @Override
+        public int getCount(){
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position){
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position){
+            return position;
+        }
+
+        @Override
+        public View getView(int position,View convertView,ViewGroup parent){
+            ViewHolder holder;
+
+            if(convertView==null){
+                convertView=inflater.inflate(R.layout.post_row,null);
+                //Log.i("status","if");
+
+                holder=new ViewHolder();
+                holder.image=(TextView) convertView.findViewById(R.id.image1);
+                holder.title=(TextView) convertView.findViewById(R.id.title1);
+                holder.content=(TextView) convertView.findViewById(R.id.content1);
+
+                convertView.setTag(holder);
+
+            }else {
+                holder=(ViewHolder)convertView.getTag();
+                //Log.i("status","else");
+            }
+
+            PostList postList=list.get(position);
+            //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
+
+            holder.image.setText(String.valueOf(postList.getWriter().charAt(0)));
+            holder.title.setText(postList.getTitle());
+            String base64="";
+            try{
+            base64=new String(Base64.decode(postList.getBody().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
+            }catch (Exception e){/**/}
+            Document doc = Jsoup.parse(base64);
+            String tempBody=doc.text();
+            holder.content.setText(tempBody);
+
+            return convertView;
+        }
+
+        private class ViewHolder{
+            TextView image;
+            TextView title;
+            TextView content;
+        }
+    }
+
+    public class ForumAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private ArrayList<ForumList> list;
+
+        public ForumAdapter(Context context,ArrayList<ForumList> lists){
+            this.inflater=LayoutInflater.from(context);
+            this.list=lists;
+        }
+
+        @Override
+        public int getCount(){
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position){
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position){
+            return position;
+        }
+
+        @Override
+        public View getView(int position,View convertView,ViewGroup parent){
+            ViewHolder holder;
+
+            if(convertView==null){
+                convertView=inflater.inflate(R.layout.post_row,null);
+                //Log.i("status","if");
+
+                holder=new ViewHolder();
+                holder.image=(TextView) convertView.findViewById(R.id.image1);
+                holder.title=(TextView) convertView.findViewById(R.id.title1);
+                holder.content=(TextView) convertView.findViewById(R.id.content1);
+
+                convertView.setTag(holder);
+
+            }else {
+                holder=(ViewHolder)convertView.getTag();
+                //Log.i("status","else");
+            }
+
+            ForumList forumList=list.get(position);
+            //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
+
+            holder.image.setText(String.valueOf(forumList.getWriter().charAt(0)));
+            holder.title.setText(forumList.getTitle());
+            Document doc = Jsoup.parse(forumList.getContent());
+            String tempBody=doc.text();
+            holder.content.setText(tempBody);
+
+            return convertView;
+        }
+
+        private class ViewHolder{
+            TextView image;
+            TextView title;
+            TextView content;
+        }
+    }
+}
+
+//                RequestQueue mQueue = Volley.newRequestQueue(getActivity());
 //                StringRequest stringRequest = new StringRequest("",
 //                        new Response.Listener<String>() {
 //                            @Override
@@ -316,6 +545,4 @@ public class ListviewFragment extends Fragment {
 //                    }
 //                });
 //                mQueue.add(stringRequest);
-
-}
 

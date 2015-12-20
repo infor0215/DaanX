@@ -298,7 +298,7 @@ public class AttendFragment extends Fragment {
         for(int i=0;i<attends.size();i++) {
             if(key.equals("")||((Attend)(attends.get(i))).body.contains(key)) {
                 LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
+                linearLayout_479.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.prize_bg_list));
                 linearLayout_479.setOrientation(LinearLayout.VERTICAL);
                 linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
                 LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
