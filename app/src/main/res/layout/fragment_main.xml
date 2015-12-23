@@ -42,6 +42,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="40dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@color/white"
             android:text="大事記"
             android:textSize="30dp" />
@@ -65,6 +66,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="40dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@color/white"
             android:text="熱門消息"
             android:textSize="30dp" />
@@ -88,6 +90,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="40dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@color/white"
             android:text="熱門討論"
             android:textSize="30dp" />
