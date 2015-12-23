@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group  android:checkableBehavior="single">
-        <item android:id="@+id/nav_main" android:icon="@android:drawable/ic_menu_compass"
+        <item android:id="@+id/nav_main" android:icon="@drawable/ic_account_balance_24dp"
             android:title="@string/stu_homepage" />
         <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
             android:title="@string/stu_calendar" />
@@ -24,12 +24,12 @@
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_prize"
-                    android:icon="@android:drawable/ic_menu_myplaces"
+                    android:icon="@drawable/ic_thumbs_up_down_24dp"
                     android:title="@string/stu_award"
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_grade"
-                    android:icon="@android:drawable/ic_menu_sort_by_size"
+                    android:icon="@drawable/ic_equalizer_24dp"
                     android:title="@string/stu_grade" />
             </menu>
         </item>
@@ -48,17 +48,17 @@
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_newpost"
-                    android:icon="@android:drawable/ic_menu_view"
+                    android:icon="@drawable/ic_assignment_24dp"
                     android:title="@string/semester_announcement"
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_racepost"
-                    android:icon="@android:drawable/ic_menu_view"
+                    android:icon="@drawable/ic_directions_walk_24dp"
                     android:title="@string/race_announcement"
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_bonus"
-                    android:icon="@android:drawable/ic_menu_send"
+                    android:icon="@drawable/ic_school_24dp"
                     android:title="@string/money_announcement"
                     android:checkable="true"/>
             </menu>
@@ -68,7 +68,7 @@
             <menu>
                 <item
                     android:id="@+id/nav_library"
-                    android:icon="@android:drawable/ic_search_category_default"
+                    android:icon="@drawable/ic_local_library_24dp"
                     android:title="@string/stu_library"
                     android:checkable="true"/>
                 <item
@@ -78,7 +78,7 @@
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_rule"
-                    android:icon="@android:drawable/ic_search_category_default"
+                    android:icon="@drawable/ic_storage_24dp"
                     android:title="@string/sch_rule"
                     android:checkable="true"/>
             </menu>
@@ -87,14 +87,14 @@
 
     <item android:title="@string/other">
         <menu>
-            <item  android:icon="@android:drawable/ic_menu_mylocation"
+            <item  android:icon="@drawable/ic_usb_24dp"
                 android:id="@+id/nav_daanabout"
                 android:title="@string/daan_link" />
             <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_manage"
                 android:title="@string/app_setting" />
-            <item android:id="@+id/nav_about" android:icon="@android:drawable/ic_menu_help"
+            <item android:id="@+id/nav_about" android:icon="@drawable/ic_people_24dp"
                 android:title="@string/about_us" />
-            <item android:id="@+id/nav_logout" android:icon="@android:drawable/ic_menu_help"
+            <item android:id="@+id/nav_logout" android:icon="@drawable/ic_exit_to_app_24dp"
                 android:title="@string/logout" />
         </menu>
     </item>
