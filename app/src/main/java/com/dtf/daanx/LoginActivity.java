@@ -28,6 +28,8 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TinyDB cache=new TinyDB("main-cache",this);
+        cache.putString("main","main");
         preference=getSharedPreferences("setting",0);
         String stu_id=preference.getString("stu_id","");
         if(!stu_id.equals("")){//判斷是否第一次開啟App

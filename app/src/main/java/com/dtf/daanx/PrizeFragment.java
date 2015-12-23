@@ -79,107 +79,113 @@ public class PrizeFragment extends Fragment {
 
     //網路連線
     private void networkRun(final View view) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dialog = ProgressDialog.show(getActivity(), "讀取網路中", "請稍後");
-            }
-        });
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException c) {/**/}
-
-        try {
-            ((MainActivity)getActivity()).trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
-            //region 連線
-            preference = getActivity().getSharedPreferences("setting", 0);
-            String stu_id = preference.getString("stu_id", "");
-            String stu_pwd = preference.getString("stu_pwd", "");
-            Connection.Response res = Jsoup
-                    .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
-                    .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
-                    .method(Connection.Method.POST)
-                    .timeout(5000)
-                    .execute();
-
-            Map<String, String> loginCookies = res.cookies();
-            //抓取資料分析並儲存
-            Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/ds.asp")
-                    .cookies(loginCookies)
-                    .timeout(5000)
-                    .get();
-
-            Elements temps=doc.select("tr[onmouseout=OMOut(this);]");
-
-            Elements temp;
-
-
-            year = new ArrayList<String>() {};
-            date = new ArrayList<String>() {};
-            status = new ArrayList<String>() {};
-            because = new ArrayList<String>() {};
-
-            for(int i=0;i<temps.size();i++){
-                temp=temps.get(i).select("td");
-                year.add(temp.get(0).text());
-                date.add(temp.get(3).text());
-                status.add(temp.get(5).text());
-                because.add(temp.get(6).text().replace("、",""));
-            }
-            smallcite=countsum(status,"嘉獎");
-            smallfault=countsum(status,"警告");
-            middlecite=countsum(status,"小功");
-            middlefault=countsum(status,"小過");
-            bigcite=countsum(status,"大功");
-            bigfault=countsum(status,"大過");
-            //endregion
-
-            //region cacheWrite
-            cache.putListString("year",year);
-            cache.putListString("date",date);
-            cache.putListString("status",status);
-            cache.putListString("because",because);
-            cache.putInt("smallcite", smallcite);
-            cache.putInt("smallfault", smallfault);
-            cache.putInt("middlecite", middlecite);
-            cache.putInt("middlefault", middlefault);
-            cache.putInt("bigcite", bigcite);
-            cache.putInt("bigfault",bigfault);
-            //endregion
-
-            //region 填入UI
+        if(getActivity()!=null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    writeInUi(view);
+                    dialog = ProgressDialog.show(getActivity(), "讀取網路中", "請稍後");
                 }
             });
-            dialog.dismiss();
-            //endregion
-        } catch (IOException e) {
-            //region retry
-            dialog.dismiss();
-            timeout++;
-            if (timeout < 5) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException c) {/**/}
+
+            try {
+                ((MainActivity) getActivity()).trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                //region 連線
+                preference = getActivity().getSharedPreferences("setting", 0);
+                String stu_id = preference.getString("stu_id", "");
+                String stu_pwd = preference.getString("stu_pwd", "");
+                Connection.Response res = Jsoup
+                        .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
+                        .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
+                        .method(Connection.Method.POST)
+                        .timeout(5000)
+                        .execute();
+
+                Map<String, String> loginCookies = res.cookies();
+                //抓取資料分析並儲存
+                Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/ds.asp")
+                        .cookies(loginCookies)
+                        .timeout(5000)
+                        .get();
+
+                Elements temps = doc.select("tr[onmouseout=OMOut(this);]");
+
+                Elements temp;
+
+
+                year = new ArrayList<String>() {
+                };
+                date = new ArrayList<String>() {
+                };
+                status = new ArrayList<String>() {
+                };
+                because = new ArrayList<String>() {
+                };
+
+                for (int i = 0; i < temps.size(); i++) {
+                    temp = temps.get(i).select("td");
+                    year.add(temp.get(0).text());
+                    date.add(temp.get(3).text());
+                    status.add(temp.get(5).text());
+                    because.add(temp.get(6).text().replace("、", ""));
+                }
+                smallcite = countsum(status, "嘉獎");
+                smallfault = countsum(status, "警告");
+                middlecite = countsum(status, "小功");
+                middlefault = countsum(status, "小過");
+                bigcite = countsum(status, "大功");
+                bigfault = countsum(status, "大過");
+                //endregion
+
+                //region cacheWrite
+                cache.putListString("year", year);
+                cache.putListString("date", date);
+                cache.putListString("status", status);
+                cache.putListString("because", because);
+                cache.putInt("smallcite", smallcite);
+                cache.putInt("smallfault", smallfault);
+                cache.putInt("middlecite", middlecite);
+                cache.putInt("middlefault", middlefault);
+                cache.putInt("bigcite", bigcite);
+                cache.putInt("bigfault", bigfault);
+                //endregion
+
+                //region 填入UI
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                        writeInUi(view);
                     }
                 });
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException c) {/**/}
-                networkRun(view);
-            } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                dialog.dismiss();
+                //endregion
+            } catch (IOException e) {
+                //region retry
+                dialog.dismiss();
+                timeout++;
+                if (timeout < 5) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException c) {/**/}
+                    networkRun(view);
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                //endregion
             }
-            //endregion
         }
     }
 
