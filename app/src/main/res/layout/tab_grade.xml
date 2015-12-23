@@ -23,6 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEND="16dp"
                 android:textColor="@color/white"
                 android:text="上學期第一次段考"
                 android:textSize="30dp" />
@@ -56,6 +57,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="上學期第二次段考"
                 android:textSize="30dp" />
@@ -88,6 +90,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="上學期第三次段考"
                 android:textSize="30dp" />
@@ -120,6 +123,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="上學期平時成績"
                 android:textSize="30dp" />
@@ -152,6 +156,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="上學期期末平均"
                 android:textSize="30dp" />
@@ -184,6 +189,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEND="16dp"
                 android:textColor="@color/white"
                 android:text="下學期第一次段考"
                 android:textSize="30dp" />
@@ -217,6 +223,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="下學期第二次段考"
                 android:textSize="30dp" />
@@ -249,6 +256,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEND="16dp"
                 android:textColor="@color/white"
                 android:text="下學期第三次段考"
                 android:textSize="30dp" />
@@ -281,6 +289,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="下學期平時成績"
                 android:textSize="30dp" />
@@ -313,6 +322,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/white"
                 android:text="下學期期末平均"
                 android:textSize="30dp" />
