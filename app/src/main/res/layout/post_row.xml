@@ -19,7 +19,7 @@
             android:layout_height="60dp"
             android:layout_width="60dp"
             android:text="教"
-            android:textColor="#fff"
+            android:textColor="#FAFAFA"
             android:textSize="30dp"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="0dp"
