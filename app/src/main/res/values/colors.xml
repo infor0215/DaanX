@@ -291,4 +291,7 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
+    <color name="grade_sence">#2fb4dc</color>
+    <color name="grade_go">#74ed10</color>
+
 </resources>

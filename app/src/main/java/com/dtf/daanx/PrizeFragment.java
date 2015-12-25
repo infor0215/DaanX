@@ -56,7 +56,9 @@ public class PrizeFragment extends Fragment {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    networkRun(view);
+                    try {
+                        networkRun(view);
+                    }catch (Exception e){/**/}
                 }
             });
             thread.start();
@@ -176,8 +178,8 @@ public class PrizeFragment extends Fragment {
                     });
                     try {
                         Thread.sleep(5000);
-                    } catch (InterruptedException c) {/**/}
-                    networkRun(view);
+                        networkRun(view);
+                    } catch (Exception c) {/**/}
                 } else {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.util.Log;
@@ -154,7 +155,9 @@ public class ListviewFragment extends Fragment {
                                                                         @Override
                                                                         public void run() {
                                                                             listView.hideMoreProgress();
-                                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            try {
+                                                                                Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            }catch (Exception e){/**/}
                                                                         }
                                                                     });
                                                                 }
@@ -285,7 +288,9 @@ public class ListviewFragment extends Fragment {
                                                                         @Override
                                                                         public void run() {
                                                                             listView.hideMoreProgress();
-                                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            try {
+                                                                                Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            }catch (Exception e){/**/}
                                                                         }
                                                                     });
                                                                 }
@@ -323,11 +328,13 @@ public class ListviewFragment extends Fragment {
         }catch (Exception e){
             timeout++;
             if (timeout < 5) {
-                if(getActivity()!=null&&view!=null) {
+                if(getActivity()!=null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            try {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }catch (Exception e){/**/}
                         }
                     });
                 }
@@ -336,11 +343,13 @@ public class ListviewFragment extends Fragment {
                 } catch (InterruptedException c) {/**/}
                 return networkRun(view,url);
             } else {
-                if(getActivity()!=null&&view!=null) {
+                if(getActivity()!=null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            try {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            }catch (Exception e){/**/}
                         }
                     });
                 }
@@ -526,6 +535,26 @@ public class ListviewFragment extends Fragment {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.image.setText(String.valueOf(postList.getWriter().charAt(0)));
+            switch (postList.getWriter().charAt(0)){
+                case '人':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_people));
+                    break;
+                case '圖':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_pic));
+                    break;
+                case '實':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_practice));
+                    break;
+                case '學':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                    break;
+                case '輔':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_support));
+                    break;
+                case '教':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                    break;
+            }
             holder.title.setText(postList.getTitle());
             String base64="";
             try{
@@ -611,7 +640,7 @@ public class ListviewFragment extends Fragment {
     @Override
     public void onDestroyView() {
         try {
-            Thread.sleep(5);
+            Thread.sleep(50);
             thread.interrupt();
         }catch (Exception e){/**/}
         super.onDestroyView();

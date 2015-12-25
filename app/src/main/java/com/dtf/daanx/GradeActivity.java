@@ -1,6 +1,7 @@
 package com.dtf.daanx;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -9,13 +10,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.gson.reflect.TypeToken;
+import com.quentindommerc.superlistview.SuperListview;
 
 import org.jsoup.Connection.Method;
 import org.jsoup.Connection.Response;
@@ -24,6 +35,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -47,6 +59,14 @@ public class GradeActivity extends BaseActivity {
     private int timeout;
     private ProgressDialog dialog;
     private TinyDB cache;
+    ArrayList<Grades> gradesFont;
+    ArrayList<Grades> gradesLast;
+
+    private String[] choose = {"一年級","二年級","三年級","四年級","畢業"};
+    private String[] post={"1","2","3","4","G"};
+    private String choosen;
+
+    GradeAdapter gradeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +143,9 @@ public class GradeActivity extends BaseActivity {
                     new Thread(new Runnable() {
                         @Override
                         public final void run() {
-                            networkRun(view, position1);
+                            try {
+                                networkRun(view, position1);
+                            }catch (Exception e){/**/}
                         }
                     }).start();
                 }else {
@@ -164,8 +186,35 @@ public class GradeActivity extends BaseActivity {
                 return view;
             } else {
                 //學期成績
-                final View view = getLayoutInflater().inflate(R.layout.tab_grade,
+                final View view = getLayoutInflater().inflate(R.layout.tab_grade_sence,
                         container, false);
+
+                Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+                ArrayAdapter<String> List = new ArrayAdapter<String>(GradeActivity.this, android.R.layout.simple_spinner_item, choose){};
+                spinner.setAdapter(List);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                        choosen=post[position];
+                        timeout = 0;
+                        final int position1 = position;
+                        //網路連線
+                        if(networkInfo()) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public final void run() {
+                                    try {
+                                        networkRun(view, 1);
+                                    }catch (Exception e){/**/}
+                                }
+                            }).start();
+                        }else{
+                            /**/
+                        }
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {}
+                });
                 container.addView(view);
                 return view;
             }
@@ -174,16 +223,16 @@ public class GradeActivity extends BaseActivity {
 
     //網路連線
     private void networkRun(final View view, final int postion) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                dialog = ProgressDialog.show(GradeActivity.this, "讀取網路中", "請稍後");
-            }
-        });
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException c) {/**/}
         if (postion == 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    dialog = ProgressDialog.show(GradeActivity.this, "讀取網路中", "請稍後");
+                }
+            });
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException c) {/**/}
             try {
                 trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                 //region 連線
@@ -273,7 +322,7 @@ public class GradeActivity extends BaseActivity {
                         writeInUI(view, grade, backavg, R.id.backavg);
                     }
                 });
-                dialog.dismiss();
+                //dialog.dismiss();
                 //endregion
             } catch (IOException e) {
                 //region retry
@@ -288,8 +337,110 @@ public class GradeActivity extends BaseActivity {
                     });
                     try {
                         Thread.sleep(5000);
-                    } catch (InterruptedException c) {/**/}
-                    networkRun(view, postion);
+                        networkRun(view, postion);
+                    } catch (Exception c) {/**/}
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                //endregion
+            }
+        }else{
+            try {
+                trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                //region 連線
+                preference = getSharedPreferences("setting", 0);
+                String stu_id = preference.getString("stu_id", "");
+                String stu_pwd = preference.getString("stu_pwd", "");
+                Response res = Jsoup
+                        .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
+                        .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
+                        .method(Method.POST)
+                        .timeout(5000)
+                        .execute();
+
+                Map<String, String> loginCookies = res.cookies();
+                //抓取資料分析並儲存
+                Document doc = Jsoup.connect("https://stuinfo.taivs.tp.edu.tw/stusn.asp")
+                        .cookies(loginCookies)
+                        .data("GRA", choosen)
+                        .post();
+
+                Elements temps=doc.select("tr[onmouseout=OMOut(this);]");
+
+                gradesFont=new ArrayList<Grades>(){};
+                gradesLast=new ArrayList<Grades>(){};
+                Grades grdTemp = new Grades();
+                grdTemp.subject="課程";
+                grdTemp.subClass="類別";
+                grdTemp.subNum="學分";
+                grdTemp.score="分數";
+                grdTemp.reScore="補考";
+                grdTemp.reStudy="重修";
+                grdTemp.minScore="及格";
+                gradesFont.add(grdTemp);
+                gradesLast.add(grdTemp);
+
+                Elements temp;
+
+                for(int i=0;i<temps.size();i++){
+                    temp=temps.get(i).select("td");
+                    if(!(temp.get(1).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(2).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(3).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(4).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(5).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(6).text().trim().replaceAll("\\s+", "").equals(""))) {
+                        grdTemp = new Grades();
+                        grdTemp.subject = temp.get(0).text().trim().replaceAll(" ", "");
+                        grdTemp.subClass = temp.get(1).text().trim().replaceAll("\\s+", "");
+                        grdTemp.subNum = temp.get(2).text().trim().replaceAll("\\s+", "");
+                        grdTemp.score = temp.get(3).text().trim().replaceAll("\\s+", "");
+                        grdTemp.reScore = temp.get(4).text().trim().replaceAll("\\s+", "");
+                        grdTemp.reStudy = temp.get(5).text().trim().replaceAll("\\s+", "");
+                        grdTemp.minScore = temp.get(6).text().trim().replaceAll("\\s+", "");
+                        gradesFont.add(grdTemp);
+                    }
+                    if(!(temp.get(7).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(8).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(9).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(10).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(11).text().trim().replaceAll("\\s+", "").equals("")&&temp.get(12).text().trim().replaceAll("\\s+", "").equals(""))) {
+                        grdTemp = new Grades();
+                        grdTemp.subject = temp.get(0).text().trim().replaceAll("\\s+", "");
+                        grdTemp.subClass = temp.get(7).text().trim().replaceAll("\\s+", "");
+                        grdTemp.subNum = temp.get(8).text().trim().replaceAll("\\s+", "");
+                        grdTemp.score = temp.get(9).text().trim().replaceAll("\\s+", "");
+                        grdTemp.reScore = temp.get(10).text().trim().replaceAll("\\s+", "");
+                        grdTemp.reStudy = temp.get(11).text().trim().replaceAll("\\s+", "");
+                        grdTemp.minScore = temp.get(12).text().trim().replaceAll("\\s+", "");
+                        gradesLast.add(grdTemp);
+                    }
+                }
+                Log.i("status",gradesFont.get(0).minScore);
+
+                //endregion
+
+                //region 填入UI
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        writeList(view);
+                    }
+                });
+                //dialog.dismiss();
+                //endregion
+            } catch (IOException e) {
+                //region retry
+                dialog.dismiss();
+                timeout++;
+                if (timeout < 5) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                    try {
+                        Thread.sleep(5000);
+                        networkRun(view, postion);
+                    } catch (Exception c) {/**/}
+
                 } else {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -376,6 +527,21 @@ public class GradeActivity extends BaseActivity {
             }
             linearLayout.addView(row);
         }
+        dialog.dismiss();
+    }
+
+    private void writeList(View view){
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,metrics.heightPixels/4);
+        SuperListview listView = (SuperListview) view.findViewById(R.id.frontList);
+        gradeAdapter=new GradeAdapter(getApplication(),gradesFont);
+        listView.setLayoutParams(layoutParams);
+        listView.setAdapter(gradeAdapter);
+        listView = (SuperListview) view.findViewById(R.id.lastList);
+        gradeAdapter=new GradeAdapter(getApplication(),gradesLast);
+        listView.setLayoutParams(layoutParams);
+        listView.setAdapter(gradeAdapter);
     }
 
     //判斷數字
@@ -388,4 +554,146 @@ public class GradeActivity extends BaseActivity {
         }
     }
 
+    boolean tryParseDouble(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static class Grades{
+        public String subject;
+        public String subClass;
+        public String subNum;
+        public String score;
+        public String reScore;
+        public String reStudy;
+        public String minScore;
+    }
+
+    public class GradeAdapter extends BaseAdapter {
+        private LayoutInflater inflater;
+        private ArrayList<Grades> list;
+
+        public GradeAdapter(Context context,ArrayList<Grades> lists){
+            this.inflater=LayoutInflater.from(context);
+            this.list=lists;
+        }
+
+        @Override
+        public int getCount(){
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int position){
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position){
+            return position;
+        }
+
+        @Override
+        public View getView(int position,View convertView,ViewGroup parent){
+            ViewHolder holder;
+
+            if(convertView==null){
+                convertView=inflater.inflate(R.layout.grade_row,null);
+                Log.i("status","if");
+
+                holder=new ViewHolder();
+                holder.line=(LinearLayout) convertView.findViewById(R.id.line);
+                holder.subject=(TextView) convertView.findViewById(R.id.subject);
+                holder.subClass=(TextView) convertView.findViewById(R.id.subClass);
+                holder.subNum=(TextView) convertView.findViewById(R.id.subNum);
+                holder.score=(TextView) convertView.findViewById(R.id.score);
+                holder.reScore=(TextView) convertView.findViewById(R.id.reScore);
+                holder.reStudy=(TextView) convertView.findViewById(R.id.reStudy);
+                holder.minScore=(TextView) convertView.findViewById(R.id.minScore);
+
+                convertView.setTag(holder);
+
+            }else {
+                holder=(ViewHolder)convertView.getTag();
+                Log.i("status","else");
+            }
+
+            Grades gradeList=list.get(position);
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            float d=metrics.widthPixels;
+
+            holder.subject.setText(gradeList.subject);
+            if(gradeList.subject.length()>4) {holder.subject.setTextSize(15);}
+            else if(gradeList.subject.length()>6) {holder.subject.setTextSize(10);}
+            else {holder.subject.setTextSize(20);}
+            holder.subject.setWidth((int) d / 8);
+            holder.subClass.setText(gradeList.subClass);
+            holder.subClass.setWidth((int) d / 8);
+            holder.subNum.setText(gradeList.subNum);
+            holder.subNum.setWidth((int) d / 8);
+            holder.score.setText(gradeList.score);
+            holder.score.setWidth((int) d / 8);
+            holder.reScore.setText(gradeList.reScore);
+            holder.reScore.setWidth((int) d / 8);
+            holder.reStudy.setText(gradeList.reStudy);
+            holder.reStudy.setWidth((int) d / 8);
+            holder.minScore.setText(gradeList.minScore);
+            holder.minScore.setWidth((int)d/8);
+            Double lastScore=0.0;
+            if(tryParseDouble(gradeList.reStudy)){
+                lastScore=Double.parseDouble(gradeList.reStudy);
+            }else if(tryParseDouble(gradeList.reScore)){
+                lastScore=Double.parseDouble(gradeList.reScore);
+            }else if(tryParseDouble(gradeList.score)){
+                lastScore=Double.parseDouble(gradeList.score);
+            }
+            if(lastScore==0.0){
+                holder.line.setBackgroundColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+            }
+            else if(tryParseDouble(gradeList.minScore)){
+                if(lastScore>=Double.parseDouble(gradeList.minScore)){
+                    holder.line.setBackgroundColor(ContextCompat.getColor(GradeActivity.this,R.color.grade_go));
+                }else {
+                    holder.line.setBackgroundColor(ContextCompat.getColor(GradeActivity.this,R.color.red_A200));
+                }
+            }
+            if(gradeList.subject.equals("課程")){
+                holder.subject.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.subClass.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.subNum.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.score.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.reScore.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
+                holder.reStudy.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.minScore.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
+            }else{
+                holder.subject.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.black));
+                holder.subClass.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+                holder.subNum.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+                holder.score.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+                holder.reScore.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+                holder.reStudy.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+                holder.minScore.setTextColor(ContextCompat.getColor(GradeActivity.this,R.color.white));
+            }
+            if(gradeList.minScore.equals("")&&!gradeList.score.equals("")){
+                holder.line.setBackgroundColor(ContextCompat.getColor(GradeActivity.this, R.color.grade_sence));
+            }
+            return convertView;
+        }
+
+        private class ViewHolder{
+            LinearLayout line;
+            TextView subject;
+            TextView subClass;
+            TextView subNum;
+            TextView score;
+            TextView reScore;
+            TextView reStudy;
+            TextView minScore;
+        }
+    }
 }

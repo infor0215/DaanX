@@ -41,7 +41,9 @@ public class TimeTableFragment extends Fragment {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    networkRun(view);
+                    try {
+                        networkRun(view);
+                    }catch (Exception e){/**/}
                 }
             });
             thread.start();
