@@ -83,6 +83,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dtf.daanx.MainActivity" />
         </activity>
+        <activity
+            android:name=".PostContentActivity"
+            android:label="@string/title_activity_post_content"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.dtf.daanx.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
