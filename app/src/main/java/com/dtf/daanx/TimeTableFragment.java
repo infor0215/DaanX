@@ -30,31 +30,33 @@ public class TimeTableFragment extends Fragment {
     private TinyDB cache;
 
     WebView webView;
+    private Thread thread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_webview, container, false);
-        preferences=getActivity().getSharedPreferences("setting",0);
-        cache=new TinyDB("timetable-cache",getActivity());
-        if(((MainActivity)getActivity()).networkInfo()) {
-            new Thread(new Runnable() {
+        preferences = getActivity().getSharedPreferences("setting", 0);
+        cache = new TinyDB("timetable-cache", getActivity());
+        if (((MainActivity) getActivity()).networkInfo()) {
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     networkRun(view);
                 }
-            }).start();
-        }else {
+            });
+            thread.start();
+        } else {
             //cacheRead
-            String html=cache.getString("html");
-            writeInUi(view,html);
+            String html = cache.getString("html");
+            writeInUi(view, html);
         }
 
         return view;
     }
 
     //取得課表並填入
-    private void networkRun(final View view){
-        if(getActivity()!=null) {
+    private void networkRun(final View view) {
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -118,7 +120,7 @@ public class TimeTableFragment extends Fragment {
                 dialog.dismiss();
                 timeout++;
                 if (timeout < 5) {
-                    if(getActivity()!=null) {
+                    if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -131,7 +133,7 @@ public class TimeTableFragment extends Fragment {
                     } catch (InterruptedException c) {/**/}
                     networkRun(view);
                 } else {
-                    if(getActivity()!=null) {
+                    if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -145,9 +147,9 @@ public class TimeTableFragment extends Fragment {
         }
     }
 
-    private void writeInUi(View view,String html){
-        webView=(WebView) view.findViewById(R.id.webView);
-        webView.loadDataWithBaseURL(null, html, "text/html",  "utf-8", null);
+    private void writeInUi(View view, String html) {
+        webView = (WebView) view.findViewById(R.id.webView);
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
         //webView.load(null,html);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -155,9 +157,14 @@ public class TimeTableFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        try {
+            Thread.sleep(5);
+            thread.interrupt();
+        } catch (Exception e) {/**/}
         super.onDestroyView();
         if (webView != null) {
             webView.destroy();
+
         }
     }
 }

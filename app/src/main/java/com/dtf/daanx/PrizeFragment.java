@@ -46,31 +46,33 @@ public class PrizeFragment extends Fragment {
     int middlefault;
     int bigfault;
     LinearLayout linearLayout;
+    private Thread thread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_prize, container, false);
-        cache=new TinyDB("prize-cache",getActivity());
-        if(((MainActivity)getActivity()).networkInfo()) {
-            new Thread(new Runnable() {
+        cache = new TinyDB("prize-cache", getActivity());
+        if (((MainActivity) getActivity()).networkInfo()) {
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     networkRun(view);
                 }
-            }).start();
-        }else {
+            });
+            thread.start();
+        } else {
             //cache
             year = cache.getListString("year");
             date = cache.getListString("date");
             status = cache.getListString("status");
             because = cache.getListString("because");
 
-            smallcite=cache.getInt("smallcite");
-            smallfault=cache.getInt("smallfault");
-            middlecite=cache.getInt("middlecite");
-            middlefault=cache.getInt("middlefault");
-            bigcite=cache.getInt("bigcite");
-            bigfault=cache.getInt("bigfault");
+            smallcite = cache.getInt("smallcite");
+            smallfault = cache.getInt("smallfault");
+            middlecite = cache.getInt("middlecite");
+            middlefault = cache.getInt("middlefault");
+            bigcite = cache.getInt("bigcite");
+            bigfault = cache.getInt("bigfault");
 
             writeInUi(view);
         }
@@ -79,7 +81,7 @@ public class PrizeFragment extends Fragment {
 
     //網路連線
     private void networkRun(final View view) {
-        if(getActivity()!=null) {
+        if (getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -189,10 +191,10 @@ public class PrizeFragment extends Fragment {
         }
     }
 
-    private void writeInUi(final View view){
+    private void writeInUi(final View view) {
 
         //region 上面欄位
-        TextView textView=(TextView) view.findViewById(R.id.smallcite);
+        TextView textView = (TextView) view.findViewById(R.id.smallcite);
         textView.setText(String.valueOf(smallcite));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +202,7 @@ public class PrizeFragment extends Fragment {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.middlecite);
+        textView = (TextView) view.findViewById(R.id.middlecite);
         textView.setText(String.valueOf(middlecite));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +210,7 @@ public class PrizeFragment extends Fragment {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.bigcite);
+        textView = (TextView) view.findViewById(R.id.bigcite);
         textView.setText(String.valueOf(bigcite));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +218,7 @@ public class PrizeFragment extends Fragment {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.smallfault);
+        textView = (TextView) view.findViewById(R.id.smallfault);
         textView.setText(String.valueOf(smallfault));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +226,7 @@ public class PrizeFragment extends Fragment {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.middlefault);
+        textView = (TextView) view.findViewById(R.id.middlefault);
         textView.setText(String.valueOf(middlefault));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +234,7 @@ public class PrizeFragment extends Fragment {
                 select(v);
             }
         });
-        textView=(TextView) view.findViewById(R.id.bigfault);
+        textView = (TextView) view.findViewById(R.id.bigfault);
         textView.setText(String.valueOf(bigfault));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +247,7 @@ public class PrizeFragment extends Fragment {
         //region 全部列表
         int pixels;//dp
         linearLayout = (LinearLayout) view.findViewById(R.id.list_prize);
-        for(int i=0;i<year.size();i++) {
+        for (int i = 0; i < year.size(); i++) {
 
             LinearLayout linearLayout_479 = new LinearLayout(getActivity());
             linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
@@ -261,35 +263,35 @@ public class PrizeFragment extends Fragment {
 
             TextView textView_1 = new TextView(getActivity());
             textView_1.setText(year.get(i));
-            textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+            textView_1.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             LinearLayout.LayoutParams layout_830 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_830.setMargins(pixels,pixels,pixels,pixels);
+            layout_830.setMargins(pixels, pixels, pixels, pixels);
             textView_1.setLayoutParams(layout_830);
             linearLayout_987.addView(textView_1);
 
             TextView textView_727 = new TextView(getActivity());
             textView_727.setText(date.get(i));
-            textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+            textView_727.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             LinearLayout.LayoutParams layout_966 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_966.setMargins(pixels,pixels,pixels,pixels);
+            layout_966.setMargins(pixels, pixels, pixels, pixels);
             textView_727.setLayoutParams(layout_966);
             linearLayout_987.addView(textView_727);
 
             TextView textView_408 = new TextView(getActivity());
             textView_408.setText(status.get(i));
-            textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP,18);
+            textView_408.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
             LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
-            layout_951.setMargins(pixels,pixels,pixels,pixels);
+            layout_951.setMargins(pixels, pixels, pixels, pixels);
             textView_408.setLayoutParams(layout_951);
             linearLayout_987.addView(textView_408);
             linearLayout_479.addView(linearLayout_987);
 
             TextView textView_298 = new TextView(getActivity());
             textView_298.setText(because.get(i));
-            textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+            textView_298.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             textView_298.setGravity(Gravity.CENTER);
             LinearLayout.LayoutParams layout_588 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -5, getResources().getDisplayMetrics());
@@ -307,33 +309,33 @@ public class PrizeFragment extends Fragment {
     }
 
     public int countsum(ArrayList<String> from, String key) {
-        int sum=0;
-        for(int i=0;i<from.size();i++){
-            if(from.get(i).contains(key)){
-                sum+=Integer.parseInt(alltohalf(String.valueOf(from.get(i).charAt(from.get(i).indexOf(key)+2))));
+        int sum = 0;
+        for (int i = 0; i < from.size(); i++) {
+            if (from.get(i).contains(key)) {
+                sum += Integer.parseInt(alltohalf(String.valueOf(from.get(i).charAt(from.get(i).indexOf(key) + 2))));
             }
         }
         return sum;
     }
 
-    public static String alltohalf(String str){
-        for(char c:str.toCharArray()){
+    public static String alltohalf(String str) {
+        for (char c : str.toCharArray()) {
             str = str.replaceAll("　", " ");
-            if((int)c >= 65281 && (int)c <= 65374){
-                str = str.replace(c, (char)(((int)c)-65248));
+            if ((int) c >= 65281 && (int) c <= 65374) {
+                str = str.replace(c, (char) (((int) c) - 65248));
             }
         }
         return str;
     }
 
-    private void select(View view){
+    private void select(View view) {
         int pixels;
-        TextView textView=(TextView) view;
-        if(textView.getTag().toString().equals("嘉獎")){
+        TextView textView = (TextView) view;
+        if (textView.getTag().toString().equals("嘉獎")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("嘉獎")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("嘉獎")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -392,11 +394,11 @@ public class PrizeFragment extends Fragment {
                 }
             }
             //endregion
-        }else if(textView.getTag().toString().equals("小功")){
+        } else if (textView.getTag().toString().equals("小功")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("小功")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("小功")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -455,11 +457,11 @@ public class PrizeFragment extends Fragment {
                 }
             }
             //endregion
-        }else if(textView.getTag().toString().equals("大功")){
+        } else if (textView.getTag().toString().equals("大功")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("大功")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("大功")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -518,11 +520,11 @@ public class PrizeFragment extends Fragment {
                 }
             }
             //endregion
-        }else if(textView.getTag().toString().equals("警告")){
+        } else if (textView.getTag().toString().equals("警告")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("警告")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("警告")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -581,11 +583,11 @@ public class PrizeFragment extends Fragment {
                 }
             }
             //endregion
-        }else if(textView.getTag().toString().equals("小過")){
+        } else if (textView.getTag().toString().equals("小過")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("小過")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("小過")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -644,11 +646,11 @@ public class PrizeFragment extends Fragment {
                 }
             }
             //endregion
-        }else if(textView.getTag().toString().equals("大過")){
+        } else if (textView.getTag().toString().equals("大過")) {
             linearLayout.removeAllViews();
             //region AddView
-            for(int i=0;i<year.size();i++) {
-                if(status.get(i).contains("大過")) {
+            for (int i = 0; i < year.size(); i++) {
+                if (status.get(i).contains("大過")) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
                     linearLayout_479.setBackgroundResource(R.drawable.prize_bg_list);
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
@@ -706,7 +708,15 @@ public class PrizeFragment extends Fragment {
                     linearLayout.addView(linearLayout_479);
                 }
             }
-            //endregion
         }
+    }
+
+    @Override
+    public void onDestroyView(){
+        try {
+            Thread.sleep(5);
+            thread.interrupt();
+        } catch (Exception e) {/**/}
+        super.onDestroyView();
     }
 }

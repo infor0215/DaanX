@@ -30,18 +30,20 @@ public class LibraryFragment extends Fragment {
     private int timeout;
 
     WebView webView;
+    private Thread thread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_webview,container, false);
         preferences=getActivity().getSharedPreferences("setting",0);
         if(((MainActivity)getActivity()).networkInfo()) {
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     networkRun(view);
                 }
-            }).start();
+            });
+            thread.start();
         }else {
             ((MainActivity) getActivity()).networkAlert();
         }
@@ -124,6 +126,10 @@ public class LibraryFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        try {
+            Thread.sleep(5);
+            thread.interrupt();
+        }catch (Exception e){/**/}
         super.onDestroyView();
         if (webView != null) {
             webView.destroy();
