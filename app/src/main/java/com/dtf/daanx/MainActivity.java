@@ -38,9 +38,7 @@ public class MainActivity extends BaseActivity
 
         cache=new TinyDB("main-cache",this);
 
-        if (networkInfo()) {
-            //
-        } else {
+        if (!networkInfo()) {
             networkAlert();
         }
         //endregion
@@ -70,41 +68,41 @@ public class MainActivity extends BaseActivity
         lbl_email.setText(preference.getString("stu_email", ""));
         //endregion
 
-//        String mainFt=cache.getString("main");
-//        switch (mainFt){
-//            case "main":
-//                SwitchFramgent(R.id.nav_main);
-//                break;
-//            case "forum":
-//                SwitchFramgent(R.id.nav_forum);
-//                break;
-//            case "timetable":
-//                SwitchFramgent(R.id.nav_timetable);
-//                break;
-//            case "attend":
-//                SwitchFramgent(R.id.nav_attend);
-//                break;
-//            case "prize":
-//                SwitchFramgent(R.id.nav_prize);
-//                break;
-//            case "week":
-//                SwitchFramgent(R.id.nav_nowpost);
-//                break;
-//            case "library":
-//                SwitchFramgent(R.id.nav_library);
-//                break;
-//            case "DaanAbout":
-//                SwitchFramgent(R.id.nav_daanabout);
-//                break;
-//        }
+        String mainFt=cache.getString("main");
+        switch (mainFt){
+            case "main":
+                SwitchFramgent(R.id.nav_main);
+                break;
+            case "forum":
+                SwitchFramgent(R.id.nav_forum);
+                break;
+            case "timetable":
+                SwitchFramgent(R.id.nav_timetable);
+                break;
+            case "attend":
+                SwitchFramgent(R.id.nav_attend);
+                break;
+            case "prize":
+                SwitchFramgent(R.id.nav_prize);
+                break;
+            case "week":
+                SwitchFramgent(R.id.nav_nowpost);
+                break;
+            case "library":
+                SwitchFramgent(R.id.nav_library);
+                break;
+            case "DaanAbout":
+                SwitchFramgent(R.id.nav_daanabout);
+                break;
+        }
 
 
-//        //region defaultFg
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.replace(R.id.main_layout, new MainFragment(), "f_m");
-//        ft.addToBackStack("main");
-//        ft.commit();
-//        //endregion
+        //region defaultFg
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.main_layout, new MainFragment(), "f_m");
+        ft.addToBackStack("main");
+        ft.commit();
+        //endregion
     }
 
 
@@ -273,14 +271,14 @@ public class MainActivity extends BaseActivity
         }, 300);
     }
 
-//    @Override
-//    protected void onStop() {
-//        Fragment ft = getFragmentManager().findFragmentByTag("f_m");
-//        String str = (String)ft.getArguments().get("type");
-//        cache.putString("main",str);
-//        super.onStop();
-//        Log.i("status","onStop");
-//    }
+    @Override
+    protected void onStop() {
+        Fragment ft = getFragmentManager().findFragmentByTag("f_m");
+        String str = (String)ft.getArguments().get("type");
+        cache.putString("main",str);
+        super.onStop();
+        Log.i("status","onStop");
+    }
 
 
 }

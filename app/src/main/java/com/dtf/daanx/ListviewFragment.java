@@ -103,7 +103,9 @@ public class ListviewFragment extends Fragment {
                                                     }.getType();
                                                     jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/forum/main/" + page);
                                                     if(!jsonTemp.equals("")) {
-                                                        forumLists = gson.fromJson(jsonTemp, listType);
+                                                        ArrayList<ForumList> listTemps=gson.fromJson(jsonTemp, listType);
+                                                        forumLists.clear();
+                                                        forumLists.addAll(listTemps);
                                                         if (getActivity() != null) {
                                                             getActivity().runOnUiThread(new Runnable() {
                                                                 @Override
@@ -233,7 +235,9 @@ public class ListviewFragment extends Fragment {
                                                     Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
                                                     jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/post/week/" + page);
                                                     if(!jsonTemp.equals("")) {
-                                                        postLists = gson.fromJson(jsonTemp, listType);
+                                                        ArrayList<PostList> listTemps=gson.fromJson(jsonTemp, listType);
+                                                        postLists.clear();
+                                                        postLists.addAll(listTemps);
                                                         if (getActivity() != null) {
                                                             getActivity().runOnUiThread(new Runnable() {
                                                                 @Override

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -25,12 +26,13 @@ public class PostContentActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("正文");
+        Bundle bundle = this.getIntent().getExtras();
+        toolbar.setTitle(bundle.getString("title"));
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Bundle bundle = this.getIntent().getExtras();
+
         TextView content_title=(TextView)findViewById(R.id.content_title);
         content_title.setText(bundle.getString("title"));
         TextView content_writer=(TextView)findViewById(R.id.content_writer);
@@ -56,18 +58,26 @@ public class PostContentActivity extends BaseActivity {
         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-//        webView.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                Intent intent = new Intent();
-//                intent.setClass(PostContentActivity.this, WebviewActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("src", url);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
-//                return true;
-//            }
-//        });
+        WebSettings settings=webView.getSettings();
+        settings.setSupportZoom(true);//开启缩放支持
+        settings.setBuiltInZoomControls(true);//开启缩放支持
+        settings.setDisplayZoomControls(false); //隐藏webview缩放按钮
+        //默认对缩放比例有限制，导致用户体验不好，所以需要设置为使用任意比例缩放。
+        settings.setUseWideViewPort(true);
+        //设置webView自适应手机屏幕
+        settings.setLoadWithOverviewMode(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Intent intent = new Intent();
+                intent.setClass(PostContentActivity.this, WebviewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("src", url);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                return true;
+            }
+        });
         //Toast.makeText(this,html,Toast.LENGTH_LONG).show();
     }
 
