@@ -47,6 +47,7 @@ public class ListviewFragment extends Fragment {
     int page=1;
     String jsonTemp="";
     boolean eventLock=false;
+    private Thread thread;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class ListviewFragment extends Fragment {
         preference=getActivity().getSharedPreferences("setting", 0);
         if(str==null) str="";
         if(str.equals("forum")){
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //region forum
@@ -93,7 +94,7 @@ public class ListviewFragment extends Fragment {
                                     listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                         @Override
                                         public void onRefresh() {
-                                            new Thread(new Runnable() {
+                                            thread=new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     page = 1;
@@ -113,7 +114,8 @@ public class ListviewFragment extends Fragment {
                                                         }
                                                     }
                                                 }
-                                            }).start();
+                                            });
+                                            thread.start();
                                         }
                                     });
                                     listView.setupMoreListener(new OnMoreListener() {
@@ -121,7 +123,7 @@ public class ListviewFragment extends Fragment {
                                         public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
                                             if(!eventLock) {
                                                 eventLock=true;
-                                                new Thread(new Runnable() {
+                                                thread=new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         page++;
@@ -158,7 +160,8 @@ public class ListviewFragment extends Fragment {
                                                         }
                                                         eventLock=false;
                                                     }
-                                                }).start();
+                                                });
+                                                thread.start();
                                             }
                                         }
                                     }, 2);
@@ -170,9 +173,10 @@ public class ListviewFragment extends Fragment {
                     }
                     //endregion
                 }
-            }).start();
+            });
+            thread.start();
         }else if(str.equals("week")){
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //region week
@@ -221,7 +225,7 @@ public class ListviewFragment extends Fragment {
                                     listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                         @Override
                                         public void onRefresh() {
-                                            new Thread(new Runnable() {
+                                            thread=new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     page = 1;
@@ -240,7 +244,8 @@ public class ListviewFragment extends Fragment {
                                                         }
                                                     }
                                                 }
-                                            }).start();
+                                            });
+                                            thread.start();
                                         }
                                     });
                                     listView.setupMoreListener(new OnMoreListener() {
@@ -248,7 +253,7 @@ public class ListviewFragment extends Fragment {
                                         public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
                                             if(!eventLock) {
                                                 eventLock=true;
-                                                new Thread(new Runnable() {
+                                                thread=new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
                                                         page++;
@@ -284,7 +289,8 @@ public class ListviewFragment extends Fragment {
                                                         }
                                                         eventLock=false;
                                                     }
-                                                }).start();
+                                                });
+                                                thread.start();
                                             }
                                         }
                                     }, 2);
@@ -296,7 +302,8 @@ public class ListviewFragment extends Fragment {
                     }
                     //endregion
                 }
-            }).start();
+            });
+            thread.start();
         }
         return view;
     }
@@ -599,6 +606,10 @@ public class ListviewFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        try {
+            Thread.sleep(5);
+            thread.interrupt();
+        }catch (Exception e){/**/}
         super.onDestroyView();
         int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
         LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);

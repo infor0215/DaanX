@@ -52,18 +52,20 @@ public class AttendFragment extends Fragment {
     int cutting;
 
     LinearLayout linearLayout;
+    private Thread thread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_attend, container, false);
         cache=new TinyDB("attend-cache",getActivity());
         if(((MainActivity)getActivity()).networkInfo()) {
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     networkRun(view);
                 }
-            }).start();
+            });
+            thread.start();
         }else {
             //cache
             Type listType = new TypeToken<Attend>() {}.getType();
@@ -383,5 +385,12 @@ public class AttendFragment extends Fragment {
         public ArrayList<String> body;
     }
 
-
+    @Override
+    public void onDestroyView() {
+        try {
+            Thread.sleep(5);
+            thread.interrupt();
+        }catch (Exception e){/**/}
+        super.onDestroyView();
+    }
 }

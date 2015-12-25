@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -67,6 +68,7 @@ public class GradeActivity extends BaseActivity {
         */
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         //region TabLayout
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         SamplePagerAdapter pagerAdapter = new SamplePagerAdapter();
@@ -79,6 +81,8 @@ public class GradeActivity extends BaseActivity {
         mTabs.getTabAt(1).setText("學期成績");
         //endregion
     }
+
+
 
 
     class SamplePagerAdapter extends PagerAdapter {

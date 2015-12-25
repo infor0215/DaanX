@@ -1,339 +1,369 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_front1"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginEND="16dp"
-                android:textColor="@color/white"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="上學期第一次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/front1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/front1">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_front2"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_front1"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+
                 android:layout_marginLeft="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="上學期第二次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/front2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/front2">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_front3"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_front2"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="上學期第三次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/front3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/front3">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_frontusl"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_front3"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/light_blue_500"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/light_blue_500" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="上學期平時成績"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/frontusl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/frontusl">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_frontavg"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_frontusl"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/indigo_500"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/indigo_500" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="上學期期末平均"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/frontavg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/frontavg">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_back1"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_frontavg"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginEND="16dp"
-                android:textColor="@color/white"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="下學期第一次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/back1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/back1">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_back2"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_back1"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="下學期第二次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/back2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/back2">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_back3"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_back2"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/cyan_A400"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/cyan_A400" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginEND="16dp"
-                android:textColor="@color/white"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="下學期第三次段考"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/back3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/back3">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_backusl"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_back3"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/light_blue_500"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/light_blue_500" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="下學期平時成績"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/backusl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/backusl">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/card_backavg"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_backusl"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             card_view:cardCornerRadius="@dimen/card_radius">
 
-            <ImageView android:layout_width="match_parent"
-                android:src="@color/indigo_500"
-                android:layout_height="50dp" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@color/indigo_500" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="@color/white"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:text="下學期期末平均"
+                android:textColor="@color/white"
                 android:textSize="30dp" />
+
             <LinearLayout
-                android:layout_marginTop="42dp"
-                android:orientation="vertical"
+                android:id="@+id/backavg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
                 android:gravity="center"
-                android:id="@+id/backavg">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
         </android.support.v7.widget.CardView>
 

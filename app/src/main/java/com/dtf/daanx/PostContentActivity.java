@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -17,7 +18,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PostContentActivity extends AppCompatActivity {
+public class PostContentActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,5 +70,6 @@ public class PostContentActivity extends AppCompatActivity {
 //        });
         //Toast.makeText(this,html,Toast.LENGTH_LONG).show();
     }
+
 
 }
