@@ -27,10 +27,6 @@ public class WebviewActivity extends BaseActivity {
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);//开启缩放支持
         settings.setDisplayZoomControls(false); //隐藏webview缩放按钮
-        //默认对缩放比例有限制，导致用户体验不好，所以需要设置为使用任意比例缩放。
-        settings.setUseWideViewPort(true);
-        //设置webView自适应手机屏幕
-        settings.setLoadWithOverviewMode(true);
     }
 
 }
