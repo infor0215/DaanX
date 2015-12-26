@@ -14,24 +14,30 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.dtf.daanx.WebviewActivity"
         tools:showIn="@layout/activity_webview">
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/myProgressBar"
+            android:indeterminateOnly="false"
+            android:max="100"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:progressDrawable="@drawable/progress_bar_states"/>
         <WebView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/webView"
+
             android:orientation="vertical"
             android:background="@android:color/transparent" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

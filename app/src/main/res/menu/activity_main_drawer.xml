@@ -72,11 +72,6 @@
                     android:title="@string/stu_library"
                     android:checkable="true"/>
                 <item
-                    android:id="@+id/nav_method"
-                    android:icon="@android:drawable/ic_search_category_default"
-                    android:title="@string/stu_search"
-                    android:checkable="true"/>
-                <item
                     android:id="@+id/nav_rule"
                     android:icon="@drawable/ic_storage_24dp"
                     android:title="@string/sch_rule"

@@ -65,7 +65,7 @@ public class MainActivity extends BaseActivity
         //endregion
 
         String mainFt=cache.getString("main");
-        switch (mainFt){
+        switch (mainFt) {
             case "main":
                 SwitchFramgent(R.id.nav_main);
                 break;
@@ -84,6 +84,18 @@ public class MainActivity extends BaseActivity
             case "week":
                 SwitchFramgent(R.id.nav_nowpost);
                 break;
+            case "newsstu":
+                SwitchFramgent(R.id.nav_stupost);
+                break;
+            case "term":
+                SwitchFramgent(R.id.nav_newpost);
+                break;
+            case "race":
+                SwitchFramgent(R.id.nav_racepost);
+                break;
+            case "bonus":
+                SwitchFramgent(R.id.nav_bonus);
+                break;
             case "library":
                 SwitchFramgent(R.id.nav_library);
                 break;
@@ -91,7 +103,6 @@ public class MainActivity extends BaseActivity
                 SwitchFramgent(R.id.nav_daanabout);
                 break;
         }
-
 
         //region defaultFg
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -207,6 +218,42 @@ public class MainActivity extends BaseActivity
                         ft.addToBackStack("week");
                         ft.commit();
                         break;
+                    case R.id.nav_stupost:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "newsstu");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("newsstu");
+                        ft.commit();
+                        break;
+                    case R.id.nav_newpost:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "term");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("term");
+                        ft.commit();
+                        break;
+                    case R.id.nav_racepost:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "race");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("race");
+                        ft.commit();
+                        break;
+                    case R.id.nav_bonus:
+                        fg = new ListviewFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "bonus");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("bonus");
+                        ft.commit();
+                        break;
                     case R.id.nav_library:
                         fg = new LibraryFragment();
                         bundle = new Bundle();
@@ -215,6 +262,14 @@ public class MainActivity extends BaseActivity
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("library");
                         ft.commit();
+                        break;
+                    case R.id.nav_rule:
+                        intent = new Intent();
+                        intent.setClass(MainActivity.this, WebviewActivity.class);
+                        bundle = new Bundle();
+                        bundle.putString("src", "http://drive.google.com/viewerng/viewer?embedded=true&url=http://military.taivs.tp.edu.tw/sites/military.taivs.tp.edu.tw/files/pictures/%E5%A4%A7%E5%AE%89%E9%AB%98%E5%B7%A5%E5%AD%B8%E7%94%9F%E7%8D%8E%E6%87%B2%E5%AF%A6%E6%96%BD%E8%A6%8F%E5%AE%9A.doc");
+                        intent.putExtras(bundle);
+                        startActivity(intent);
                         break;
                     case R.id.nav_config:
                         intent = new Intent();
@@ -271,6 +326,7 @@ public class MainActivity extends BaseActivity
     protected void onStop() {
         Fragment ft = getFragmentManager().findFragmentByTag("f_m");
         String str = (String)ft.getArguments().get("type");
+        cache=new TinyDB("main-cache",this);
         cache.putString("main",str);
         super.onStop();
         Log.i("status","onStop");

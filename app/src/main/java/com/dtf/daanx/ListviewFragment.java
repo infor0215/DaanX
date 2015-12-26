@@ -57,10 +57,9 @@ public class ListviewFragment extends Fragment {
         page=1;
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         //TextView tvObj = (TextView)view.findViewById(R.id.info);
-        String str = (String)getArguments().get("type");
+        final String str = (String)getArguments().get("type");
         timeout=0;
         preference=getActivity().getSharedPreferences("setting", 0);
-        if(str==null) str="";
         if(str.equals("forum")){
             thread=new Thread(new Runnable() {
                 @Override
@@ -180,7 +179,7 @@ public class ListviewFragment extends Fragment {
                 }
             });
             thread.start();
-        }else if(str.equals("week")){
+        }else{
             thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -188,7 +187,7 @@ public class ListviewFragment extends Fragment {
                     try {
                         Gson gson = new Gson();
                         Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                        jsonTemp=networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page);
+                        jsonTemp=networkRun(view,"https://api.dacsc.club/daanx/post/"+str+"/"+page);
                         if(!jsonTemp.equals("")) {
                             postLists = gson.fromJson(jsonTemp, listType);
                             postAdapter = new PostAdapter(getActivity(), postLists);
@@ -236,7 +235,7 @@ public class ListviewFragment extends Fragment {
                                                     page = 1;
                                                     Gson gson = new Gson();
                                                     Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                                                    jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/post/week/" + page);
+                                                    jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/post/"+str+"/" + page);
                                                     if(!jsonTemp.equals("")) {
                                                         ArrayList<PostList> listTemps=gson.fromJson(jsonTemp, listType);
                                                         postLists.clear();
@@ -266,7 +265,7 @@ public class ListviewFragment extends Fragment {
                                                         page++;
                                                         Gson gson = new Gson();
                                                         Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                                                        jsonTemp = networkRun(view, "https://api.dacsc.club/daanx/post/week/" + page);
+                                                        jsonTemp = networkRun(view, "https://api.dacsc.club/daanx/post/"+str+"/" + page);
                                                         if (!jsonTemp.equals("")) {
                                                             ArrayList<PostList> temps = gson.fromJson(jsonTemp, listType);
                                                             if (!temps.get(0).getBody().equals(" ")) {

@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -61,6 +63,7 @@ public class GradeActivity extends BaseActivity {
     private TinyDB cache;
     ArrayList<Grades> gradesFont;
     ArrayList<Grades> gradesLast;
+    boolean repeat;
 
     private String[] choose = {"一年級","二年級","三年級","四年級","畢業"};
     private String[] post={"1","2","3","4","G"};
@@ -190,7 +193,7 @@ public class GradeActivity extends BaseActivity {
                         container, false);
 
                 Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
-                ArrayAdapter<String> List = new ArrayAdapter<String>(GradeActivity.this, android.R.layout.simple_spinner_item, choose){};
+                ArrayAdapter<String> List = new ArrayAdapter<String>(GradeActivity.this, android.R.layout.simple_spinner_dropdown_item, choose){};
                 spinner.setAdapter(List);
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
@@ -351,6 +354,16 @@ public class GradeActivity extends BaseActivity {
             }
         }else{
             try {
+                repeat=false;
+                if(!dialog.isShowing()){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            repeat=true;
+                            dialog = ProgressDialog.show(GradeActivity.this, "讀取網路中", "請稍後");
+                        }
+                    });
+                }
                 trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                 //region 連線
                 preference = getSharedPreferences("setting", 0);
@@ -423,7 +436,9 @@ public class GradeActivity extends BaseActivity {
                         writeList(view);
                     }
                 });
-                //dialog.dismiss();
+                if(repeat){
+                    dialog.dismiss();
+                }
                 //endregion
             } catch (IOException e) {
                 //region retry
@@ -533,15 +548,17 @@ public class GradeActivity extends BaseActivity {
     private void writeList(View view){
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,metrics.heightPixels/4);
+        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, metrics.heightPixels/2);
         SuperListview listView = (SuperListview) view.findViewById(R.id.frontList);
         gradeAdapter=new GradeAdapter(getApplication(),gradesFont);
         listView.setLayoutParams(layoutParams);
         listView.setAdapter(gradeAdapter);
+        listView.setVisibility(View.VISIBLE);
         listView = (SuperListview) view.findViewById(R.id.lastList);
         gradeAdapter=new GradeAdapter(getApplication(),gradesLast);
         listView.setLayoutParams(layoutParams);
         listView.setAdapter(gradeAdapter);
+        listView.setVisibility(View.INVISIBLE);
     }
 
     //判斷數字
@@ -694,6 +711,34 @@ public class GradeActivity extends BaseActivity {
             TextView reScore;
             TextView reStudy;
             TextView minScore;
+        }
+    }
+
+    public void tabSwitch(View v){
+        SuperListview listView = (SuperListview) findViewById(R.id.frontList);
+        CardView cardView;
+        LinearLayout.LayoutParams layoutParams1=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParams2=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        layoutParams2.setMargins(0,pixels,0,0);
+        if(listView.isShown()){
+            listView = (SuperListview) findViewById(R.id.frontList);
+            listView.setVisibility(View.GONE);
+            listView = (SuperListview) findViewById(R.id.lastList);
+            listView.setVisibility(View.VISIBLE);
+            cardView=(CardView) findViewById(R.id.card_front);
+            cardView.setLayoutParams(layoutParams1);
+            cardView=(CardView) findViewById(R.id.card_last);
+            cardView.setLayoutParams(layoutParams2);
+        }else{
+            listView = (SuperListview) findViewById(R.id.frontList);
+            listView.setVisibility(View.VISIBLE);
+            listView = (SuperListview) findViewById(R.id.lastList);
+            listView.setVisibility(View.GONE);
+            cardView=(CardView) findViewById(R.id.card_front);
+            cardView.setLayoutParams(layoutParams1);
+            cardView=(CardView) findViewById(R.id.card_last);
+            cardView.setLayoutParams(layoutParams2);
         }
     }
 }

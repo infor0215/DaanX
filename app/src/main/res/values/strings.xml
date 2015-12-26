@@ -23,8 +23,7 @@
     <string name="sch_life">學校生活</string>
 
     <string name="stu_library">自習室位子狀態</string>
-    <string name="stu_search">事務查詢</string>
-    <string name="sch_rule">校規查詢</string>
+    <string name="sch_rule">校規查看</string>
 
     <string name="other">其他</string>
     <string name="daan_link">大安相關連結</string>
