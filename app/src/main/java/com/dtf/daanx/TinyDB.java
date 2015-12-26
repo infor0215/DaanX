@@ -328,6 +328,19 @@ public class TinyDB {
     	return objects;
     }
 
+    public ArrayList<GradeActivity.Grades> getListGrade(String key, Type mClass){
+        Gson gson = new Gson();
+
+        ArrayList<String> objStrings = getListString(key);
+        ArrayList<GradeActivity.Grades> objects =  new ArrayList<GradeActivity.Grades>();
+
+        for(String jObjString : objStrings){
+            GradeActivity.Grades value  = gson.fromJson(jObjString,  mClass);
+            objects.add(value);
+        }
+        return objects;
+    }
+
 
 
     

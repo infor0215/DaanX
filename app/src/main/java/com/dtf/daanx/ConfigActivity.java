@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -138,4 +139,5 @@ public class ConfigActivity extends BaseActivity {
         line.addView(txtgrade);
         linearLayout.addView(line);
     }
+
 }

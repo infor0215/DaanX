@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/line"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#74ed10"
+    android:baselineAligned="false"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="國文"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/subClass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="必校一"
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/subNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="04"
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="58.0"
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/reScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="60.0"
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/reStudy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text=""
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/minScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="60.0"
+        android:textColor="#FAFAFA"
+        android:textSize="20sp" />
+</LinearLayout>

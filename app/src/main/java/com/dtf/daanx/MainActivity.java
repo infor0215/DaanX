@@ -8,15 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends BaseActivity
@@ -24,6 +22,7 @@ public class MainActivity extends BaseActivity
 
 
     SharedPreferences preference;
+    private TinyDB cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +31,10 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (networkInfo()) {
-            //
-        } else {
+
+        cache=new TinyDB("main-cache",this);
+
+        if (!networkInfo()) {
             networkAlert();
         }
         //endregion
@@ -63,6 +63,34 @@ public class MainActivity extends BaseActivity
         TextView lbl_email = (TextView) navigationView.getHeaderView(0).findViewById(R.id.lbl_email);
         lbl_email.setText(preference.getString("stu_email", ""));
         //endregion
+
+        String mainFt=cache.getString("main");
+        switch (mainFt){
+            case "main":
+                SwitchFramgent(R.id.nav_main);
+                break;
+            case "forum":
+                SwitchFramgent(R.id.nav_forum);
+                break;
+            case "timetable":
+                SwitchFramgent(R.id.nav_timetable);
+                break;
+            case "attend":
+                SwitchFramgent(R.id.nav_attend);
+                break;
+            case "prize":
+                SwitchFramgent(R.id.nav_prize);
+                break;
+            case "week":
+                SwitchFramgent(R.id.nav_nowpost);
+                break;
+            case "library":
+                SwitchFramgent(R.id.nav_library);
+                break;
+            case "DaanAbout":
+                SwitchFramgent(R.id.nav_daanabout);
+                break;
+        }
 
 
         //region defaultFg
@@ -102,10 +130,16 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         final int id = item.getItemId();
 
+        SwitchFramgent(id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
+
+        return true;
+    }
+
+    private void SwitchFramgent(final int id){
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -117,7 +151,7 @@ public class MainActivity extends BaseActivity
                     case R.id.nav_main:
                         fg = new MainFragment();
                         bundle = new Bundle();
-                        bundle.putString("type", "Main");
+                        bundle.putString("type", "main");
                         fg.setArguments(bundle);
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("main");
@@ -229,19 +263,19 @@ public class MainActivity extends BaseActivity
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     fab.setVisibility(View.INVISIBLE);
                 }
-
-                if(id==R.id.nav_forum||id==R.id.nav_nowpost){
-                    LinearLayout linearLayout=(LinearLayout) findViewById(R.id.main_layout);
-                    linearLayout.setPadding(0,0,0,0);
-                }else {
-                    int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
-                    LinearLayout linearLayout=(LinearLayout) findViewById(R.id.main_layout);
-                    linearLayout.setPadding(pixels,pixels,pixels,pixels);
-                }
             }
         }, 300);
-        return true;
     }
+
+    @Override
+    protected void onStop() {
+        Fragment ft = getFragmentManager().findFragmentByTag("f_m");
+        String str = (String)ft.getArguments().get("type");
+        cache.putString("main",str);
+        super.onStop();
+        Log.i("status","onStop");
+    }
+
 
 }
 

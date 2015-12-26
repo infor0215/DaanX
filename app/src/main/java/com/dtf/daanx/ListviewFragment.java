@@ -2,17 +2,21 @@ package com.dtf.daanx;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +46,15 @@ public class ListviewFragment extends Fragment {
     ForumAdapter forumAdapter;
     private int timeout=1;
     int page=1;
+    String jsonTemp="";
+    boolean eventLock=false;
+    private Thread thread;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);
+        linearLayout.setPadding(0,0,0,0);
+        page=1;
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         //TextView tvObj = (TextView)view.findViewById(R.id.info);
         String str = (String)getArguments().get("type");
@@ -52,188 +62,257 @@ public class ListviewFragment extends Fragment {
         preference=getActivity().getSharedPreferences("setting", 0);
         if(str==null) str="";
         if(str.equals("forum")){
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //region forum
                     try {
                         Gson gson = new Gson();
-                        Type listType = new TypeToken<ArrayList<ForumList>>() {
-                        }.getType();
-                        forumLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
-                        forumAdapter = new ForumAdapter(getActivity(),forumLists);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
-                                listView.setAdapter(forumAdapter);
-                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView arg0, View arg1, int arg2,
-                                                            long arg3) {
-                                        // TODO Auto-generated method stub
-                                        ListView listView = (ListView) arg0;
-                                        Toast.makeText(
-                                                getActivity(),
-                                                "ID：" + arg3 +
-                                                        "   選單文字："+ listView.getItemAtPosition(arg2).toString(),
-                                                Toast.LENGTH_SHORT).show();
+                        Type listType = new TypeToken<ArrayList<ForumList>>() {}.getType();
+                        jsonTemp=networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page);
+                        if(!jsonTemp.equals("")) {
+                            forumLists = gson.fromJson(jsonTemp, listType);
+                            forumAdapter = new ForumAdapter(getActivity(), forumLists);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
+                                    listView.setAdapter(forumAdapter);
+                                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView arg0, View arg1, int arg2,
+                                                                long arg3) {
+                                            // TODO Auto-generated method stub
+                                            ListView listView = (ListView) arg0;
+                                            Toast.makeText(
+                                                    getActivity(),
+                                                    "ID：" + arg3 +
+                                                            "   選單文字：" + listView.getItemAtPosition(arg2).toString(),
+                                                    Toast.LENGTH_SHORT).show();
 
-                                    }
-                                });
-                                listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                                    @Override
-                                    public void onRefresh() {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                page=1;
-                                                Gson gson = new Gson();
-                                                Type listType = new TypeToken<ArrayList<ForumList>>() {}.getType();
-                                                forumLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
-                                                getActivity().runOnUiThread(new Runnable() {
+                                        }
+                                    });
+                                    listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                        @Override
+                                        public void onRefresh() {
+                                            thread=new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    page = 1;
+                                                    Gson gson = new Gson();
+                                                    Type listType = new TypeToken<ArrayList<ForumList>>() {
+                                                    }.getType();
+                                                    jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/forum/main/" + page);
+                                                    if(!jsonTemp.equals("")) {
+                                                        ArrayList<ForumList> listTemps=gson.fromJson(jsonTemp, listType);
+                                                        forumLists.clear();
+                                                        forumLists.addAll(listTemps);
+                                                        if (getActivity() != null) {
+                                                            getActivity().runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    forumAdapter.notifyDataSetChanged();
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                            thread.start();
+                                        }
+                                    });
+                                    listView.setupMoreListener(new OnMoreListener() {
+                                        @Override
+                                        public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+                                            if(!eventLock) {
+                                                eventLock=true;
+                                                thread=new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        forumAdapter.notifyDataSetChanged();
+                                                        page++;
+                                                        Gson gson = new Gson();
+                                                        Type listType = new TypeToken<ArrayList<ForumList>>() {
+                                                        }.getType();
+                                                        jsonTemp = networkRun(view, "https://api.dacsc.club/daanx/forum/main/" + page);
+                                                        if (!jsonTemp.equals("")) {
+                                                            ArrayList<ForumList> temps = gson.fromJson(jsonTemp, listType);
+                                                            if (!temps.get(0).getContent().equals(" ")) {
+                                                                for (ForumList obj : temps) {
+                                                                    forumLists.add(obj);
+                                                                }
+                                                                if (getActivity() != null) {
+                                                                    getActivity().runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            forumAdapter.notifyDataSetChanged();
+                                                                            listView.hideMoreProgress();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            } else {
+                                                                if (getActivity() != null) {
+                                                                    getActivity().runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            listView.hideMoreProgress();
+                                                                            try {
+                                                                                Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            }catch (Exception e){/**/}
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                        }
+                                                        eventLock=false;
                                                     }
                                                 });
+                                                thread.start();
                                             }
-                                        }).start();
-                                    }
-                                });
-                                listView.setupMoreListener(new OnMoreListener() {
-                                    @Override
-                                    public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                page++;
-                                                Gson gson = new Gson();
-                                                Type listType = new TypeToken<ArrayList<ForumList>>() {}.getType();
-                                                ArrayList<ForumList> temps=gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/forum/main/"+page), listType);
-                                                if(!temps.get(0).getContent().equals(" ")) {
-                                                    for (ForumList obj : temps) {
-                                                        forumLists.add(obj);
-                                                    }
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            forumAdapter.notifyDataSetChanged();
-                                                            listView.hideMoreProgress();
-                                                        }
-                                                    });
-                                                }else {
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            listView.hideMoreProgress();
-                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }).start();
-                                    }
-                                }, 2);
-                            }
-                        });
+                                        }
+                                    }, 2);
+                                }
+                            });
+                        }
                     }catch (Exception e){
                         Log.e("TAG", e.getMessage(), e);
                     }
                     //endregion
                 }
-            }).start();
+            });
+            thread.start();
         }else if(str.equals("week")){
-            new Thread(new Runnable() {
+            thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
                     //region week
                     try {
                         Gson gson = new Gson();
                         Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                        postLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
-                        postAdapter=new PostAdapter(getActivity(),postLists);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
-                                listView.setAdapter(postAdapter);
-                                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView arg0, View arg1, int arg2,
-                                                            long arg3) {
-                                        // TODO Auto-generated method stub
-                                        ListView listView = (ListView) arg0;
-                                        Toast.makeText(
-                                                getActivity(),
-                                                "ID：" + arg3 +
-                                                        "   選單文字："+ listView.getItemAtPosition(arg2).toString(),
-                                                Toast.LENGTH_SHORT).show();
+                        jsonTemp=networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page);
+                        if(!jsonTemp.equals("")) {
+                            postLists = gson.fromJson(jsonTemp, listType);
+                            postAdapter = new PostAdapter(getActivity(), postLists);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
+                                    listView.setAdapter(postAdapter);
+                                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView arg0, View arg1, int arg2,
+                                                                long arg3) {
+                                            // TODO Auto-generated method stub
+                                            Intent intent = new Intent();
+                                            intent.setClass(getActivity(), PostContentActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("title", postLists.get((int)arg3).getTitle());
+                                            bundle.putString("writer",postLists.get((int)arg3).getWriter());
+                                            bundle.putString("date",postLists.get((int)arg3).getDate());
+                                            bundle.putString("image",postLists.get((int)arg3).getImage());
+                                            bundle.putString("link",postLists.get((int)arg3).getLink());
+                                            bundle.putString("file",postLists.get((int)arg3).getFile());
+                                            String base64="";
+                                            try {
+                                                base64=new String(Base64.decode(postLists.get((int)arg3).getBody().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
+                                            }catch (Exception e){/**/}
+                                            bundle.putString("content",base64);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+//                                            ListView listView = (ListView) arg0;
+//                                            Toast.makeText(
+//                                                    getActivity(),
+//                                                    "ID：" + arg3 +
+//                                                            "   選單文字：" + listView.getItemAtPosition(arg2).toString(),
+//                                                    Toast.LENGTH_SHORT).show();
 
-                                    }
-                                });
-                                listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                                    @Override
-                                    public void onRefresh() {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                page=1;
-                                                Gson gson = new Gson();
-                                                Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                                                postLists = gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
-                                                getActivity().runOnUiThread(new Runnable() {
+                                        }
+                                    });
+                                    listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                                        @Override
+                                        public void onRefresh() {
+                                            thread=new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    page = 1;
+                                                    Gson gson = new Gson();
+                                                    Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
+                                                    jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/post/week/" + page);
+                                                    if(!jsonTemp.equals("")) {
+                                                        ArrayList<PostList> listTemps=gson.fromJson(jsonTemp, listType);
+                                                        postLists.clear();
+                                                        postLists.addAll(listTemps);
+                                                        if (getActivity() != null) {
+                                                            getActivity().runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    postAdapter.notifyDataSetChanged();
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                            thread.start();
+                                        }
+                                    });
+                                    listView.setupMoreListener(new OnMoreListener() {
+                                        @Override
+                                        public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
+                                            if(!eventLock) {
+                                                eventLock=true;
+                                                thread=new Thread(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        postAdapter.notifyDataSetChanged();
+                                                        page++;
+                                                        Gson gson = new Gson();
+                                                        Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
+                                                        jsonTemp = networkRun(view, "https://api.dacsc.club/daanx/post/week/" + page);
+                                                        if (!jsonTemp.equals("")) {
+                                                            ArrayList<PostList> temps = gson.fromJson(jsonTemp, listType);
+                                                            if (!temps.get(0).getBody().equals(" ")) {
+                                                                for (PostList obj : temps) {
+                                                                    postLists.add(obj);
+                                                                }
+                                                                if (getActivity() != null) {
+                                                                    getActivity().runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            postAdapter.notifyDataSetChanged();
+                                                                            listView.hideMoreProgress();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            } else {
+                                                                if (getActivity() != null) {
+                                                                    getActivity().runOnUiThread(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            listView.hideMoreProgress();
+                                                                            try {
+                                                                                Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                            }catch (Exception e){/**/}
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+                                                        }
+                                                        eventLock=false;
                                                     }
                                                 });
+                                                thread.start();
                                             }
-                                        }).start();
-                                    }
-                                });
-                                listView.setupMoreListener(new OnMoreListener() {
-                                    @Override
-                                    public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-                                        new Thread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                page++;
-                                                Gson gson = new Gson();
-                                                Type listType = new TypeToken<ArrayList<PostList>>() {}.getType();
-                                                ArrayList<PostList> temps=gson.fromJson(networkRun(view,"https://api.dacsc.club/daanx/post/week/"+page), listType);
-                                                if(!temps.get(0).getBody().equals(" ")) {
-                                                    for (PostList obj : temps) {
-                                                        postLists.add(obj);
-                                                    }
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            postAdapter.notifyDataSetChanged();
-                                                            listView.hideMoreProgress();
-                                                        }
-                                                    });
-                                                }else {
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            listView.hideMoreProgress();
-                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }).start();
-                                    }
-                                }, 2);
-                            }
-                        });
+                                        }
+                                    }, 2);
+                                }
+                            });
+                        }
                     }catch (Exception e){
                         Log.e("TAG", e.getMessage(), e);
                     }
                     //endregion
                 }
-            }).start();
+            });
+            thread.start();
         }
         return view;
     }
@@ -249,23 +328,31 @@ public class ListviewFragment extends Fragment {
         }catch (Exception e){
             timeout++;
             if (timeout < 5) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                if(getActivity()!=null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }catch (Exception e){/**/}
+                        }
+                    });
+                }
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException c) {/**/}
                 return networkRun(view,url);
             } else {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                if(getActivity()!=null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            }catch (Exception e){/**/}
+                        }
+                    });
+                }
                 return "";
             }
         }
@@ -281,6 +368,17 @@ public class ListviewFragment extends Fragment {
 
         @SerializedName("writer")
         private String writer;
+
+        @SerializedName("day")
+        private String date;
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
 
         public String getTitle() {
             return title;
@@ -327,6 +425,17 @@ public class ListviewFragment extends Fragment {
 
         @SerializedName("link")
         private String link;
+
+        @SerializedName("day")
+        private String date;
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
 
         public String getFile() {
             return file;
@@ -426,6 +535,26 @@ public class ListviewFragment extends Fragment {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.image.setText(String.valueOf(postList.getWriter().charAt(0)));
+            switch (postList.getWriter().charAt(0)){
+                case '人':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_people));
+                    break;
+                case '圖':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_pic));
+                    break;
+                case '實':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_practice));
+                    break;
+                case '學':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                    break;
+                case '輔':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_support));
+                    break;
+                case '教':
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                    break;
+            }
             holder.title.setText(postList.getTitle());
             String base64="";
             try{
@@ -507,42 +636,18 @@ public class ListviewFragment extends Fragment {
             TextView content;
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        try {
+            Thread.sleep(50);
+            thread.interrupt();
+        }catch (Exception e){/**/}
+        super.onDestroyView();
+        int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+        LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);
+        linearLayout.setPadding(pixels,pixels,pixels,pixels);
+    }
 }
 
-//                RequestQueue mQueue = Volley.newRequestQueue(getActivity());
-//                StringRequest stringRequest = new StringRequest("",
-//                        new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response) {
-//                                Gson gson = new Gson();
-//                                Type listType = new TypeToken<ArrayList<Post>>() {
-//                                }.getType();
-//                                ArrayList<Post> jsonArr = gson.fromJson(response, listType);
-//                                ArrayList<HashMap<String, Object>> itemList = new ArrayList<>();
-//                                int ret=0;
-//                                for (Post obj:jsonArr) {
-//                                    HashMap<String, Object> temp = new HashMap<>();
-//                                    temp.put("title", obj.getTitle());
-//                                    ret=R.drawable.post_bg_green;
-//                                    temp.put("writer", ret);
-//                                    temp.put("body", obj.getContent());
-//                                    itemList.add(temp);
-//                                }
-//                                SimpleAdapter adapter = new SimpleAdapter(
-//                                        getActivity(),
-//                                        itemList,
-//                                        R.layout.post_row,
-//                                        new String[]{"title", "writer", "body"},
-//                                        new int[]{R.id.title, R.id.image, R.id.content}
-//                                );
-//                                ListView listView = (ListView) view.findViewById(R.id.list);
-//                                listView.setAdapter(adapter);
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.e("TAG", error.getMessage(), error);
-//                    }
-//                });
-//                mQueue.add(stringRequest);
 
