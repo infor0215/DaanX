@@ -48,7 +48,7 @@ public class PostContentActivity extends BaseActivity {
             String[] file=bundle.getString("file").split("\\|\\|\\|");
             for(int i=0;i<file.length;i++){
                 if(!file[i].equals("")){
-                    html+="<a href=\"http://drive.google.com/viewerng/viewer?embedded=true&url="+file[i]+"\">檔案"+(i+1)+"</a><br>";
+                    html+="<a href=\"http://drive.google.com/viewerng/viewer?embedded=true&url="+file[i].split("\\/\\/\\/")[0]+"\>"+file[i].split("\\/\\/\\/")[1]+"</a><br>";
                 }
             }
             //<a href=\""+bundle.getString("link")+"\">"+bundle.getString("link")+"</a>";
