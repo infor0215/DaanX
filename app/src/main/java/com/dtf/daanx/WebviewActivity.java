@@ -19,7 +19,7 @@ public class WebviewActivity extends BaseActivity {
 
         Bundle bundle = this.getIntent().getExtras();
         WebView webView=(WebView)findViewById(R.id.webView);
-        webView.loadDataWithBaseURL(bundle.getString("url"), null, "text/html", "utf-8", null);
+        webView.loadDataWithBaseURL(bundle.getString("src"), null, "text/html", "utf-8", null);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         WebSettings settings=webView.getSettings();
