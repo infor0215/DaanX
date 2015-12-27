@@ -325,6 +325,9 @@ public class GradeActivity extends BaseActivity {
                         writeInUI(view, grade, backavg, R.id.backavg);
                     }
                 });
+                if(dialog.isShowing()){
+                    dialog.dismiss();
+                }
                 //dialog.dismiss();
                 //endregion
             } catch (IOException e) {
@@ -508,7 +511,11 @@ public class GradeActivity extends BaseActivity {
                     txtsubject.setLayoutParams(txtParams);
                     txtsubject.setText(gradet.get(i));
                     txtsubject.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
-                    txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                    if(gradet.get(i).length()>2){
+                        txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+                    }else {
+                        txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                    }
                     txtsubject.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     line.addView(txtsubject);
 
@@ -542,7 +549,6 @@ public class GradeActivity extends BaseActivity {
             }
             linearLayout.addView(row);
         }
-        dialog.dismiss();
     }
 
     private void writeList(View view){
@@ -558,7 +564,7 @@ public class GradeActivity extends BaseActivity {
         gradeAdapter=new GradeAdapter(getApplication(),gradesLast);
         listView.setLayoutParams(layoutParams);
         listView.setAdapter(gradeAdapter);
-        listView.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.GONE);
     }
 
     //判斷數字

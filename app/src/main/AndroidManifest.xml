@@ -57,15 +57,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ConfigActivity"
-            android:label="@string/title_activity_config"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.dtf.daanx.MainActivity" />
-        </activity>
-        <activity
             android:name=".TimeTableFragment"
             android:label="@string/title_activity_time_table"
             android:parentActivityName=".MainActivity"

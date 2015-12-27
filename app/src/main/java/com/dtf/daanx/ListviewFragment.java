@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -61,6 +62,16 @@ public class ListviewFragment extends Fragment {
         timeout=0;
         preference=getActivity().getSharedPreferences("setting", 0);
         if(str.equals("forum")){
+            FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), ForumCommitActivity.class);
+                    startActivity(intent);
+                }
+            });
             thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -136,9 +147,7 @@ public class ListviewFragment extends Fragment {
                                                         if (!jsonTemp.equals("")) {
                                                             ArrayList<ForumList> temps = gson.fromJson(jsonTemp, listType);
                                                             if (!temps.get(0).getContent().equals(" ")) {
-                                                                for (ForumList obj : temps) {
-                                                                    forumLists.add(obj);
-                                                                }
+                                                                forumLists.addAll(temps);
                                                                 if (getActivity() != null) {
                                                                     getActivity().runOnUiThread(new Runnable() {
                                                                         @Override
@@ -190,6 +199,18 @@ public class ListviewFragment extends Fragment {
                         jsonTemp=networkRun(view,"https://api.dacsc.club/daanx/post/"+str+"/"+page);
                         if(!jsonTemp.equals("")) {
                             postLists = gson.fromJson(jsonTemp, listType);
+                            if(postLists.get(0).getBody().equals(" ")){
+                                postLists.clear();
+                                PostList postList=new PostList();
+                                postList.setTitle("無資料");
+                                postList.setContent("無資料");
+                                postList.setWriter(" ");
+                                postList.setDate(" ");
+                                postList.setFile("");
+                                postList.setImage("");
+                                postList.setLink("");
+                                postLists.add(postList);
+                            }
                             postAdapter = new PostAdapter(getActivity(), postLists);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -217,12 +238,6 @@ public class ListviewFragment extends Fragment {
                                             bundle.putString("content",base64);
                                             intent.putExtras(bundle);
                                             startActivity(intent);
-//                                            ListView listView = (ListView) arg0;
-//                                            Toast.makeText(
-//                                                    getActivity(),
-//                                                    "ID：" + arg3 +
-//                                                            "   選單文字：" + listView.getItemAtPosition(arg2).toString(),
-//                                                    Toast.LENGTH_SHORT).show();
 
                                         }
                                     });
@@ -269,9 +284,7 @@ public class ListviewFragment extends Fragment {
                                                         if (!jsonTemp.equals("")) {
                                                             ArrayList<PostList> temps = gson.fromJson(jsonTemp, listType);
                                                             if (!temps.get(0).getBody().equals(" ")) {
-                                                                for (PostList obj : temps) {
-                                                                    postLists.add(obj);
-                                                                }
+                                                                postLists.addAll(temps);
                                                                 if (getActivity() != null) {
                                                                     getActivity().runOnUiThread(new Runnable() {
                                                                         @Override
@@ -646,6 +659,8 @@ public class ListviewFragment extends Fragment {
         int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
         LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);
         linearLayout.setPadding(pixels,pixels,pixels,pixels);
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setVisibility(View.GONE);
     }
 }
 

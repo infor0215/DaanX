@@ -17,12 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
     SharedPreferences preference;
     private TinyDB cache;
+    ArrayList<Integer> lastItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,9 @@ public class MainActivity extends BaseActivity
             case "main":
                 SwitchFramgent(R.id.nav_main);
                 break;
+            case "calc":
+                SwitchFramgent(R.id.nav_calendar);
+                break;
             case "forum":
                 SwitchFramgent(R.id.nav_forum);
                 break;
@@ -102,14 +111,15 @@ public class MainActivity extends BaseActivity
             case "DaanAbout":
                 SwitchFramgent(R.id.nav_daanabout);
                 break;
+            case "About":
+                SwitchFramgent(R.id.nav_about);
+                break;
+            default:
+                SwitchFramgent(R.id.nav_main);
+                break;
         }
-
-        //region defaultFg
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.main_layout, new MainFragment(), "f_m");
-        ft.addToBackStack("main");
-        ft.commit();
-        //endregion
+        lastItem=new ArrayList<Integer>(){};
+        lastItem.add(R.id.nav_main);
     }
 
 
@@ -120,6 +130,9 @@ public class MainActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (getFragmentManager().getBackStackEntryCount() != 1) {//回上一層Fg
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(lastItem.get(lastItem.size()-2));
+            lastItem.remove(lastItem.size()-1);
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
@@ -141,10 +154,12 @@ public class MainActivity extends BaseActivity
         // Handle navigation view item clicks here.
         final int id = item.getItemId();
 
+
         SwitchFramgent(id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        lastItem.add(id);
 
 
         return true;
@@ -166,6 +181,15 @@ public class MainActivity extends BaseActivity
                         fg.setArguments(bundle);
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("main");
+                        ft.commit();
+                        break;
+                    case R.id.nav_calendar:
+                        fg = new CalcFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "calc");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("calc");
                         ft.commit();
                         break;
                     case R.id.nav_forum:
@@ -271,11 +295,11 @@ public class MainActivity extends BaseActivity
                         intent.putExtras(bundle);
                         startActivity(intent);
                         break;
-                    case R.id.nav_config:
-                        intent = new Intent();
-                        intent.setClass(MainActivity.this, ConfigActivity.class);
-                        startActivity(intent);
-                        break;
+//                    case R.id.nav_config:
+//                        intent = new Intent();
+//                        intent.setClass(MainActivity.this, ConfigActivity.class);
+//                        startActivity(intent);
+//                        break;
                     case R.id.nav_daanabout:
                         fg = new DaanAboutFragment();
                         bundle = new Bundle();
@@ -283,6 +307,15 @@ public class MainActivity extends BaseActivity
                         fg.setArguments(bundle);
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("DaanAbout");
+                        ft.commit();
+                        break;
+                    case R.id.nav_about:
+                        fg = new UsFragment();
+                        bundle = new Bundle();
+                        bundle.putString("type", "About");
+                        fg.setArguments(bundle);
+                        ft.replace(R.id.main_layout, fg, "f_m");
+                        ft.addToBackStack("About");
                         ft.commit();
                         break;
                     case R.id.nav_logout:
@@ -302,22 +335,6 @@ public class MainActivity extends BaseActivity
                         MainActivity.this.finish();
                         break;
                 }
-
-                if (id == R.id.nav_forum) {
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    fab.setVisibility(View.VISIBLE);
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent();
-                            intent.setClass(MainActivity.this, ForumCommitActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-                } else {
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    fab.setVisibility(View.INVISIBLE);
-                }
             }
         }, 300);
     }
@@ -325,9 +342,11 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStop() {
         Fragment ft = getFragmentManager().findFragmentByTag("f_m");
-        String str = (String)ft.getArguments().get("type");
-        cache=new TinyDB("main-cache",this);
-        cache.putString("main",str);
+        if(ft.getArguments()!=null) {
+            String str = (String) ft.getArguments().get("type");
+            cache = new TinyDB("main-cache", this);
+            cache.putString("main", str);
+        }
         super.onStop();
         Log.i("status","onStop");
     }

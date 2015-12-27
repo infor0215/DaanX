@@ -37,8 +37,6 @@ public class LoginActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_flag, null));
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
             //切換到主界面
             new Handler().postDelayed(new Runnable() {
