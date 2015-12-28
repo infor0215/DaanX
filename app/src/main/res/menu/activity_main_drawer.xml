@@ -4,10 +4,10 @@
     <group  android:checkableBehavior="single">
         <item android:id="@+id/nav_main" android:icon="@drawable/ic_account_balance_24dp"
             android:title="@string/stu_homepage" />
-        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_month"
+        <item android:id="@+id/nav_calendar" android:icon="@drawable/ic_grid_on_24dp"
             android:title="@string/stu_calendar" />
         <!--android:id="@+id/nav_post" android:icon="@drawable/ic_more_horiz_black_24dp"-->
-        <item android:id="@+id/nav_forum" android:icon="@android:drawable/ic_menu_edit"
+        <item android:id="@+id/nav_forum" android:icon="@drawable/ic_edit_24dp"
             android:title="@string/stu_forum" />
         <item
             android:title="@string/stu_information">
@@ -19,7 +19,7 @@
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_attend"
-                    android:icon="@android:drawable/ic_menu_recent_history"
+                    android:icon="@drawable/ic_access_alarm_24dp"
                     android:title="@string/stu_attend"
                     android:checkable="true"/>
                 <item
@@ -38,12 +38,12 @@
             <menu>
                 <item
                     android:id="@+id/nav_nowpost"
-                    android:icon="@android:drawable/ic_menu_today"
+                    android:icon="@drawable/ic_today_24dp"
                     android:title="@string/latest_announcement"
                     android:checkable="true"/>
                 <item
                     android:id="@+id/nav_stupost"
-                    android:icon="@android:drawable/ic_menu_my_calendar"
+                    android:icon="@drawable/ic_perm_contact_cal_24dp"
                     android:title="@string/stu_announcement"
                     android:checkable="true"/>
                 <item
