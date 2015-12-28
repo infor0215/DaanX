@@ -20,6 +20,35 @@
         android:baselineAligned="false" >
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/calc_ym"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/calc_page"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/txt_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="2015年"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp" />
+        <TextView
+            android:id="@+id/txt_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="12"
+            android:layout_marginTop="-10dp"
+            android:textSize="40sp" />
+    </LinearLayout>
+
 </RelativeLayout>
 
 <!--

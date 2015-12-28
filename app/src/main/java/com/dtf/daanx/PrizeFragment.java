@@ -95,11 +95,11 @@ public class PrizeFragment extends Fragment {
             } catch (InterruptedException c) {/**/}
 
             try {
-                ((MainActivity) getActivity()).trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                ((MainActivity) getActivity()).trustTaivs();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                 //region 連線
                 preference = getActivity().getSharedPreferences("setting", 0);
                 String stu_id = preference.getString("stu_id", "");
-                String stu_pwd = preference.getString("stu_pwd", "");
+                String stu_pwd = ((MainActivity)getActivity()).pwdNoSecure(preference.getString("stu_pwd", ""));
                 Connection.Response res = Jsoup
                         .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
                         .data("txtS_NO", stu_id, "txtPerno", stu_pwd)

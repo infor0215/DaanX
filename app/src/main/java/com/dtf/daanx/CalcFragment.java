@@ -51,16 +51,23 @@ public class CalcFragment extends Fragment {
     CalcAdapter calcAdapter;
     private int year;
     private int month;
+    TextView txt_year;
+    TextView txt_month;
+    LinearLayout calc_ym;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);
         linearLayout.setPadding(0,0,0,0);
+        calc_ym=(LinearLayout) getActivity().findViewById(R.id.calc_ym);
+        calc_ym.setVisibility(View.VISIBLE);
+        txt_year=(TextView) getActivity().findViewById(R.id.txt_year);
+        txt_month=(TextView) getActivity().findViewById(R.id.txt_month);
         timeout=0;
 
         Calendar calendar = Calendar.getInstance();
         year=calendar.get(Calendar.YEAR);
-        month=calendar.get(Calendar.MONTH);
+        month=calendar.get(Calendar.MONTH)+1;
 
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         if(((MainActivity)getActivity()).networkInfo()){
@@ -97,14 +104,28 @@ public class CalcFragment extends Fragment {
                                                     jsonTemp=networkRun(view, "https://api.dacsc.club/daanx/calc/"+year+"/"+month);
                                                     if(!jsonTemp.equals("")) {
                                                         ArrayList<CalcDay> listTemps=gson.fromJson(jsonTemp, listType);
-                                                        calcDays.addAll(0,listTemps);
-                                                        if (getActivity() != null) {
-                                                            getActivity().runOnUiThread(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    calcAdapter.notifyDataSetChanged();
-                                                                }
-                                                            });
+                                                        if (!listTemps.get(0).day.equals(" ")) {
+                                                            calcDays.addAll(0,listTemps);
+                                                            if (getActivity() != null) {
+                                                                getActivity().runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        calcAdapter.notifyDataSetChanged();
+                                                                    }
+                                                                });
+                                                            }
+                                                        } else {
+                                                            if (getActivity() != null) {
+                                                                getActivity().runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        listView.hideMoreProgress();
+                                                                        try {
+                                                                            Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
+                                                                        }catch (Exception e){/**/}
+                                                                    }
+                                                                });
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -163,7 +184,7 @@ public class CalcFragment extends Fragment {
                                                 thread.start();
                                             }
                                         }
-                                    }, 2);
+                                    }, 1);
                                 }
                             });
                         }
@@ -177,6 +198,7 @@ public class CalcFragment extends Fragment {
 
     public String networkRun(final View view,String url){
         try {
+            ((MainActivity)getActivity()).trustDacsc();
             Document doc = Jsoup.connect(url)
                     .timeout(5000)
                     .get();
@@ -216,6 +238,10 @@ public class CalcFragment extends Fragment {
     }
 
     private class CalcDay{
+        @SerializedName("year")
+        public String year;
+        @SerializedName("month")
+        public String month;
         @SerializedName("day")
         public String day;
         @SerializedName("commit")
@@ -267,9 +293,16 @@ public class CalcFragment extends Fragment {
 
             CalcDay calcDay=list.get(position);
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
-
+            txt_year.setText(String.valueOf(calcDay.year+"年"));
+            txt_month.setText(calcDay.month);
+            if(!eventLock) {
+                year = Integer.parseInt(calcDay.year);
+                month = Integer.parseInt(calcDay.month);
+            }
             holder.day.setText(calcDay.day);
             holder.commit.setText(calcDay.commit);
+
+            Log.i("status",calcDay.month);
 
             return convertView;
         }
@@ -292,6 +325,7 @@ public class CalcFragment extends Fragment {
         linearLayout.setPadding(pixels,pixels,pixels,pixels);
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
+        calc_ym.setVisibility(View.GONE);
     }
 }
 

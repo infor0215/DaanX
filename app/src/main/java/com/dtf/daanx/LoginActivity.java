@@ -88,7 +88,7 @@ public class LoginActivity extends BaseActivity {
                         Thread.sleep(1000);
                     } catch (InterruptedException c) {/**/}
                     try {
-                        trustEveryone();
+                        trustTaivs();
                         Connection.Response res = Jsoup
                                 .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
                                 .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
@@ -107,6 +107,8 @@ public class LoginActivity extends BaseActivity {
                             String stu_tea = temp.get(0).text().substring(3, temp.get(0).text().length());
                             String stu_num = temp.get(2).text().substring(3, temp.get(2).text().length());
                             //送往伺服器
+                            Log.i("status","login");
+                            trustDacsc();
                             Document server=Jsoup.connect("https://api.dacsc.club/daanx/register")
                                     .data("stu_name",stu_name,"stu_id",stu_id,"stu_nick",stu_nick,"stu_email",stu_email)
                                     .timeout(5000)
@@ -156,7 +158,6 @@ public class LoginActivity extends BaseActivity {
         });
         SharedPreferences.Editor editor=preference.edit();
         editor.putString("stu_id",stu_id);
-        editor.putString("stu_pwd",stu_pwd);
         editor.putString("stu_year",stu_year);
         editor.putString("stu_nick",stu_nick);
         editor.putString("stu_class",stu_class);
@@ -165,6 +166,9 @@ public class LoginActivity extends BaseActivity {
         editor.putString("stu_num",stu_num);
         editor.putString("stu_email",stu_email);
         editor.putString("auth",auth);
+        editor.apply();
+
+        editor.putString("stu_pwd",pwdSecure(stu_pwd));
         editor.apply();
         //region 進入主界面
         try{

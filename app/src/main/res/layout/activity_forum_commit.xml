@@ -21,41 +21,277 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.dtf.daanx.ForumCommitActivity"
-        tools:showIn="@layout/activity_forum_commit">
+        tools:showIn="@layout/activity_forum_commit"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
         <EditText
-            android:inputType="textImeMultiLine|textLongMessage"
+            android:id="@+id/txt_title"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="left"
-            android:padding="20dp"
-            android:background="@drawable/forum_commit"/>
-        <Button
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/forum_add_btn"
-            android:shadowColor="@color/black"
-            android:text="發表"
-            android:textColor="@color/white"
-            android:textSize="20dp"/>
-    </RelativeLayout>
+            android:hint="請輸入標題"/>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageButton
+                    android:id="@+id/action_undo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/undo"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_redo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/redo"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_bold"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/bold"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_italic"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/italic"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_subscript"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/subscript"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_superscript"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/superscript"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_strikethrough"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/strikethrough"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_underline"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/underline"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h1"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h2"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading3"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h3"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading4"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h4"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading5"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h5"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_heading6"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/h6"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_txt_color"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/txt_color"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_bg_color"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/bg_color"
+                    />
+
+
+                <ImageButton
+                    android:id="@+id/action_indent"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/indent"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_outdent"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/outdent"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_align_left"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/justify_left"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_align_center"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/justify_center"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_align_right"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/justify_right"
+                    />
+
+                <ImageButton
+                    android:id="@+id/action_blockquote"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/blockquote"
+                    />
+
+                <!--<ImageButton-->
+                    <!--android:id="@+id/action_insert_image"-->
+                    <!--android:layout_width="48dp"-->
+                    <!--android:layout_height="48dp"-->
+                    <!--android:background="@null"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--android:src="@mipmap/insert_image"-->
+                    <!--/>-->
+
+                <ImageButton
+                    android:id="@+id/action_insert_link"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/insert_link"
+                    />
+
+                <!--<ImageButton-->
+                    <!--android:id="@+id/action_insert_checkbox"-->
+                    <!--android:layout_width="48dp"-->
+                    <!--android:layout_height="48dp"-->
+                    <!--android:background="@null"-->
+                    <!--android:contentDescription="@null"-->
+                    <!--android:src="@android:drawable/checkbox_on_background"-->
+                    <!--/>-->
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <jp.wasabeef.richeditor.RichEditor
+            android:id="@+id/editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="送出"
+            android:background="?attr/colorAccent"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

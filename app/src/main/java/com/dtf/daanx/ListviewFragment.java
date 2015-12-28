@@ -331,6 +331,7 @@ public class ListviewFragment extends Fragment {
 
     public String networkRun(final View view,String url){
         try {
+            ((MainActivity)getActivity()).trustDacsc();
             Document doc = Jsoup.connect(url)
                     .timeout(5000)
                     .data("auth", preference.getString("auth", ""))

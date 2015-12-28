@@ -16,18 +16,15 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
 import com.quentindommerc.superlistview.SuperListview;
 
 import org.jsoup.Connection.Method;
@@ -37,7 +34,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -237,11 +233,11 @@ public class GradeActivity extends BaseActivity {
                 Thread.sleep(2000);
             } catch (InterruptedException c) {/**/}
             try {
-                trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                trustTaivs();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                 //region 連線
                 preference = getSharedPreferences("setting", 0);
                 String stu_id = preference.getString("stu_id", "");
-                String stu_pwd = preference.getString("stu_pwd", "");
+                String stu_pwd = pwdNoSecure(preference.getString("stu_pwd", ""));
                 Response res = Jsoup
                         .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
                         .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
@@ -367,11 +363,11 @@ public class GradeActivity extends BaseActivity {
                         }
                     });
                 }
-                trustEveryone();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
+                trustTaivs();//關掉ssl憑証檢查 與確定使用ssl加密協定版本
                 //region 連線
                 preference = getSharedPreferences("setting", 0);
                 String stu_id = preference.getString("stu_id", "");
-                String stu_pwd = preference.getString("stu_pwd", "");
+                String stu_pwd = pwdNoSecure(preference.getString("stu_pwd", ""));
                 Response res = Jsoup
                         .connect("https://stuinfo.taivs.tp.edu.tw/Reg_Stu.ASP")
                         .data("txtS_NO", stu_id, "txtPerno", stu_pwd)
@@ -509,13 +505,9 @@ public class GradeActivity extends BaseActivity {
                     pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
                     txtParams.setMargins(pixels, 0, pixels, 0);
                     txtsubject.setLayoutParams(txtParams);
+                    txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
                     txtsubject.setText(gradet.get(i));
                     txtsubject.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.black));
-                    if(gradet.get(i).length()>2){
-                        txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-                    }else {
-                        txtsubject.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                    }
                     txtsubject.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     line.addView(txtsubject);
 
@@ -526,8 +518,12 @@ public class GradeActivity extends BaseActivity {
                     txtParams.setMargins(pixels, -pixels, pixels, pixels);
                     txtgrade.setLayoutParams(txtParams);
                     txtgrade.setText(frontt.get(i));
+                    if(frontt.get(i).length()>2){
+                        txtgrade.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+                    }else {
+                        txtgrade.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
+                    }
                     txtgrade.setTextColor(ContextCompat.getColor(GradeActivity.this, R.color.white));
-                    txtgrade.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
                     int draw = R.drawable.grade_bg_black;
                     try {
                         if (Integer.parseInt(frontt.get(i)) < 60) {

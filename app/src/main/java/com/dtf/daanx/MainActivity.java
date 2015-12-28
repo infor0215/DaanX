@@ -70,6 +70,8 @@ public class MainActivity extends BaseActivity
         lbl_email.setText(preference.getString("stu_email", ""));
         //endregion
 
+        lastItem=new ArrayList<Integer>(){};
+
         String mainFt=cache.getString("main");
         switch (mainFt) {
             case "main":
@@ -118,8 +120,6 @@ public class MainActivity extends BaseActivity
                 SwitchFramgent(R.id.nav_main);
                 break;
         }
-        lastItem=new ArrayList<Integer>(){};
-        lastItem.add(R.id.nav_main);
     }
 
 
@@ -159,13 +159,13 @@ public class MainActivity extends BaseActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        lastItem.add(id);
 
 
         return true;
     }
 
     private void SwitchFramgent(final int id){
+        lastItem.add(id);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -342,11 +342,12 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStop() {
         Fragment ft = getFragmentManager().findFragmentByTag("f_m");
+        try{
         if(ft.getArguments()!=null) {
             String str = (String) ft.getArguments().get("type");
             cache = new TinyDB("main-cache", this);
             cache.putString("main", str);
-        }
+        }}catch (Exception e){/**/}
         super.onStop();
         Log.i("status","onStop");
     }
