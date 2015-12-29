@@ -22,6 +22,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -51,9 +54,11 @@ public class CalcFragment extends Fragment {
     CalcAdapter calcAdapter;
     private int year;
     private int month;
+    private int day;
     TextView txt_year;
     TextView txt_month;
     LinearLayout calc_ym;
+    TinyDB first;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,6 +73,7 @@ public class CalcFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         year=calendar.get(Calendar.YEAR);
         month=calendar.get(Calendar.MONTH)+1;
+        day=calendar.get(Calendar.DAY_OF_MONTH);
 
         final View view = inflater.inflate(R.layout.fragment_listview,container, false);
         if(((MainActivity)getActivity()).networkInfo()){
@@ -86,6 +92,43 @@ public class CalcFragment extends Fragment {
                                 public void run() {
                                     final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
                                     listView.setAdapter(calcAdapter);
+                                    first=new TinyDB("first-calc",getActivity());
+                                    first.putInt("num", first.getInt("num") + 1);
+                                    if(first.getInt("num")==1){
+                                        ViewTarget target = new ViewTarget(R.id.main_layout, getActivity());
+                                        new ShowcaseView.Builder(getActivity())
+                                                .setTarget(target)
+                                                .withNewStyleShowcase()
+                                                .setStyle(R.style.CustomShowcaseTheme2)
+                                                .setContentTitle("列表")
+                                                .setContentText("最上面下拉載入上一個月\n滑到最下面會自動載入下一個月")
+                                                .hideOnTouchOutside()
+                                                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                                    @Override
+                                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                                        ViewTarget target = new ViewTarget(R.id.calc_ym, getActivity());
+                                                        new ShowcaseView.Builder(getActivity())
+                                                                .setTarget(target)
+                                                                .withNewStyleShowcase()
+                                                                .setStyle(R.style.CustomShowcaseTheme2)
+                                                                .setContentTitle("指示")
+                                                                .setContentText("顯示目前查看年分與月份")
+                                                                .hideOnTouchOutside()
+                                                                .build();
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                                    }
+                                                })
+                                                .build();
+                                    }
                                     listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                         @Override
                                         public void onRefresh() {
@@ -281,6 +324,7 @@ public class CalcFragment extends Fragment {
                 //Log.i("status","if");
 
                 holder=new ViewHolder();
+                holder.line=(LinearLayout) convertView.findViewById(R.id.calc_line);
                 holder.day=(TextView) convertView.findViewById(R.id.day);
                 holder.commit=(TextView) convertView.findViewById(R.id.commit);
 
@@ -299,15 +343,24 @@ public class CalcFragment extends Fragment {
                 year = Integer.parseInt(calcDay.year);
                 month = Integer.parseInt(calcDay.month);
             }
+            Calendar calendar = Calendar.getInstance();
+            if(Integer.parseInt(calcDay.day)==calendar.get(Calendar.DAY_OF_MONTH)&&Integer.parseInt(calcDay.month)==(calendar.get(Calendar.MONTH)+1)&&Integer.parseInt(calcDay.year)==calendar.get(Calendar.YEAR)){
+                holder.line.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.grade_sence));
+            }else if(Integer.parseInt(calcDay.day)%2==0){
+                holder.line.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.grey_300));
+            }else{
+                holder.line.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.white));
+            }
             holder.day.setText(calcDay.day);
             holder.commit.setText(calcDay.commit);
 
-            Log.i("status",calcDay.month);
+//            Log.i("status", calcDay.month);
 
             return convertView;
         }
 
         private class ViewHolder{
+            LinearLayout line;
             TextView day;
             TextView commit;
         }

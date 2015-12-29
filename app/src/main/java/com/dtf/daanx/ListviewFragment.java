@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -50,6 +53,7 @@ public class ListviewFragment extends Fragment {
     String jsonTemp="";
     boolean eventLock=false;
     private Thread thread;
+    TinyDB first;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,6 +92,19 @@ public class ListviewFragment extends Fragment {
                                 public void run() {
                                     final SuperListview listView = (SuperListview) view.findViewById(R.id.list);
                                     listView.setAdapter(forumAdapter);
+                                    first=new TinyDB("first-list",getActivity());
+                                    first.putInt("num", first.getInt("num") + 1);
+                                    if(first.getInt("num")==1){
+                                        ViewTarget target = new ViewTarget(R.id.main_layout, getActivity());
+                                        new ShowcaseView.Builder(getActivity())
+                                                .setTarget(target)
+                                                .withNewStyleShowcase()
+                                                .setStyle(R.style.CustomShowcaseTheme2)
+                                                .setContentTitle("列表")
+                                                .setContentText("最上面下拉可以更新列表\n滑到最下面會自動載入")
+                                                .hideOnTouchOutside()
+                                                .build();
+                                    }
                                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(AdapterView arg0, View arg1, int arg2,

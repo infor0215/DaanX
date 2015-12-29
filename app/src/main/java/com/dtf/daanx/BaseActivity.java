@@ -197,6 +197,7 @@ public class BaseActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
         builder.setMessage("無法連線到網際網路\n學生資訊將使用離線快取");
         builder.setTitle("無法連線");
+        builder.setCancelable(false);
         builder.setPositiveButton("設定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,11 +29,14 @@ public class LoginActivity extends BaseActivity {
     SharedPreferences preference;
     ProgressDialog dialog;
     View contentView;
+    TinyDB first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         TinyDB cache=new TinyDB("main-cache",this);
         cache.putString("main","main");
+        first=new TinyDB("first-login",this);
+        first.putInt("num",first.getInt("num")+1);
         preference=getSharedPreferences("setting",0);
         String stu_id=preference.getString("stu_id","");
         if(!stu_id.equals("")){//判斷是否第一次開啟App
@@ -57,6 +64,18 @@ public class LoginActivity extends BaseActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            }
+
+            if(first.getInt("num")==1) {
+                ViewTarget target = new ViewTarget(R.id.stu_id, this);
+                new ShowcaseView.Builder(this)
+                        .setTarget(target)
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .withNewStyleShowcase()
+                        .setContentTitle("輸入說明")
+                        .setContentText("學號與身分證字號為查詢成績用\n系統不會上傳身分證字號至伺服器\n畢業年分請打民國年\n其他為論壇使用")
+                        .hideOnTouchOutside()
+                        .build();
             }
         }
 

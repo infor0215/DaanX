@@ -1,8 +1,10 @@
 package com.dtf.daanx;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +17,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.Connection;
@@ -51,6 +56,7 @@ public class AttendFragment extends Fragment {
 
     LinearLayout linearLayout;
     private Thread thread;
+    TinyDB first;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -357,6 +363,20 @@ public class AttendFragment extends Fragment {
                     linearLayout.addView(linearLayout_479);
                 }
             }
+        }
+        first=new TinyDB("first-attend",getActivity());
+        first.putInt("num", first.getInt("num") + 1);
+        if(first.getInt("num")==1){
+            FramgentTarget target = new FramgentTarget(R.id.public_leave,view);
+            new ShowcaseView.Builder(getActivity())
+                    .setTarget(target)
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("小紅點")
+                    .setContentText("紅色圓圈點擊\n" +
+                            "可以過濾下面列表")
+                    .hideOnTouchOutside()
+                    .build();
         }
     }
 
