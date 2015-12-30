@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <TextView
+        android:id="@+id/list_writer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="left"
+        android:lines="1"
+        android:text="陳"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/list_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_writer"
+        android:textSize="18sp"
+        android:text="哈嘍我是公告\n哈嘍我是公告\n哈嘍我是公告\n哈嘍我是公告"/>
+</RelativeLayout>

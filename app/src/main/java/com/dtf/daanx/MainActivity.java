@@ -353,7 +353,6 @@ public class MainActivity extends BaseActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setMessage("是否登出?");
                         builder.setTitle("登出");
-                        builder.setCancelable(false);
                         builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

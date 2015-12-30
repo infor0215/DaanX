@@ -101,7 +101,7 @@ public class CalcFragment extends Fragment {
                                                 .withNewStyleShowcase()
                                                 .setStyle(R.style.CustomShowcaseTheme2)
                                                 .setContentTitle("列表")
-                                                .setContentText("最上面下拉載入上一個月\n滑到最下面會自動載入下一個月")
+                                                .setContentText("最上面下拉載入上一個月\n滑到最下面會自動載入下一個月\n藍色列為今天")
                                                 .hideOnTouchOutside()
                                                 .setShowcaseEventListener(new OnShowcaseEventListener() {
                                                     @Override
@@ -162,7 +162,7 @@ public class CalcFragment extends Fragment {
                                                                 getActivity().runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        listView.hideMoreProgress();
+                                                                        listView.getSwipeToRefresh().setRefreshing(false);
                                                                         try {
                                                                             Snackbar.make(view, "已經載入到底.....", Snackbar.LENGTH_LONG).show();
                                                                         }catch (Exception e){/**/}

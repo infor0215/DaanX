@@ -73,6 +73,9 @@ public class ListviewFragment extends Fragment {
                 public void onClick(View view) {
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), ForumCommitActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("type", "topic");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
             });
@@ -110,13 +113,20 @@ public class ListviewFragment extends Fragment {
                                         public void onItemClick(AdapterView arg0, View arg1, int arg2,
                                                                 long arg3) {
                                             // TODO Auto-generated method stub
-                                            ListView listView = (ListView) arg0;
-                                            Toast.makeText(
-                                                    getActivity(),
-                                                    "ID：" + arg3 +
-                                                            "   選單文字：" + listView.getItemAtPosition(arg2).toString(),
-                                                    Toast.LENGTH_SHORT).show();
-
+                                            Intent intent = new Intent();
+                                            intent.setClass(getActivity(), ForumContentActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("title", forumLists.get((int)arg3).getTitle());
+                                            bundle.putString("id", forumLists.get((int) arg3).id);
+                                            bundle.putString("date",forumLists.get((int) arg3).getDate());
+                                            bundle.putString("writer",forumLists.get((int)arg3).getWriter());
+                                            String base64="";
+                                            try {
+                                                base64=new String(Base64.decode(forumLists.get((int)arg3).getContent().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
+                                            }catch (Exception e){/**/}
+                                            bundle.putString("content",base64);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
                                         }
                                     });
                                     listView.setRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -245,7 +255,7 @@ public class ListviewFragment extends Fragment {
                                             bundle.putString("title", postLists.get((int)arg3).getTitle());
                                             bundle.putString("writer",postLists.get((int)arg3).getWriter());
                                             bundle.putString("date",postLists.get((int)arg3).getDate());
-                                            bundle.putString("image",postLists.get((int)arg3).getImage());
+                                            bundle.putString("image", postLists.get((int) arg3).getImage());
                                             bundle.putString("link",postLists.get((int)arg3).getLink());
                                             bundle.putString("file",postLists.get((int)arg3).getFile());
                                             String base64="";
@@ -389,6 +399,9 @@ public class ListviewFragment extends Fragment {
     }
 
     public class ForumList {
+
+        @SerializedName("id")
+        public String id;
 
         @SerializedName("title")
         private String title;
