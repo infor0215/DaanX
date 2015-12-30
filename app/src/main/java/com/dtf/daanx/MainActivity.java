@@ -39,6 +39,7 @@ public class MainActivity extends BaseActivity
     private TinyDB cache;
     ArrayList<Integer> lastItem;
     TinyDB first;
+    Bundle bundle1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        bundle1 = this.getIntent().getExtras();
         cache=new TinyDB("main-cache",this);
 
         if (!networkInfo()) {
@@ -143,6 +144,7 @@ public class MainActivity extends BaseActivity
                     .setContentTitle("NavigationDrawer")
                     .setContentText("所有的功能都在這裡")
                     .hideOnTouchOutside()
+                    .blockAllTouches()
                     .build();
         }
     }
@@ -190,7 +192,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private void SwitchFramgent(final int id){
+    public void SwitchFramgent(final int id){
         lastItem.add(id);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -204,6 +206,7 @@ public class MainActivity extends BaseActivity
                         fg = new MainFragment();
                         bundle = new Bundle();
                         bundle.putString("type", "main");
+                        bundle.putString("json",bundle1.getString("json"));
                         fg.setArguments(bundle);
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("main");
@@ -372,15 +375,20 @@ public class MainActivity extends BaseActivity
                                 MainActivity.this.finish();
                             }
                         });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
                         builder.create().show();
                         break;
                     case R.id.nav_close:
-                        android.os.Process.killProcess(android.os.Process.myPid());
                         System.exit(0);
                         break;
                 }
             }
-        }, 300);
+        }, 350);
     }
 
     @Override

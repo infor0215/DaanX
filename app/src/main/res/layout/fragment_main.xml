@@ -1,99 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.percent.PercentRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_date"
-        android:layout_gravity="center"
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        app:layout_heightPercent="10%"
-        app:layout_marginTopPercent="1.5%"
-        card_view:cardCornerRadius="5dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/main_textlast"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
             android:gravity="center"
-            android:layout_marginTop="10dp"
             android:text="距離 統測 還有170天"
             android:textSize="25dp" />
 
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_thing"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        app:layout_heightPercent="27%"
-        app:layout_marginTopPercent="12%"
-        card_view:cardCornerRadius="@dimen/card_radius">
-
-        <ImageView android:layout_width="match_parent"
-            android:src="@color/green_500"
-            android:layout_height="80dp" />
-        <TextView
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_news"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/white"
-            android:text="大事記"
-            android:textSize="30dp" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            card_view:cardCornerRadius="@dimen/card_radius">
 
-    </android.support.v7.widget.CardView>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:src="@color/amber_600" />
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_news"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        app:layout_heightPercent="27%"
-        app:layout_marginTopPercent="40%"
-        card_view:cardCornerRadius="@dimen/card_radius">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:text="最新公告"
+                android:textColor="@color/white"
+                android:textSize="30dp" />
 
-        <ImageView android:layout_width="match_parent"
-            android:src="@color/amber_600"
-            android:layout_height="80dp" />
-        <TextView
+            <com.quentindommerc.superlistview.SuperListview xmlns:superlistview="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/post_list"
+                android:layout_width="match_parent"
+                android:layout_height="161dp"
+                android:layout_marginTop="60dp"
+                android:background="@color/white"
+                superlistview:superlv__listClipToPadding="true"
+                superlistview:superlv__listDivider="@color/grey_300"
+                superlistview:superlv__listDividerHeight="1dp"
+                superlistview:superlv__listPadding="0dp"
+                superlistview:superlv__scrollbarStyle="outsideOverlay"></com.quentindommerc.superlistview.SuperListview>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_discuss"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/white"
-            android:text="熱門消息"
-            android:textSize="30dp" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            card_view:cardCornerRadius="@dimen/card_radius">
 
-    </android.support.v7.widget.CardView>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:src="@color/blue_300" />
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_discuss"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        app:layout_heightPercent="27%"
-        app:layout_marginTopPercent="68%"
-        card_view:cardCornerRadius="@dimen/card_radius">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:text="熱門討論"
+                android:textColor="@color/white"
+                android:textSize="30dp" />
 
-        <ImageView android:layout_width="match_parent"
-            android:src="@color/blue_300"
-            android:layout_height="80dp" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:textColor="@color/white"
-            android:text="熱門討論"
-            android:textSize="30dp" />
-
-    </android.support.v7.widget.CardView>
-</android.support.percent.PercentRelativeLayout>
+            <com.quentindommerc.superlistview.SuperListview xmlns:superlistview="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/forum_list"
+                android:layout_width="match_parent"
+                android:layout_height="161dp"
+                android:layout_marginTop="60dp"
+                android:background="@color/white"
+                superlistview:superlv__listClipToPadding="true"
+                superlistview:superlv__listDivider="@color/grey_300"
+                superlistview:superlv__listDividerHeight="1dp"
+                superlistview:superlv__listPadding="0dp"
+                superlistview:superlv__scrollbarStyle="outsideOverlay"></com.quentindommerc.superlistview.SuperListview>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

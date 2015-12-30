@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -336,9 +337,13 @@ public class ForumCommitActivity extends BaseActivity {
     }
 
     private class ForumPost{
+        @SerializedName("title")
         public String title;
+        @SerializedName("auth")
         public String auth;
+        @SerializedName("body")
         public String body;
+        @SerializedName("day")
         public String day;
     }
 

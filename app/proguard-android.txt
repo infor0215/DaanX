@@ -75,3 +75,9 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 
 ##---------------End: proguard configuration for Gson  ----------
+
+# parse
+# Parse
+-dontwarn com.parse.**
+-keep class com.parse.** { *; }
+

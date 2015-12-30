@@ -101,6 +101,7 @@ public class CalcFragment extends Fragment {
                                                 .withNewStyleShowcase()
                                                 .setStyle(R.style.CustomShowcaseTheme2)
                                                 .setContentTitle("列表")
+                                                .blockAllTouches()
                                                 .setContentText("最上面下拉載入上一個月\n滑到最下面會自動載入下一個月\n藍色列為今天")
                                                 .hideOnTouchOutside()
                                                 .setShowcaseEventListener(new OnShowcaseEventListener() {
@@ -119,6 +120,7 @@ public class CalcFragment extends Fragment {
                                                                 .setContentTitle("指示")
                                                                 .setContentText("顯示目前查看年分與月份")
                                                                 .hideOnTouchOutside()
+                                                                .blockAllTouches()
                                                                 .build();
                                                     }
 

@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
@@ -104,7 +105,35 @@ public class ListviewFragment extends Fragment {
                                                 .withNewStyleShowcase()
                                                 .setStyle(R.style.CustomShowcaseTheme2)
                                                 .setContentTitle("列表")
+                                                .blockAllTouches()
                                                 .setContentText("最上面下拉可以更新列表\n滑到最下面會自動載入")
+                                                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                                    @Override
+                                                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                                        try {
+                                                        ViewTarget target = new ViewTarget(R.id.fab, getActivity());
+                                                        new ShowcaseView.Builder(getActivity())
+                                                                .setTarget(target)
+                                                                .withNewStyleShowcase()
+                                                                .setStyle(R.style.CustomShowcaseTheme2)
+                                                                .setContentTitle("發表主題")
+                                                                .setContentText("按下去可以發表主題")
+                                                                .hideOnTouchOutside()
+                                                                .blockAllTouches()
+                                                                .build();
+                                                        }catch (Exception e){/**/}
+                                                    }
+
+                                                    @Override
+                                                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                                    }
+                                                })
                                                 .hideOnTouchOutside()
                                                 .build();
                                     }
@@ -118,7 +147,6 @@ public class ListviewFragment extends Fragment {
                                             Bundle bundle = new Bundle();
                                             bundle.putString("title", forumLists.get((int)arg3).getTitle());
                                             bundle.putString("id", forumLists.get((int) arg3).id);
-                                            bundle.putString("date",forumLists.get((int) arg3).getDate());
                                             bundle.putString("writer",forumLists.get((int)arg3).getWriter());
                                             String base64="";
                                             try {
@@ -357,6 +385,7 @@ public class ListviewFragment extends Fragment {
     }
 
     public String networkRun(final View view,String url){
+        Log.i("status",url);
         try {
             ((MainActivity)getActivity()).trustDacsc();
             Document doc = Jsoup.connect(url)
@@ -412,16 +441,8 @@ public class ListviewFragment extends Fragment {
         @SerializedName("writer")
         private String writer;
 
-        @SerializedName("day")
-        private String date;
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
+        @SerializedName("file")
+        public String file;
 
         public String getTitle() {
             return title;

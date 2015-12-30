@@ -1,12 +1,15 @@
 package com.dtf.daanx;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -30,6 +33,8 @@ public class LoginActivity extends BaseActivity {
     ProgressDialog dialog;
     View contentView;
     TinyDB first;
+    private int timeout;
+    long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +44,38 @@ public class LoginActivity extends BaseActivity {
         first.putInt("num",first.getInt("num")+1);
         preference=getSharedPreferences("setting",0);
         String stu_id=preference.getString("stu_id","");
+        timeout=0;
         if(!stu_id.equals("")){//判斷是否第一次開啟App
             //過場動畫
             super.onCreate(savedInstanceState);
             //setContentView(R.layout.activity_login);
             setContentView(contentView=View.inflate(this, R.layout.activity_flag, null));
 
+            time= System.currentTimeMillis();
             //切換到主界面
-            new Handler().postDelayed(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-                    LoginActivity.this.finish();
+                    final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("json",networkRun(contentView,"https://api.dacsc.club/daanx/main"));
+                    intent.putExtras(bundle);
+                    long now=System.currentTimeMillis();
+                    if(now-time<1500){
+                        try {
+                            Thread.sleep((1500-(now-time)));
+                        }catch (Exception e){/**/}
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+                            LoginActivity.this.finish();
+                        }
+                    });
                 }
-            }, 1000);
+            }).start();
         }else{
             //註冊畫面
             super.onCreate(savedInstanceState);
@@ -72,6 +93,7 @@ public class LoginActivity extends BaseActivity {
                         .setTarget(target)
                         .setStyle(R.style.CustomShowcaseTheme2)
                         .withNewStyleShowcase()
+                        .blockAllTouches()
                         .setContentTitle("輸入說明")
                         .setContentText("學號與身分證字號為查詢成績用\n系統不會上傳身分證字號至伺服器\n畢業年分請打民國年\n其他為論壇使用")
                         .hideOnTouchOutside()
@@ -92,7 +114,7 @@ public class LoginActivity extends BaseActivity {
         final String stu_email=((TextView)findViewById(R.id.stu_email)).getText().toString();
         //endregion
         //region 連線
-        if(networkInfo()) {
+        if(networkInfo()&&!stu_year.trim().equals("")&&!stu_nick.trim().equals("")&&!stu_email.trim().equals("")) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -159,8 +181,20 @@ public class LoginActivity extends BaseActivity {
                     }
                 }
             }).start();
-        }else{
+        }else if(!networkInfo()){
             networkAlert();
+        }else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+            builder.setMessage("欄位不能空白");
+            builder.setTitle("空白");
+            builder.setCancelable(false);
+            builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.create().show();
         }
         //endregion
     }
@@ -190,14 +224,65 @@ public class LoginActivity extends BaseActivity {
         editor.putString("stu_pwd",pwdSecure(stu_pwd));
         editor.apply();
         //region 進入主界面
-        try{
-            Thread.sleep(1000);
-        }catch(InterruptedException c){/**/}
-        Intent intent=new Intent();
-        intent.setClass(LoginActivity.this,MainActivity.class);
-        startActivity(intent);
-        LoginActivity.this.finish();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("json",networkRun(contentView,"https://api.dacsc.club/daanx/main"));
+                intent.putExtras(bundle);
+                try {
+                    Thread.sleep(500);
+                }catch (Exception e){/**/}
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+                        LoginActivity.this.finish();
+                    }
+                });
+            }
+        }).start();
         //endregion
+    }
+
+    public String networkRun(final View view,String url){
+        try {
+            trustDacsc();
+            Document doc = Jsoup.connect(url)
+                    .timeout(5000)
+                    .data("auth", preference.getString("auth", ""))
+                    .get();
+            Log.i("json", doc.select("body").text());
+            return doc.select("body").text();
+        }catch (Exception e){
+            timeout++;
+            if (timeout < 5) {
+                runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                        try {
+                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                        }catch (Exception e){/**/}
+                    }
+                });
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException c) {/**/}
+                return networkRun(view,url);
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                        }catch (Exception e){/**/}
+                    }
+                });
+                return "";
+            }
+        }
     }
 
 }

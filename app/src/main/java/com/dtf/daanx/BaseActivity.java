@@ -205,7 +205,7 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(settintIntent);
             }
         });
-        builder.setPositiveButton("以離線模式使用(只能使用學生查詢部分)", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("以離線模式使用(只能使用學生查詢部分)", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

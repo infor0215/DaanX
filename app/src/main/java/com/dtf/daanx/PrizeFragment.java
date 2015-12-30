@@ -323,6 +323,7 @@ public class PrizeFragment extends Fragment {
                     .setContentText("綠色圓圈點擊\n" +
                             "可以過濾下面列表")
                     .hideOnTouchOutside()
+                    .blockAllTouches()
                     .build();
         }
         //endregion

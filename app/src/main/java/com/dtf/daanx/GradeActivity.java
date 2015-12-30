@@ -122,6 +122,7 @@ public class GradeActivity extends BaseActivity {
                                         .setContentTitle("條列")
                                         .setContentText("上學期下學期 可點擊摺疊查看\n下拉選單可選擇年級\n綠色整列為拿到學分\n紅色為沒拿到學分\n藍色為統計")
                                         .hideOnTouchOutside()
+                                        .blockAllTouches()
                                         .build();
                             }
                         }
@@ -374,6 +375,7 @@ public class GradeActivity extends BaseActivity {
                                     .setContentTitle("圓圈")
                                     .setContentText("你的成績將出現在圈圈裡\n紅色為不及格\n黃色為60~70\n綠色為70~100")
                                     .hideOnTouchOutside()
+                                    .blockAllTouches()
                                     .build();
                         }
                     }

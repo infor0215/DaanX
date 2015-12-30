@@ -10,8 +10,9 @@ import com.parse.ParseInstallation;
  */
 public class BaseApplication extends Application {
     public void onCreate() {
+        super.onCreate();
         Parse.initialize(this, "ycD1PSY4ksIF10wZAYu8PjjFG7C3WofyM4BVV6y2", "zVYZBHGAXQaFcNFMgkGlqOChCgC9EqCd5LzV90jN");
         ParseInstallation.getCurrentInstallation().saveInBackground();
-        super.onCreate();
+
     }
 }
