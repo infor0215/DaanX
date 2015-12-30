@@ -653,7 +653,11 @@ public class ListviewFragment extends Fragment {
 
             holder.image.setText(String.valueOf(forumList.getWriter().charAt(0)));
             holder.title.setText(forumList.getTitle());
-            Document doc = Jsoup.parse(forumList.getContent());
+            String base64="";
+            try{
+                base64=new String(Base64.decode(forumList.getContent().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
+            }catch (Exception e){/**/}
+            Document doc = Jsoup.parse(base64);
             String tempBody=doc.text();
             holder.content.setText(tempBody);
 

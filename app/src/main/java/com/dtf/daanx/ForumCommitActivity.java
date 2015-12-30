@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -229,32 +230,50 @@ public class ForumCommitActivity extends BaseActivity {
                 submit.title=title.getText().toString();
                 submit.auth=preference.getString("auth", "");
                 byte[] data=new byte[10];
+                String tmp="";
                 try {
-                    data = mEditor.getHtml().getBytes("UTF-8");
+                    data = mEditor.getHtml().getBytes("CP1252");
+                    tmp=new String(Base64.encode(data, Base64.DEFAULT),"CP1252");
                 }catch (Exception e){/**/}
-                submit.body=Base64.encodeToString(data, Base64.DEFAULT);
+                submit.body=tmp;
                 Calendar calendar = Calendar.getInstance();
                 int year=calendar.get(Calendar.YEAR);
                 int month=calendar.get(Calendar.MONTH)+1;
                 int day=calendar.get(Calendar.DAY_OF_MONTH);
                 submit.day=String.valueOf(year+"/"+month+"/"+day);
-                String result=gson.toJson(submit);
-                try {
-                    Connection.Response res = Jsoup
-                            .connect("https://api.dacsc.club/daanx/forum/main")
-                            .data("auth",preference.getString("auth", ""), "json",result)
-                            .method(Connection.Method.POST)
-                            .timeout(5000)
-                            .execute();
-                    Toast.makeText(getApplicationContext(),"傳送成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setClass(ForumCommitActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    ForumCommitActivity.this.finish();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(),"傳送失敗 請稍後再試", Toast.LENGTH_SHORT).show();
-                }
-
+                final String result=gson.toJson(submit);
+                Log.i("status",result);
+                Log.i("status",preference.getString("auth",""));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Connection.Response res = Jsoup
+                                    .connect("https://api.dacsc.club/daanx/forum/main")
+                                    .data("auth", preference.getString("auth", ""), "json", result)
+                                    .method(Connection.Method.GET)
+                                    .timeout(5000)
+                                    .execute();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "傳送成功", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent();
+                                    intent.setClass(ForumCommitActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    ForumCommitActivity.this.finish();
+                                }
+                            });
+                        }catch (final Exception e){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "傳送失敗 請稍後再試\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
             }
         });
     }
