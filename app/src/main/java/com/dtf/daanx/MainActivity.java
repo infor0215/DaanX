@@ -1,26 +1,35 @@
 package com.dtf.daanx;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +38,7 @@ public class MainActivity extends BaseActivity
     SharedPreferences preference;
     private TinyDB cache;
     ArrayList<Integer> lastItem;
+    TinyDB first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +130,23 @@ public class MainActivity extends BaseActivity
                 SwitchFramgent(R.id.nav_main);
                 break;
         }
+
+        first=new TinyDB("first-main",this);
+        first.putInt("num", first.getInt("num") + 1);
+
+        if(first.getInt("num")==1){
+            ViewTarget target = new ViewTarget(R.id.stu_id, this);
+            new ShowcaseView.Builder(this)
+                    .setTarget(new PointTarget(new Point(0,10)))
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("NavigationDrawer")
+                    .setContentText("所有的功能都在這裡")
+                    .hideOnTouchOutside()
+                    .build();
+        }
     }
+
 
 
     //覆寫返回鍵事件
@@ -318,21 +344,39 @@ public class MainActivity extends BaseActivity
                         ft.addToBackStack("About");
                         ft.commit();
                         break;
-                    case R.id.nav_logout:
-                        SharedPreferences.Editor editor = preference.edit();
-                        editor.putString("stu_id", "");
-                        editor.putString("stu_pwd", "");
-                        editor.putString("stu_year", "");
-                        editor.putString("stu_nick", "");
-                        editor.putString("stu_class", "");
-                        editor.putString("stu_name", "");
-                        editor.putString("stu_tea", "");
-                        editor.putString("stu_num", "");
-                        editor.putString("stu_email", "");
-                        editor.apply();
-                        intent = new Intent(MainActivity.this, LoginActivity.class);
+                    case R.id.nav_feedback:
+                        intent = new Intent();
+                        intent.setClass(MainActivity.this, FeedBackActivity.class);
                         startActivity(intent);
-                        MainActivity.this.finish();
+                        break;
+                    case R.id.nav_logout:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage("是否登出?");
+                        builder.setTitle("登出");
+                        builder.setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences.Editor editor = preference.edit();
+                                editor.putString("stu_id", "");
+                                editor.putString("stu_pwd", "");
+                                editor.putString("stu_year", "");
+                                editor.putString("stu_nick", "");
+                                editor.putString("stu_class", "");
+                                editor.putString("stu_name", "");
+                                editor.putString("stu_tea", "");
+                                editor.putString("stu_num", "");
+                                editor.putString("stu_email", "");
+                                editor.apply();
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                MainActivity.this.finish();
+                            }
+                        });
+                        builder.create().show();
+                        break;
+                    case R.id.nav_close:
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(0);
                         break;
                 }
             }

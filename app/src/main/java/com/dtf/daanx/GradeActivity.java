@@ -2,8 +2,11 @@ package com.dtf.daanx;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +28,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.quentindommerc.superlistview.SuperListview;
 
 import org.jsoup.Connection.Method;
@@ -66,6 +71,7 @@ public class GradeActivity extends BaseActivity {
     private String choosen;
 
     GradeAdapter gradeAdapter;
+    TinyDB first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +104,46 @@ public class GradeActivity extends BaseActivity {
         mTabs.setupWithViewPager(mViewPager);
         mTabs.getTabAt(0).setText("月考成績");
         mTabs.getTabAt(1).setText("學期成績");
+        mTabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(final TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(tab.getText().toString().equals("學期成績")){
+                            if(first.getInt("num")==1){
+                                ViewTarget target = new ViewTarget(R.id.frontList,GradeActivity.this);
+                                new ShowcaseView.Builder(GradeActivity.this)
+                                        .setTarget(target)
+                                        .withNewStyleShowcase()
+                                        .setStyle(R.style.CustomShowcaseTheme2)
+                                        .setContentTitle("條列")
+                                        .setContentText("上學期下學期 可點擊摺疊查看\n下拉選單可選擇年級\n綠色整列為拿到學分\n紅色為沒拿到學分\n藍色為統計")
+                                        .hideOnTouchOutside()
+                                        .build();
+                            }
+                        }
+                    }
+                }, 100);
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         //endregion
+
+        first=new TinyDB("first-grade",this);
+        first.putInt("num",first.getInt("num")+1);
     }
 
 
@@ -319,6 +364,18 @@ public class GradeActivity extends BaseActivity {
                         writeInUI(view, grade, backusl, R.id.backusl);
                         //下學期期末平均
                         writeInUI(view, grade, backavg, R.id.backavg);
+
+                        if(first.getInt("num")==1){
+                            ViewTarget target = new ViewTarget(R.id.front1,GradeActivity.this);
+                            new ShowcaseView.Builder(GradeActivity.this)
+                                    .setTarget(target)
+                                    .withNewStyleShowcase()
+                                    .setStyle(R.style.CustomShowcaseTheme2)
+                                    .setContentTitle("圓圈")
+                                    .setContentText("你的成績將出現在圈圈裡\n紅色為不及格\n黃色為60~70\n綠色為70~100")
+                                    .hideOnTouchOutside()
+                                    .build();
+                        }
                     }
                 });
                 if(dialog.isShowing()){

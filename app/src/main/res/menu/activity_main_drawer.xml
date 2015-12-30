@@ -89,8 +89,12 @@
                 <!--android:title="@string/app_setting" />-->
             <item android:id="@+id/nav_about" android:icon="@drawable/ic_people_24dp"
                 android:title="@string/about_us" />
+            <item android:id="@+id/nav_feedback" android:icon="@drawable/ic_exit_to_app_24dp"
+                android:title="@string/feedback" />
             <item android:id="@+id/nav_logout" android:icon="@drawable/ic_exit_to_app_24dp"
                 android:title="@string/logout" />
+            <item android:id="@+id/nav_close" android:icon="@drawable/ic_exit_to_app_24dp"
+                android:title="@string/close" />
         </menu>
     </item>
 

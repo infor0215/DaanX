@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.ViewGroup.LayoutParams;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -47,6 +49,8 @@ public class PrizeFragment extends Fragment {
     int bigfault;
     LinearLayout linearLayout;
     private Thread thread;
+
+    TinyDB first;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -306,6 +310,20 @@ public class PrizeFragment extends Fragment {
             linearLayout_479.addView(textView_298);
 
             linearLayout.addView(linearLayout_479);
+        }
+        first=new TinyDB("first-prize",getActivity());
+        first.putInt("num", first.getInt("num") + 1);
+        if(first.getInt("num")==1){
+            FramgentTarget target = new FramgentTarget(R.id.smallcite,view);
+            new ShowcaseView.Builder(getActivity())
+                    .setTarget(target)
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("小綠點")
+                    .setContentText("綠色圓圈點擊\n" +
+                            "可以過濾下面列表")
+                    .hideOnTouchOutside()
+                    .build();
         }
         //endregion
     }

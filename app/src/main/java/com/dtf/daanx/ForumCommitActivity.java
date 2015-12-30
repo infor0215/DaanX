@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -45,6 +47,12 @@ public class ForumCommitActivity extends BaseActivity {
         preference=getSharedPreferences("setting", 0);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final Bundle bundle = this.getIntent().getExtras();
+        if(bundle.getString("type").equals("commit")){
+            EditText title=(EditText)findViewById(R.id.txt_title);
+            title.setVisibility(View.GONE);
+        }
 
         mEditor = (RichEditor) findViewById(R.id.editor);
         mEditor.setEditorHeight(250);
@@ -223,38 +231,106 @@ public class ForumCommitActivity extends BaseActivity {
         findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final ProgressDialog dialog = ProgressDialog.show(ForumCommitActivity.this, "送出中", "請稍後");
                 Gson gson = new Gson();
                 ForumPost submit=new ForumPost();
-                EditText title=(EditText)findViewById(R.id.txt_title);
-                submit.title=title.getText().toString();
-                submit.auth=preference.getString("auth", "");
-                byte[] data=new byte[10];
-                try {
-                    data = mEditor.getHtml().getBytes("UTF-8");
-                }catch (Exception e){/**/}
-                submit.body=Base64.encodeToString(data, Base64.DEFAULT);
-                Calendar calendar = Calendar.getInstance();
-                int year=calendar.get(Calendar.YEAR);
-                int month=calendar.get(Calendar.MONTH)+1;
-                int day=calendar.get(Calendar.DAY_OF_MONTH);
-                submit.day=String.valueOf(year+"/"+month+"/"+day);
-                String result=gson.toJson(submit);
-                try {
-                    Connection.Response res = Jsoup
-                            .connect("https://api.dacsc.club/daanx/forum/main")
-                            .data("auth",preference.getString("auth", ""), "json",result)
-                            .method(Connection.Method.POST)
-                            .timeout(5000)
-                            .execute();
-                    Toast.makeText(getApplicationContext(),"傳送成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setClass(ForumCommitActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    ForumCommitActivity.this.finish();
-                }catch (Exception e){
-                    Toast.makeText(getApplicationContext(),"傳送失敗 請稍後再試", Toast.LENGTH_SHORT).show();
+                if(bundle.getString("type").equals("topic")) {
+                    EditText title = (EditText) findViewById(R.id.txt_title);
+                    submit.title = title.getText().toString();
+                    submit.auth = preference.getString("auth", "");
+                    byte[] data = new byte[10];
+                    String tmp = "";
+                    try {
+                        data = mEditor.getHtml().getBytes("UTF-8");
+                        tmp = new String(Base64.encode(data, Base64.DEFAULT), "UTF-8");
+                    } catch (Exception e) {/**/}
+                    submit.body = tmp;
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1;
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    submit.day = String.valueOf(year + "/" + month + "/" + day);
+                    final String result = gson.toJson(submit);
+                    Log.i("status", result);
+                    Log.i("status", preference.getString("auth", ""));
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Connection.Response res = Jsoup
+                                        .connect("https://api.dacsc.club/daanx/forum/main")
+                                        .data("auth", preference.getString("auth", ""), "json", result)
+                                        .method(Connection.Method.POST)
+                                        .timeout(5000)
+                                        .execute();
+                                dialog.dismiss();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "傳送成功", Toast.LENGTH_SHORT).show();
+                                        onBackPressed();
+                                        ForumCommitActivity.this.finish();
+                                    }
+                                });
+                            } catch (final Exception e) {
+                                dialog.dismiss();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "傳送失敗 請稍後再試\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
+                }else{
+                    submit.auth = preference.getString("auth", "");
+                    byte[] data = new byte[10];
+                    String tmp = "";
+                    try {
+                        data = mEditor.getHtml().getBytes("UTF-8");
+                        tmp = new String(Base64.encode(data, Base64.DEFAULT), "UTF-8");
+                    } catch (Exception e) {/**/}
+                    submit.body = tmp;
+                    Calendar calendar = Calendar.getInstance();
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1;
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    submit.day = String.valueOf(year + "/" + month + "/" + day);
+                    final String result = gson.toJson(submit);
+                    Log.i("status", result);
+                    Log.i("status", preference.getString("auth", ""));
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Connection.Response res = Jsoup
+                                        .connect("https://api.dacsc.club/daanx/forum/main/id/"+bundle.getString("id"))
+                                        .data("auth", preference.getString("auth", ""), "json", result)
+                                        .method(Connection.Method.POST)
+                                        .timeout(5000)
+                                        .execute();
+                                dialog.dismiss();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "傳送成功", Toast.LENGTH_SHORT).show();
+                                        onBackPressed();
+                                        ForumCommitActivity.this.finish();
+                                    }
+                                });
+                            } catch (final Exception e) {
+                                dialog.dismiss();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(), "傳送失敗 請稍後再試\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }
+                    }).start();
                 }
-
             }
         });
     }
