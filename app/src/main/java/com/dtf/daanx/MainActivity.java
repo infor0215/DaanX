@@ -33,7 +33,6 @@ public class MainActivity extends BaseActivity
     SharedPreferences preference;
     private TinyDB cache;
     ArrayList<Integer> lastItem;
-    TinyDB first;
     Bundle bundle1;
 
     @Override
@@ -125,21 +124,6 @@ public class MainActivity extends BaseActivity
             default:
                 SwitchFramgent(R.id.nav_main);
                 break;
-        }
-
-        first=new TinyDB("first-main",this);
-        first.putInt("num", first.getInt("num") + 1);
-
-        if(first.getInt("num")==1){
-            new ShowcaseView.Builder(this)
-                    .setTarget(new PointTarget(new Point(0,10)))
-                    .withNewStyleShowcase()
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setContentTitle("NavigationDrawer")
-                    .setContentText("所有的功能都在這裡")
-                    .hideOnTouchOutside()
-                    .blockAllTouches()
-                    .build();
         }
     }
 

@@ -2,6 +2,7 @@ package com.dtf.daanx;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
@@ -12,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +31,8 @@ import java.util.Date;
  * Created by yoyo930021 on 2015/11/9.
  */
 public class MainFragment extends Fragment {
+
+    TinyDB first;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,6 +91,21 @@ public class MainFragment extends Fragment {
             }
         }).start();
 
+
+        first=new TinyDB("first-main",getActivity());
+        first.putInt("num", first.getInt("num") + 1);
+
+        if(first.getInt("num")==1){
+            new ShowcaseView.Builder(getActivity())
+                    .setTarget(new PointTarget(new Point(10,20)))
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("NavigationDrawer")
+                    .setContentText("所有的功能都在這裡")
+                    .hideOnTouchOutside()
+                    .blockAllTouches()
+                    .build();
+        }
         
         return view;
     }
