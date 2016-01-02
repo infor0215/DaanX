@@ -122,19 +122,21 @@ public class TimeTableFragment extends Fragment {
                 dialog.dismiss();
                 timeout++;
                 if (timeout < 5) {
-                    if (getActivity() != null) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                            }
-                        });
-                    }
                     try {
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+                        }
                         Thread.sleep(5000);
+                        networkRun(view);
                     } catch (InterruptedException c) {/**/}
-                    networkRun(view);
+
                 } else {
+                    try {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -143,6 +145,7 @@ public class TimeTableFragment extends Fragment {
                             }
                         });
                     }
+                    }catch(Exception q){/**/}
                 }
                 //endregion
             }

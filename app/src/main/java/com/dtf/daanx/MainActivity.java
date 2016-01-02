@@ -206,7 +206,9 @@ public class MainActivity extends BaseActivity
                         fg = new MainFragment();
                         bundle = new Bundle();
                         bundle.putString("type", "main");
-                        bundle.putString("json",bundle1.getString("json"));
+                        if(bundle1!=null) {
+                            bundle.putString("json", bundle1.getString("json"));
+                        }
                         fg.setArguments(bundle);
                         ft.replace(R.id.main_layout, fg, "f_m");
                         ft.addToBackStack("main");

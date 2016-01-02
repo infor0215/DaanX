@@ -41,47 +41,49 @@ public class MainFragment extends Fragment {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<ArrayList<MainContent>>() {}.getType();
                 ArrayList<MainContent> mainContents=new ArrayList<MainContent>(){};
-                mainContents=gson.fromJson(bundle.getString("json"),listType);
-                ArrayList<MainContent> postLists=new ArrayList<MainContent>(){};
-                postLists.add(mainContents.get(1));
-                postLists.add(mainContents.get(2));
-                ArrayList<MainContent> forumLists=new ArrayList<MainContent>(){};
-                forumLists.add(mainContents.get(3));
-                forumLists.add(mainContents.get(4));
+                if(bundle.getString("json")!=null) {
+                    mainContents = gson.fromJson(bundle.getString("json"), listType);
+                    ArrayList<MainContent> postLists=new ArrayList<MainContent>(){};
+                    postLists.add(mainContents.get(1));
+                    postLists.add(mainContents.get(2));
+                    ArrayList<MainContent> forumLists=new ArrayList<MainContent>(){};
+                    forumLists.add(mainContents.get(3));
+                    forumLists.add(mainContents.get(4));
 
-                final String lastHolText=mainContents.get(0).title;
-                final String lastHolDay=String.valueOf(testLastDay(mainContents.get(0).day));
+                    final String lastHolText=mainContents.get(0).title;
+                    final String lastHolDay=String.valueOf(testLastDay(mainContents.get(0).day));
 
-                final PostAdapter postAdapter=new PostAdapter(getActivity(),postLists);
-                final ForumAdapter forumAdapter=new ForumAdapter(getActivity(),forumLists);
+                    final PostAdapter postAdapter=new PostAdapter(getActivity(),postLists);
+                    final ForumAdapter forumAdapter=new ForumAdapter(getActivity(),forumLists);
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SuperListview post_list=(SuperListview) view.findViewById(R.id.post_list);
-                        post_list.setAdapter(postAdapter);
-                        post_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView arg0, View arg1, int arg2,
-                                                    long arg3) {
-                                // TODO Auto-generated method stub
-                                ((MainActivity)getActivity()).SwitchFramgent(R.id.nav_stupost);
-                            }
-                        });
-                        SuperListview forum_list=(SuperListview) view.findViewById(R.id.forum_list);
-                        forum_list.setAdapter(forumAdapter);
-                        forum_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView arg0, View arg1, int arg2,
-                                                    long arg3) {
-                                // TODO Auto-generated method stub
-                                ((MainActivity)getActivity()).SwitchFramgent(R.id.nav_forum);
-                            }
-                        });
-                        TextView main_testlast=(TextView) view.findViewById(R.id.main_textlast);
-                        main_testlast.setText("距離 "+lastHolText+" 還有"+lastHolDay+"天");
-                    }
-                });
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SuperListview post_list=(SuperListview) view.findViewById(R.id.post_list);
+                            post_list.setAdapter(postAdapter);
+                            post_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView arg0, View arg1, int arg2,
+                                                        long arg3) {
+                                    // TODO Auto-generated method stub
+                                    ((MainActivity)getActivity()).SwitchFramgent(R.id.nav_stupost);
+                                }
+                            });
+                            SuperListview forum_list=(SuperListview) view.findViewById(R.id.forum_list);
+                            forum_list.setAdapter(forumAdapter);
+                            forum_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView arg0, View arg1, int arg2,
+                                                        long arg3) {
+                                    // TODO Auto-generated method stub
+                                    ((MainActivity)getActivity()).SwitchFramgent(R.id.nav_forum);
+                                }
+                            });
+                            TextView main_testlast=(TextView) view.findViewById(R.id.main_textlast);
+                            main_testlast.setText("距離 "+lastHolText+" 還有"+lastHolDay+"天");
+                        }
+                    });
+                }
             }
         }).start();
 

@@ -57,9 +57,11 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void run() {
                     final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("json",networkRun(contentView,"https://api.dacsc.club/daanx/main"));
-                    intent.putExtras(bundle);
+                    if(networkInfo()) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("json", networkRun(contentView, "https://api.dacsc.club/daanx/main"));
+                        intent.putExtras(bundle);
+                    }
                     long now=System.currentTimeMillis();
                     if(now-time<1500){
                         try {
@@ -257,6 +259,7 @@ public class LoginActivity extends BaseActivity {
             Log.i("json", doc.select("body").text());
             return doc.select("body").text();
         }catch (Exception e){
+            Log.w("net error",e.toString());
             timeout++;
             if (timeout < 5) {
                 runOnUiThread(new Runnable() {

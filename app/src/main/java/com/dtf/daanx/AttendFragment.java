@@ -184,23 +184,25 @@ public class AttendFragment extends Fragment {
                 dialog.dismiss();
                 timeout++;
                 if (timeout < 5) {
+                    try {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
                         }
                     });
-                    try {
                         Thread.sleep(5000);
                         networkRun(view);
                     } catch (Exception c) {/**/}
                 } else {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }catch (Exception q){/**/}
                 }
                 //endregion
             }
