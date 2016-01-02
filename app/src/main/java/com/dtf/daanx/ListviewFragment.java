@@ -53,6 +53,7 @@ public class ListviewFragment extends Fragment {
     boolean eventLock=false;
     private Thread thread;
     TinyDB first;
+    boolean commit=false;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +71,7 @@ public class ListviewFragment extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    commit=true;
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), ForumCommitActivity.class);
                     Bundle bundle = new Bundle();
@@ -146,6 +148,8 @@ public class ListviewFragment extends Fragment {
                                             bundle.putString("title", forumLists.get((int)arg3).getTitle());
                                             bundle.putString("id", forumLists.get((int) arg3).id);
                                             bundle.putString("writer",forumLists.get((int)arg3).getWriter());
+                                            bundle.putString("date",forumLists.get((int)arg3).date);
+                                            bundle.putString("view",forumLists.get((int)arg3).view);
                                             String base64="";
                                             try {
                                                 base64=new String(Base64.decode(forumLists.get((int)arg3).getContent().getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
@@ -442,6 +446,12 @@ public class ListviewFragment extends Fragment {
         @SerializedName("file")
         public String file;
 
+        @SerializedName("date")
+        public String date;
+
+        @SerializedName("view")
+        public String view;
+
         public String getTitle() {
             return title;
         }
@@ -708,6 +718,34 @@ public class ListviewFragment extends Fragment {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.image.setText(String.valueOf(forumList.getWriter().charAt(0)));
+
+            int view=Integer.parseInt(forumList.view);
+            if(view>500){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.grade_bg_red));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.grade_bg_red));
+                }
+            }else if(view>200){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_school));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                }
+            }else if(view>100){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_default));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_default));
+                }
+            }else {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_taech));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                }
+            }
+
             holder.title.setText(forumList.getTitle());
             String base64="";
             try{
@@ -736,9 +774,40 @@ public class ListviewFragment extends Fragment {
         super.onDestroyView();
         int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
         LinearLayout linearLayout=(LinearLayout) getActivity().findViewById(R.id.main_layout);
-        linearLayout.setPadding(pixels,pixels,pixels,pixels);
+        linearLayout.setPadding(pixels, pixels, pixels, pixels);
         FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume(){
+        if(commit){
+            thread=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    page = 1;
+                    Gson gson = new Gson();
+                    Type listType = new TypeToken<ArrayList<ForumList>>() {
+                    }.getType();
+                    jsonTemp=networkRun(getActivity().findViewById(android.R.id.content), "https://api.dacsc.club/daanx/forum/main/" + page);
+                    if(!jsonTemp.equals("")) {
+                        ArrayList<ForumList> listTemps=gson.fromJson(jsonTemp, listType);
+                        forumLists.clear();
+                        forumLists.addAll(listTemps);
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    forumAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            thread.start();
+        }
+        super.onResume();
     }
 }
 

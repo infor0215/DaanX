@@ -94,7 +94,7 @@ public class LoginActivity extends BaseActivity {
                         .withNewStyleShowcase()
                         .blockAllTouches()
                         .setContentTitle("輸入說明")
-                        .setContentText("學號與身分證字號為查詢成績用\n系統不會上傳身分證字號至伺服器\n畢業年分請打民國年\n其他為論壇使用")
+                        .setContentText("學號與身分證字號為查詢成績用\n系統不會上傳身分證字號至伺服器\n畢業年分請打民國年\n現在三年級請填入105 依此類推\n其他為論壇使用")
                         .hideOnTouchOutside()
                         .build();
             }
@@ -149,7 +149,7 @@ public class LoginActivity extends BaseActivity {
                             //送往伺服器
                             Log.i("status","login");
                             trustDacsc();
-                            Document server=Jsoup.connect("https://api.dacsc.club/daanx/register")
+                            Document server=Jsoup.connect("https://api.dacsc.club/daany/register")
                                     .data("stu_name",stu_name,"stu_id",stu_id,"stu_nick",stu_nick,"stu_email",stu_email)
                                     .timeout(5000)
                                     .post();
@@ -205,7 +205,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 Snackbar.make(contentView, "登入成功 1秒後轉入主界面", Snackbar.LENGTH_LONG).show();
                 //Toast.makeText(LoginActivity.this, "登入成功", Toast.LENGTH_LONG).show();
-                Log.i("status","success");
+                Log.i("status", "success");
             }
         });
         SharedPreferences.Editor editor=preference.edit();

@@ -117,7 +117,7 @@ public class MainFragment extends Fragment {
         long day=0;
         try {
             beginDate= format.parse(testDate);
-            day=Math.abs((beginDate.getTime()-nowDate.getTime())/(24*60*60*1000));
+            day=Math.abs((beginDate.getTime()-nowDate.getTime())/(24*60*60*1000))+1;
         }catch (Exception e){/**/}
         return day;
     }

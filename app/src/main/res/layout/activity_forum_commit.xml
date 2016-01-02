@@ -21,17 +21,19 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="com.dtf.daanx.ForumCommitActivity"
         tools:showIn="@layout/activity_forum_commit">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <EditText
                 android:id="@+id/txt_title"
@@ -160,6 +162,18 @@
                         android:background="@null"
                         android:contentDescription="@null"
                         android:src="@mipmap/h6" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/action_txt_color"
@@ -170,13 +184,20 @@
                         android:src="@mipmap/txt_color" />
 
                     <ImageButton
-                        android:id="@+id/action_bg_color"
+                        android:id="@+id/action_insert_link"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@null"
                         android:contentDescription="@null"
-                        android:src="@mipmap/bg_color" />
+                        android:src="@mipmap/insert_link" />
 
+                    <ImageButton
+                        android:id="@+id/action_insert_image"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:src="@mipmap/insert_image" />
 
                     <ImageButton
                         android:id="@+id/action_indent"
@@ -185,6 +206,14 @@
                         android:background="@null"
                         android:contentDescription="@null"
                         android:src="@mipmap/indent" />
+
+                    <ImageButton
+                        android:id="@+id/youtube"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:src="@mipmap/ic_youtube" />
 
                     <ImageButton
                         android:id="@+id/action_outdent"
@@ -226,31 +255,7 @@
                         android:contentDescription="@null"
                         android:src="@mipmap/blockquote" />
 
-                    <!--<ImageButton-->
-                    <!--android:id="@+id/action_insert_image"-->
-                    <!--android:layout_width="48dp"-->
-                    <!--android:layout_height="48dp"-->
-                    <!--android:background="@null"-->
-                    <!--android:contentDescription="@null"-->
-                    <!--android:src="@mipmap/insert_image"-->
-                    <!--/>-->
 
-                    <ImageButton
-                        android:id="@+id/action_insert_link"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@null"
-                        android:contentDescription="@null"
-                        android:src="@mipmap/insert_link" />
-
-                    <!--<ImageButton-->
-                    <!--android:id="@+id/action_insert_checkbox"-->
-                    <!--android:layout_width="48dp"-->
-                    <!--android:layout_height="48dp"-->
-                    <!--android:background="@null"-->
-                    <!--android:contentDescription="@null"-->
-                    <!--android:src="@android:drawable/checkbox_on_background"-->
-                    <!--/>-->
 
                 </LinearLayout>
             </HorizontalScrollView>
@@ -258,16 +263,18 @@
             <jp.wasabeef.richeditor.RichEditor
                 android:id="@+id/editor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorAccent"
-                android:text="送出"
-                android:textSize="24sp" />
+                android:layout_height="200dp" />
 
         </LinearLayout>
-    </ScrollView>
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#00c4ff"
+            android:text="送出"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -85,8 +85,8 @@
             <item  android:icon="@drawable/ic_usb_24dp"
                 android:id="@+id/nav_daanabout"
                 android:title="@string/daan_link" />
-            <!--<item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_manage"-->
-                <!--android:title="@string/app_setting" />-->
+            <item android:id="@+id/nav_config" android:icon="@android:drawable/ic_menu_manage"
+                android:title="@string/app_setting" />
             <item android:id="@+id/nav_about" android:icon="@drawable/ic_people_24dp"
                 android:title="@string/about_us" />
             <item android:id="@+id/nav_feedback" android:icon="@drawable/ic_cloud_upload_black_24dp"

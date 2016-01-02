@@ -318,6 +318,11 @@ public class MainActivity extends BaseActivity
                         ft.addToBackStack("DaanAbout");
                         ft.commit();
                         break;
+                    case R.id.nav_config:
+                        intent = new Intent();
+                        intent.setClass(MainActivity.this, ConfigActivity.class);
+                        startActivity(intent);
+                        break;
                     case R.id.nav_about:
                         fg = new UsFragment();
                         bundle = new Bundle();

@@ -13,6 +13,5 @@ public class BaseApplication extends Application {
         super.onCreate();
         Parse.initialize(this, "ycD1PSY4ksIF10wZAYu8PjjFG7C3WofyM4BVV6y2", "zVYZBHGAXQaFcNFMgkGlqOChCgC9EqCd5LzV90jN");
         ParseInstallation.getCurrentInstallation().saveInBackground();
-
     }
 }

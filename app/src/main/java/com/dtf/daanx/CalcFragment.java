@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
@@ -322,6 +323,7 @@ public class CalcFragment extends Fragment {
                 holder.line=(LinearLayout) convertView.findViewById(R.id.calc_line);
                 holder.day=(TextView) convertView.findViewById(R.id.day);
                 holder.commit=(TextView) convertView.findViewById(R.id.commit);
+                holder.weekone=(TextView) convertView.findViewById(R.id.weekone);
 
                 convertView.setTag(holder);
 
@@ -348,8 +350,9 @@ public class CalcFragment extends Fragment {
             }
             holder.day.setText(calcDay.day);
             holder.commit.setText(calcDay.commit);
+            holder.weekone.setText(weekOne(Integer.parseInt(calcDay.year), Integer.parseInt(calcDay.month), Integer.parseInt(calcDay.day)));
 
-//            Log.i("status", calcDay.month);
+            Log.i("status", calcDay.year+"/"+calcDay.month+"/"+calcDay.day);
 
             return convertView;
         }
@@ -358,6 +361,34 @@ public class CalcFragment extends Fragment {
             LinearLayout line;
             TextView day;
             TextView commit;
+            TextView weekone;
+        }
+    }
+
+    public String weekOne(int Year,int Month,int Date){
+        if (1 == Month || 2 == Month)
+        {
+            Month += 12;
+            Year--;
+        }
+        int result=(Date + 1 + 2 * Month + 3 * (Month + 1) / 5 + Year + Year / 4 - Year / 100 + Year / 400) % 7;
+        switch (result){
+            case 1:
+                return "（一）";
+            case 2:
+                return "（二）";
+            case 3:
+                return "（三）";
+            case 4:
+                return "（四）";
+            case 5:
+                return "（五）";
+            case 6:
+                return "（六）";
+            case 0:
+                return "（日）";
+            default:
+                return "";
         }
     }
 

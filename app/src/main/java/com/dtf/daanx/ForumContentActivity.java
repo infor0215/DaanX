@@ -1,5 +1,6 @@
 package com.dtf.daanx;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,16 +9,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -27,14 +35,21 @@ import com.quentindommerc.superlistview.SuperListview;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import jp.wasabeef.richeditor.RichEditor;
 
 public class ForumContentActivity extends BaseActivity {
 
     SharedPreferences preference;
     private int timeout;
+    ArrayList<ForumContent> forumContents;
+    boolean commit=false;
+    CommitAdapter commitAdapter;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,51 +63,37 @@ public class ForumContentActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         preference=getSharedPreferences("setting",0);
+        commit=false;
 
         TextView content_title=(TextView)findViewById(R.id.content_title);
         content_title.setText(bundle.getString("title"));
         TextView content_writer=(TextView)findViewById(R.id.content_writer);
         content_writer.setText(bundle.getString("writer"));
+        TextView content_view=(TextView)findViewById(R.id.content_view);
+        content_view.setText(bundle.getString("view"));
         TextView content_date=(TextView)findViewById(R.id.content_date);
         content_date.setText(bundle.getString("date"));
-        final WebView webView=(WebView)findViewById(R.id.txt_body);
-        webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (!webView.getSettings().getLoadsImagesAutomatically()) {
-                    webView.getSettings().setLoadsImagesAutomatically(true);
-                }
-                webView.setLayerType(View.LAYER_TYPE_NONE, null);
-            }
-        });
-        if(Build.VERSION.SDK_INT >= 19) {
-            webView.getSettings().setLoadsImagesAutomatically(true);
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            webView.getSettings().setLoadsImagesAutomatically(false);
-            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
-        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-        String html="<style>" +
-                "img{" +
-                "display: inline;\n" +
-                " height: auto;\n" +
-                " max-width: 100%;}\n" +
-                "html, body {\n" +
-                "width:100%;\n" +
-                "height: 100%;\n" +
-                "margin: 0px;\n" +
-                "padding: 0px;\n" +
-                "}</style></head><body>"+bundle.getString("content")+"</body></html>";
-        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+        final RichEditor text=(RichEditor) findViewById(R.id.txt_body);
+        text.setTextColor(Color.BLACK);
+        text.setEditorBackgroundColor(ContextCompat.getColor(ForumContentActivity.this, android.R.color.transparent));
+        text.setEnabled(false);
+        text.setFocusable(false);
+        if(Build.VERSION.SDK_INT >= 19) {
+            text.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            text.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+            text.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        text.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        text.setHtml(bundle.getString("content"));
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                commit=true;
                 Intent intent = new Intent();
                 intent.setClass(ForumContentActivity.this, ForumCommitActivity.class);
                 Bundle bundle1 = new Bundle();
@@ -105,23 +106,29 @@ public class ForumContentActivity extends BaseActivity {
 
         final View view=findViewById(android.R.id.content);
 
+        id=bundle.getString("id");
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Gson gson = new Gson();
-                Type listType = new TypeToken<ArrayList<ForumContent>>() {}.getType();
-                ArrayList<ForumContent> forumContents=new ArrayList<ForumContent>(){};
+                final Type listType = new TypeToken<ArrayList<ForumContent>>() {}.getType();
+                forumContents=new ArrayList<ForumContent>(){};
                 try {
-                    forumContents = gson.fromJson(networkRun(view, "https://api.dacsc.club/daanx/forum/main/id/" + bundle.getString("id")), listType);
+                    forumContents = gson.fromJson(networkRun(view, "https://api.dacsc.club/daany/forum/main/id/"+id), listType);
                 }catch (Exception e){/**/}
                 forumContents.remove(0);
 
-                final CommitAdapter commitAdapter=new CommitAdapter(ForumContentActivity.this,forumContents);
+                commitAdapter=new CommitAdapter(ForumContentActivity.this,forumContents);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SuperListview superListview=(SuperListview)findViewById(R.id.commit_list);
+                        ListView superListview=(ListView)findViewById(R.id.commit_list);
                         superListview.setAdapter(commitAdapter);
+                        superListview.setDivider(ContextCompat.getDrawable(ForumContentActivity.this, R.color.grey_600));
+                        int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
+                        superListview.setDividerHeight(pixels);
+                        setListViewHeightBasedOnChildren(superListview);
                     }
                 });
             }
@@ -136,8 +143,8 @@ public class ForumContentActivity extends BaseActivity {
                     .timeout(5000)
                     .data("auth", preference.getString("auth", ""))
                     .get();
-            Log.i("json", doc.select("body").text());
-            return doc.select("body").text();
+            Log.i("json", doc.select("body").html());
+            return doc.select("body").html();
         }catch (Exception e){
             timeout++;
             if (timeout < 5) {
@@ -180,6 +187,9 @@ public class ForumContentActivity extends BaseActivity {
 
         @SerializedName("file")
         public String file;
+
+        @SerializedName("date")
+        public String date;
     }
 
 
@@ -217,7 +227,8 @@ public class ForumContentActivity extends BaseActivity {
 
                 holder=new ViewHolder();
                 holder.writer=(TextView) convertView.findViewById(R.id.list_writer);
-                holder.body=(TextView) convertView.findViewById(R.id.list_body);
+                holder.body=(HtmlTextView) convertView.findViewById(R.id.list_body);
+                holder.date=(TextView) convertView.findViewById(R.id.list_date);
 
                 convertView.setTag(holder);
 
@@ -230,15 +241,78 @@ public class ForumContentActivity extends BaseActivity {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.writer.setText(forumContent.writer);
-            holder.body.setText(Html.fromHtml(forumContent.content));
+//            holder.body.setText(Html.fromHtml(forumContent.content));
+            String base64="";
+            try{
+                base64=new String(Base64.decode(forumContent.content.getBytes("UTF-8"), Base64.DEFAULT),"UTF-8");
+            }catch (Exception e) {/**/}
+            holder.body.setHtmlFromString(base64,new HtmlTextView.RemoteImageGetter());
+            holder.date.setText(forumContent.date);
 
             return convertView;
         }
 
         private class ViewHolder{
             TextView writer;
-            TextView body;
+            HtmlTextView body;
+            TextView date;
         }
     }
+
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        if(listView == null) return;
+
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
+
+    @Override
+    protected void onResume() {
+        if(commit){
+            Log.i("commmit","true");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Gson gson = new Gson();
+                    final Type listType = new TypeToken<ArrayList<ForumContent>>() {}.getType();
+                    ArrayList<ForumContent> temps=new ArrayList<ForumContent>(){};
+                    try {
+                        temps = gson.fromJson(networkRun(findViewById(android.R.id.content), "https://api.dacsc.club/daany/forum/main/id/"+id), listType);
+                    }catch (Exception e){/**/}
+                    temps.remove(0);
+                    forumContents.clear();
+                    forumContents.addAll(temps);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            commitAdapter.notifyDataSetChanged();
+                            ListView superListview=(ListView)findViewById(R.id.commit_list);
+                            setListViewHeightBasedOnChildren(superListview);
+                        }
+                    });
+                }
+            }).start();
+        }
+        super.onResume();
+    }
+
+
+
+
 
 }
