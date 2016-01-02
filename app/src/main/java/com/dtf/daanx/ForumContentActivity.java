@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Network;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -58,10 +59,39 @@ public class ForumContentActivity extends BaseActivity {
         content_writer.setText(bundle.getString("writer"));
         TextView content_date=(TextView)findViewById(R.id.content_date);
         content_date.setText(bundle.getString("date"));
-        WebView webView=(WebView)findViewById(R.id.txt_body);
-        webView.loadDataWithBaseURL(null, bundle.getString("content"), "text/html", "utf-8", null);
+        final WebView webView=(WebView)findViewById(R.id.txt_body);
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (!webView.getSettings().getLoadsImagesAutomatically()) {
+                    webView.getSettings().setLoadsImagesAutomatically(true);
+                }
+                webView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        });
+        if(Build.VERSION.SDK_INT >= 19) {
+            webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            webView.getSettings().setLoadsImagesAutomatically(false);
+            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        String html="<style>" +
+                "img{" +
+                "display: inline;\n" +
+                " height: auto;\n" +
+                " max-width: 100%;}\n" +
+                "html, body {\n" +
+                "width:100%;\n" +
+                "height: 100%;\n" +
+                "margin: 0px;\n" +
+                "padding: 0px;\n" +
+                "}</style></head><body>"+bundle.getString("content")+"</body></html>";
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +234,7 @@ public class ForumContentActivity extends BaseActivity {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.writer.setText(forumContent.writer);
-            holder.body.setText(forumContent.content);
+            holder.body.setText(Html.fromHtml(forumContent.content));
 
             return convertView;
         }

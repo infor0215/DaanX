@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -115,15 +117,31 @@ public class LibraryFragment extends Fragment {
 
     private void writeInUi(View view,String html){
         webView=(WebView) view.findViewById(R.id.webView);
-        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
-        //webView.loadData( html, "text/html",  "utf-8");
-        webView.getSettings().setJavaScriptEnabled(true);
-        //webView.load(null,html);
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (!webView.getSettings().getLoadsImagesAutomatically()) {
+                    webView.getSettings().setLoadsImagesAutomatically(true);
+                }
+                webView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        });
+        if(Build.VERSION.SDK_INT >= 19) {
+            webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            webView.getSettings().setLoadsImagesAutomatically(false);
+            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+
     }
 
     @Override
@@ -134,8 +152,8 @@ public class LibraryFragment extends Fragment {
         }catch (Exception e){/**/}
         super.onDestroyView();
         if (webView != null) {
-            webView.destroy();
             webView.clearCache(true);
+            webView.destroy();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dtf.daanx;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,21 +30,26 @@ public class WebviewActivity extends BaseActivity {
 
         Bundle bundle = this.getIntent().getExtras();
         final WebView webView=(WebView)findViewById(R.id.webView);
-        WebSettings settings=webView.getSettings();
-        settings.setSupportZoom(true);//开启缩放支持
-        settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(true);//开启缩放支持
-        settings.setDisplayZoomControls(false); //隐藏webview缩放按钮
-        webView.loadUrl(bundle.getString("src"));
+        if(Build.VERSION.SDK_INT >= 19) {
+            webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            webView.getSettings().setLoadsImagesAutomatically(false);
+            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.getSettings().setSupportZoom(true);//开启缩放支持
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);//开启缩放支持
+        webView.getSettings().setDisplayZoomControls(false); //隐藏webview缩放按钮
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-//                WebviewActivity.this.setProgress(newProgress*100);
                 if (newProgress == 100) {
                     bar.setVisibility(View.INVISIBLE);
-                    RelativeLayout.LayoutParams tL=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    RelativeLayout.LayoutParams tL = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     webView.setLayoutParams(tL);
                 } else {
                     if (View.INVISIBLE == bar.getVisibility()) {
@@ -53,7 +60,17 @@ public class WebviewActivity extends BaseActivity {
                 super.onProgressChanged(view, newProgress);
             }
         });
-        Log.i("status",bundle.getString("src"));
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (!webView.getSettings().getLoadsImagesAutomatically()) {
+                    webView.getSettings().setLoadsImagesAutomatically(true);
+                }
+                webView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
+        });
+
+        webView.loadUrl(bundle.getString("src"));
     }
 
 }

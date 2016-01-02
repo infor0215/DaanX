@@ -3,6 +3,7 @@ package com.dtf.daanx;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -72,34 +73,49 @@ public class PostContentActivity extends BaseActivity {
         }
         html+="</body></html>";
 
-        WebView webView=(WebView)findViewById(R.id.content_main);
-        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+        final WebView webView=(WebView)findViewById(R.id.content_main);
         webView.setBackgroundColor(Color.TRANSPARENT);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         WebSettings settings=webView.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         settings.setSupportZoom(true);//开启缩放支持
         settings.setBuiltInZoomControls(true);//开启缩放支持
         settings.setDisplayZoomControls(false); //隐藏webview缩放按钮
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if(url.contains("drive.google.com/viewerng/viewer?embedded=true")) {
+                if (url.contains("drive.google.com/viewerng/viewer?embedded=true")) {
                     Intent intent = new Intent();
                     intent.setClass(PostContentActivity.this, WebviewActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("src", url);
                     intent.putExtras(bundle);
                     startActivity(intent);
-                }else {
+                } else {
                     Uri uri = Uri.parse(url);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                 }
                 return true;
             }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (!webView.getSettings().getLoadsImagesAutomatically()) {
+                    webView.getSettings().setLoadsImagesAutomatically(true);
+                }
+                webView.setLayerType(View.LAYER_TYPE_NONE, null);
+            }
         });
-        //Toast.makeText(this,html,Toast.LENGTH_LONG).show();
+        if(Build.VERSION.SDK_INT >= 19) {
+            webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        } else {
+            webView.getSettings().setLoadsImagesAutomatically(false);
+            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
     }
 
 
