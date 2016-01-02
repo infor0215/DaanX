@@ -399,31 +399,29 @@ public class ListviewFragment extends Fragment {
         }catch (Exception e){
             timeout++;
             if (timeout < 5) {
-                if(getActivity()!=null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                            }catch (Exception e){/**/}
-                        }
-                    });
-                }
                 try {
+                    if(getActivity()!=null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                     Thread.sleep(5000);
-                } catch (InterruptedException c) {/**/}
+                } catch (Exception c) {/**/}
                 return networkRun(view,url);
             } else {
-                if(getActivity()!=null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
+                try {
+                    if(getActivity()!=null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
                                 Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                            }catch (Exception e){/**/}
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
+                }catch (Exception q){/**/}
                 return "";
             }
         }

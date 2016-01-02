@@ -259,27 +259,25 @@ public class LoginActivity extends BaseActivity {
             Log.w("net error",e.toString());
             timeout++;
             if (timeout < 5) {
-                runOnUiThread(new Runnable() {
+                try {
+                    runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                        try {
                             Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                        }catch (Exception e){/**/}
-                    }
-                });
-                try {
+                        }
+                    });
                     Thread.sleep(5000);
-                } catch (InterruptedException c) {/**/}
+                } catch (Exception c) {/**/}
                 return networkRun(view,url);
             } else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
+                try {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                        }catch (Exception e){/**/}
-                    }
-                });
+                        }
+                    });
+                }catch (Exception q){/**/}
                 return "";
             }
         }

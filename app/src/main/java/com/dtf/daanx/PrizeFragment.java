@@ -88,15 +88,15 @@ public class PrizeFragment extends Fragment {
     //網路連線
     private void networkRun(final View view) {
         if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    dialog = ProgressDialog.show(getActivity(), "讀取網路中", "請稍後");
-                }
-            });
             try {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog = ProgressDialog.show(getActivity(), "讀取網路中", "請稍後");
+                    }
+                });
                 Thread.sleep(2000);
-            } catch (InterruptedException c) {/**/}
+            } catch (Exception c) {/**/}
 
             try {
                 ((MainActivity) getActivity()).trustTaivs();//關掉ssl憑証檢查 與確定使用ssl加密協定版本

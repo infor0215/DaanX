@@ -386,23 +386,25 @@ public class GradeActivity extends BaseActivity {
                 dialog.dismiss();
                 timeout++;
                 if (timeout < 5) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
                     try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
                         Thread.sleep(5000);
                         networkRun(view, postion);
                     } catch (Exception c) {/**/}
                 } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }catch (Exception q){/**/}
                 }
                 //endregion
             }
@@ -479,7 +481,7 @@ public class GradeActivity extends BaseActivity {
                         gradesLast.add(grdTemp);
                     }
                 }
-                Log.i("status",gradesFont.get(0).minScore);
+                Log.i("status", gradesFont.get(0).minScore);
 
                 //endregion
 
@@ -499,24 +501,26 @@ public class GradeActivity extends BaseActivity {
                 dialog.dismiss();
                 timeout++;
                 if (timeout < 5) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
                     try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 5秒後自動重試中.....", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
                         Thread.sleep(5000);
                         networkRun(view, postion);
                     } catch (Exception c) {/**/}
 
                 } else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
-                        }
-                    });
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(view, "系統連線失敗 嘗試5次失敗", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }catch (Exception q){/**/}
                 }
                 //endregion
             }
