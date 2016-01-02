@@ -21,17 +21,6 @@
 
 package com.dtf.daanx;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-
-import com.google.gson.Gson;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -40,6 +29,16 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 
 public class TinyDB {

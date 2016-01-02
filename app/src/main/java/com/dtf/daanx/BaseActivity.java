@@ -1,37 +1,24 @@
 package com.dtf.daanx;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.Cipher;
@@ -42,7 +29,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * Created by yoyo930021 on 2015/12/5.
@@ -53,30 +39,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-
-    //讀取system參數
-    public static String getSystemProperty(String propName) {
-        String line;
-        BufferedReader input = null;
-        try {
-            Process p = Runtime.getRuntime().exec("getprop " + propName);
-            input = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
-            line = input.readLine();
-            input.close();
-        } catch (IOException ex) {
-            Log.e("status", "Unable to read sysprop " + propName, ex);
-            return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    Log.e("status", "Exception while closing InputStream", e);
-                }
-            }
-        }
-        return line;
-    }
 
     //確定使用ssl加密協定版本
     public void trustTaivs() {
@@ -277,6 +239,7 @@ public class BaseActivity extends AppCompatActivity {
             result = buf.toString().substring(8,24);
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block e.printStackTrace();
+            e.printStackTrace();
         }
         return result;
     }
@@ -299,6 +262,7 @@ public class BaseActivity extends AppCompatActivity {
             result = buf.toString();
         } catch (NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block e.printStackTrace();
+            e.printStackTrace();
         }
         return result;
     }

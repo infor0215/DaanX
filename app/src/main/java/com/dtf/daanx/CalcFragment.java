@@ -2,25 +2,19 @@ package com.dtf.daanx;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -37,7 +31,6 @@ import org.jsoup.nodes.Document;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 
 /**
@@ -54,7 +47,7 @@ public class CalcFragment extends Fragment {
     CalcAdapter calcAdapter;
     private int year;
     private int month;
-    private int day;
+    int day;
     TextView txt_year;
     TextView txt_month;
     LinearLayout calc_ym;
@@ -237,7 +230,7 @@ public class CalcFragment extends Fragment {
                 }
             });
             thread.start();
-        }else {/**/}
+        }
         return view;
     }
 

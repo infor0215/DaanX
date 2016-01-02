@@ -1,6 +1,5 @@
 package com.dtf.daanx;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -9,8 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,9 +21,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
 import com.github.amlcurran.showcaseview.targets.PointTarget;
-import com.github.amlcurran.showcaseview.targets.Target;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import java.util.ArrayList;
@@ -136,7 +131,6 @@ public class MainActivity extends BaseActivity
         first.putInt("num", first.getInt("num") + 1);
 
         if(first.getInt("num")==1){
-            ViewTarget target = new ViewTarget(R.id.stu_id, this);
             new ShowcaseView.Builder(this)
                     .setTarget(new PointTarget(new Point(0,10)))
                     .withNewStyleShowcase()

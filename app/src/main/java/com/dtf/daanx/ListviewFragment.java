@@ -4,7 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,9 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -601,22 +599,46 @@ public class ListviewFragment extends Fragment {
             holder.image.setText(String.valueOf(postList.getWriter().charAt(0)));
             switch (postList.getWriter().charAt(0)){
                 case '人':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_people));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_people));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_people));
+                    }
                     break;
                 case '圖':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_pic));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_pic));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_pic));
+                    }
                     break;
                 case '實':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_practice));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_practice));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_practice));
+                    }
                     break;
                 case '學':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_school));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                    }
                     break;
                 case '輔':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_support));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_support));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_support));
+                    }
                     break;
                 case '教':
-                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_taech));
+                    } else {
+                        holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                    }
                     break;
             }
             holder.title.setText(postList.getTitle());

@@ -2,7 +2,6 @@ package com.dtf.daanx;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
@@ -40,7 +39,7 @@ public class MainFragment extends Fragment {
             public void run() {
                 Gson gson = new Gson();
                 Type listType = new TypeToken<ArrayList<MainContent>>() {}.getType();
-                ArrayList<MainContent> mainContents=new ArrayList<MainContent>(){};
+                ArrayList<MainContent> mainContents;
                 if(bundle.getString("json")!=null) {
                     mainContents = gson.fromJson(bundle.getString("json"), listType);
                     ArrayList<MainContent> postLists=new ArrayList<MainContent>(){};
@@ -80,7 +79,7 @@ public class MainFragment extends Fragment {
                                 }
                             });
                             TextView main_testlast=(TextView) view.findViewById(R.id.main_textlast);
-                            main_testlast.setText("距離 "+lastHolText+" 還有"+lastHolDay+"天");
+                            main_testlast.setText(String.valueOf("距離 "+lastHolText+" 還有"+lastHolDay+"天"));
                         }
                     });
                 }

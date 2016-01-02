@@ -2,9 +2,8 @@ package com.dtf.daanx;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -44,7 +43,7 @@ import java.util.Map;
 
 public class GradeActivity extends BaseActivity {
 
-    private TabLayout mTabs;
+    TabLayout mTabs;
     SharedPreferences preference;
 
     private ViewPager mViewPager;
@@ -242,7 +241,6 @@ public class GradeActivity extends BaseActivity {
                     public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
                         choosen=post[position];
                         timeout = 0;
-                        final int position1 = position;
                         //網路連線
                         if(networkInfo()) {
                             new Thread(new Runnable() {
@@ -253,8 +251,6 @@ public class GradeActivity extends BaseActivity {
                                     }catch (Exception e){/**/}
                                 }
                             }).start();
-                        }else{
-                            /**/
                         }
                     }
                     @Override
@@ -593,6 +589,11 @@ public class GradeActivity extends BaseActivity {
                             draw = R.drawable.grade_bg_green;
                         }
                     } catch (Exception e) {/**/}
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        txtgrade.setBackgroundDrawable(ContextCompat.getDrawable(GradeActivity.this, draw));
+                    } else {
+                        txtgrade.setBackground(ContextCompat.getDrawable(GradeActivity.this, draw));
+                    }
                     txtgrade.setBackground(ContextCompat.getDrawable(GradeActivity.this, draw));
                     txtgrade.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     line.addView(txtgrade);

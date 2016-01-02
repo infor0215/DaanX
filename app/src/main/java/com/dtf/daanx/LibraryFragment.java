@@ -18,16 +18,13 @@ import android.webkit.WebViewClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.net.URLEncoder;
 
 /**
  * Created by yoyo930021 on 2015/11/9.
  */
 public class LibraryFragment extends Fragment {
 
-    private SharedPreferences preferences;
+    SharedPreferences preferences;
     private ProgressDialog dialog;
     private int timeout;
 

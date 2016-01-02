@@ -1,10 +1,9 @@
 package com.dtf.daanx;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -18,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.Connection;
@@ -312,7 +309,11 @@ public class AttendFragment extends Fragment {
             for (int i = 0; i < attends.size(); i++) {
                 if (key.equals("") || ((Attend) (attends.get(i))).body.contains(key)) {
                     LinearLayout linearLayout_479 = new LinearLayout(getActivity());
-                    linearLayout_479.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.prize_bg_list));
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        linearLayout_479.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.prize_bg_list));
+                    } else {
+                        linearLayout_479.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.prize_bg_list));
+                    }
                     linearLayout_479.setOrientation(LinearLayout.VERTICAL);
                     linearLayout_479.setGravity(Gravity.CENTER_HORIZONTAL);
                     LayoutParams layout_84 = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -355,7 +356,11 @@ public class AttendFragment extends Fragment {
                         pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 22, getResources().getDisplayMetrics());
                         textView_408.setWidth(pixels);
                         int draw = drawer(((Attend) (attends.get(i))).body.get(y));
-                        textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                            textView_408.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), draw));
+                        } else {
+                            textView_408.setBackground(ContextCompat.getDrawable(getActivity(), draw));
+                        }
                         LinearLayout.LayoutParams layout_951 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                         textView_408.setLayoutParams(layout_951);
                         linearLayout_100.addView(textView_408);

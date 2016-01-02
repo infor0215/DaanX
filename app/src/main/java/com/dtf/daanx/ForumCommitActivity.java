@@ -2,22 +2,16 @@ package com.dtf.daanx;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -25,7 +19,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import java.util.Calendar;
 
@@ -34,7 +27,6 @@ import jp.wasabeef.richeditor.RichEditor;
 public class ForumCommitActivity extends BaseActivity {
 
     private RichEditor mEditor;
-    private TextView mPreview;
     SharedPreferences preference;
 
     @Override
@@ -239,7 +231,7 @@ public class ForumCommitActivity extends BaseActivity {
                     EditText title = (EditText) findViewById(R.id.txt_title);
                     submit.title = title.getText().toString();
                     submit.auth = preference.getString("auth", "");
-                    byte[] data = new byte[10];
+                    byte[] data;
                     String tmp = "";
                     try {
                         data = mEditor.getHtml().getBytes("UTF-8");
@@ -286,7 +278,7 @@ public class ForumCommitActivity extends BaseActivity {
                     }).start();
                 }else{
                     submit.auth = preference.getString("auth", "");
-                    byte[] data = new byte[10];
+                    byte[] data;
                     String tmp = "";
                     try {
                         data = mEditor.getHtml().getBytes("UTF-8");

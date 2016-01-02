@@ -5,23 +5,13 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
-import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PostContentActivity extends BaseActivity {
 
@@ -46,7 +36,6 @@ public class PostContentActivity extends BaseActivity {
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        float d=metrics.widthPixels;
 
         String html="<style>" +
                 "img{" +
