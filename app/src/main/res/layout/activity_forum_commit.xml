@@ -17,7 +17,18 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:id="@+id/btn_submit"
+                android:textSize="20sp"
+                android:background="@android:color/transparent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="送出"/>
+            </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -267,14 +278,14 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="#00c4ff"
-            android:text="送出"
-            android:textSize="24sp" />
+        <!--<Button-->
+            <!--android:id="@+id/btn_submit"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="#00c4ff"-->
+            <!--android:text="送出"-->
+            <!--android:textSize="24sp" />-->
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

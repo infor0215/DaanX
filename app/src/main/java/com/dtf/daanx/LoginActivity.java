@@ -56,7 +56,7 @@ public class LoginActivity extends BaseActivity {
                     final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     if(networkInfo()) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("json", networkRun(contentView, "https://api.dacsc.club/daanx/main"));
+                        bundle.putString("json", networkRun(contentView, "https://api.dacsc.club/daany/main"));
                         intent.putExtras(bundle);
                     }
                     long now=System.currentTimeMillis();
@@ -228,7 +228,7 @@ public class LoginActivity extends BaseActivity {
             public void run() {
                 final Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("json",networkRun(contentView,"https://api.dacsc.club/daanx/main"));
+                bundle.putString("json",networkRun(contentView,"https://api.dacsc.club/daany/main"));
                 intent.putExtras(bundle);
                 try {
                     Thread.sleep(500);

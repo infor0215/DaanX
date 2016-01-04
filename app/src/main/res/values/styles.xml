@@ -42,4 +42,14 @@
         <item name="android:textColor">#8affffff</item>
     </style>
 
+    <style name="Dialog_Fullscreen" >
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <!-- <item name="android:windowFullscreen">true</item> -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowBackground">@color/transparent_half</item>
+        <!-- <item name="android:windowAnimationStyle">@style/Anim_Full_dialog</item> -->
+    </style>
+
 </resources>

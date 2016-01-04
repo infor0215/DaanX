@@ -3,6 +3,7 @@ package com.dtf.daanx;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
@@ -146,6 +147,9 @@ public class MainFragment extends Fragment {
 
         @SerializedName("day")
         public String day;
+
+        @SerializedName("view")
+        public String view;
     }
 
     public class PostAdapter extends BaseAdapter {
@@ -269,6 +273,8 @@ public class MainFragment extends Fragment {
 
                 holder=new ViewHolder();
                 holder.image=(TextView) convertView.findViewById(R.id.image1);
+
+
                 holder.title=(TextView) convertView.findViewById(R.id.title1);
                 holder.content=(TextView) convertView.findViewById(R.id.content1);
 
@@ -283,6 +289,34 @@ public class MainFragment extends Fragment {
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.image.setText(String.valueOf(forumList.writer.charAt(0)));
+
+            int view=Integer.parseInt(forumList.view);
+            if(view>500){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.grade_bg_red));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.grade_bg_red));
+                }
+            }else if(view>200){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_school));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_school));
+                }
+            }else if(view>100){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_default));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_default));
+                }
+            }else {
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.post_bg_taech));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.post_bg_taech));
+                }
+            }
+
             holder.title.setText(forumList.title);
             String base64="";
             try{

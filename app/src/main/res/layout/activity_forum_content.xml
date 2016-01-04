@@ -21,106 +21,18 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/commit_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <TextView
-                android:id="@+id/content_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:text="國立臺南大學105學年度教師在職進修碩士班、碩士在職專班招生"
-                android:textSize="20sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin">
-
-                <TextView
-                    android:id="@+id/content_writer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@android:color/transparent"
-                    android:gravity="left"
-                    android:lines="1"
-                    android:text="人事室/陳怡伶"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_height="20dp"
-                        android:layout_width="wrap_content"
-                        android:src="@android:drawable/ic_menu_view" />
-                    <TextView
-                        android:id="@+id/content_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:gravity="right"
-                        android:lines="1"
-                        android:text="52"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-
-                <TextView
-                    android:id="@+id/content_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:gravity="right"
-                    android:lines="1"
-                    android:text="2015/12/27"
-                    android:layout_weight="2"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <jp.wasabeef.richeditor.RichEditor
-                android:id="@+id/txt_body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/black"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:src="@color/grey_600" />
-
-            <ListView
-                android:id="@+id/commit_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent">
-            </ListView>
-        </LinearLayout>
-
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent" />
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

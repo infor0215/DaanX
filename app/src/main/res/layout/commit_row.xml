@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
+    xmlns:real="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical">
 
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="5dp">
 
         <TextView
             android:id="@+id/list_writer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:gravity="left"
@@ -33,16 +34,14 @@
             android:lines="1"
             android:text="2015/12/27"
             android:textSize="16sp" />
-    </RelativeLayout>
+    </LinearLayout>
 
-
-    <org.sufficientlysecure.htmltextview.HtmlTextView
+    <TextView
         android:id="@+id/list_body"
+        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textIsSelectable="true"
-        android:text="jksdfjgdfklgj"
+        android:text="dskj;gjsdgsdgj"
         android:textColor="@color/black"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+        android:textSize="16sp"/>
 </LinearLayout>

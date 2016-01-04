@@ -4,20 +4,20 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,12 +27,14 @@ import org.jsoup.Jsoup;
 import java.util.Calendar;
 
 import jp.wasabeef.richeditor.RichEditor;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ForumCommitActivity extends BaseActivity {
 
     private RichEditor mEditor;
     SharedPreferences preference;
     boolean click;
+    TinyDB first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,11 +153,19 @@ public class ForumCommitActivity extends BaseActivity {
         });
 
         findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
-            boolean isChanged;
-
             @Override public void onClick(View v) {
-                mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
-                isChanged = !isChanged;
+                AmbilWarnaDialog dialog=new AmbilWarnaDialog(ForumCommitActivity.this, Color.BLACK, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+
+                    }
+
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+                        mEditor.setTextColor(color);
+                    }
+                });
+                dialog.show();
             }
         });
 
@@ -268,55 +278,59 @@ public class ForumCommitActivity extends BaseActivity {
                     ForumPost submit = new ForumPost();
                     if (bundle.getString("type").equals("topic")) {
                         EditText title = (EditText) findViewById(R.id.txt_title);
-                        submit.title = title.getText().toString();
-                        submit.auth = preference.getString("auth", "");
-                        byte[] data;
-                        String tmp = "";
-                        try {
-                            data = mEditor.getHtml().getBytes("UTF-8");
-                            tmp = new String(Base64.encode(data, Base64.DEFAULT), "UTF-8");
-                        } catch (Exception e) {/**/}
-                        submit.body = tmp;
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH) + 1;
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        submit.day = String.valueOf(year + "/" + month + "/" + day);
-                        final String result = gson.toJson(submit);
-                        Log.i("status", result);
-                        Log.i("status", preference.getString("auth", ""));
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Connection.Response res = Jsoup
-                                            .connect("https://api.dacsc.club/daanx/forum/main")
-                                            .data("auth", preference.getString("auth", ""), "json", result)
-                                            .method(Connection.Method.POST)
-                                            .timeout(5000)
-                                            .execute();
-                                    dialog.dismiss();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), "傳送成功", Toast.LENGTH_SHORT).show();
-                                            onBackPressed();
-                                            ForumCommitActivity.this.finish();
-                                        }
-                                    });
-                                    click=false;
-                                } catch (final Exception e) {
-                                    dialog.dismiss();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), "傳送失敗 請稍後再試\n" + e.toString(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    click=false;
+                        if(title.getText().toString().trim().length()>3) {
+                            submit.title = title.getText().toString();
+                            submit.auth = preference.getString("auth", "");
+                            byte[] data;
+                            String tmp = "";
+                            try {
+                                data = mEditor.getHtml().getBytes("UTF-8");
+                                tmp = new String(Base64.encode(data, Base64.DEFAULT), "UTF-8");
+                            } catch (Exception e) {/**/}
+                            submit.body = tmp;
+                            Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(Calendar.YEAR);
+                            int month = calendar.get(Calendar.MONTH) + 1;
+                            int day = calendar.get(Calendar.DAY_OF_MONTH);
+                            submit.day = String.valueOf(year + "/" + month + "/" + day);
+                            final String result = gson.toJson(submit);
+                            Log.i("status", result);
+                            Log.i("status", preference.getString("auth", ""));
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Connection.Response res = Jsoup
+                                                .connect("https://api.dacsc.club/daanx/forum/main")
+                                                .data("auth", preference.getString("auth", ""), "json", result)
+                                                .method(Connection.Method.POST)
+                                                .timeout(5000)
+                                                .execute();
+                                        dialog.dismiss();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getApplicationContext(), "傳送成功", Toast.LENGTH_SHORT).show();
+                                                onBackPressed();
+                                                ForumCommitActivity.this.finish();
+                                            }
+                                        });
+                                        click = false;
+                                    } catch (final Exception e) {
+                                        dialog.dismiss();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(getApplicationContext(), "傳送失敗 請稍後再試\n" + e.toString(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        click = false;
+                                    }
                                 }
-                            }
-                        }).start();
+                            }).start();
+                        }else {
+                            Toast.makeText(getApplicationContext(), "標題請超過四個字", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         submit.auth = preference.getString("auth", "");
                         byte[] data = new byte[10];
@@ -370,6 +384,22 @@ public class ForumCommitActivity extends BaseActivity {
                 }
             }
         });
+
+        first=new TinyDB("first-commit",ForumCommitActivity.this);
+        first.putInt("num", first.getInt("num") + 1);
+
+        if(first.getInt("num")==1){
+            ViewTarget target = new ViewTarget(R.id.btn_submit, this);
+            new ShowcaseView.Builder(ForumCommitActivity.this)
+                    .setTarget(target)
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("送出")
+                    .setContentText("考量舊版送出鍵容易誤按/n新版改至跟FB相同位置")
+                    .hideOnTouchOutside()
+                    .blockAllTouches()
+                    .build();
+        }
     }
 
     private class ForumPost{

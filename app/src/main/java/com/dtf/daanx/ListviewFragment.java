@@ -783,24 +783,26 @@ public class ListviewFragment extends Fragment {
             thread=new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    page = 1;
-                    Gson gson = new Gson();
-                    Type listType = new TypeToken<ArrayList<ForumList>>() {
-                    }.getType();
-                    jsonTemp=networkRun(getActivity().findViewById(android.R.id.content), "https://api.dacsc.club/daanx/forum/main/" + page);
-                    if(!jsonTemp.equals("")) {
-                        ArrayList<ForumList> listTemps=gson.fromJson(jsonTemp, listType);
-                        forumLists.clear();
-                        forumLists.addAll(listTemps);
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    forumAdapter.notifyDataSetChanged();
-                                }
-                            });
+                    try {
+                        page = 1;
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<ArrayList<ForumList>>() {
+                        }.getType();
+                        jsonTemp=networkRun(getActivity().findViewById(android.R.id.content), "https://api.dacsc.club/daanx/forum/main/" + page);
+                        if(!jsonTemp.equals("")) {
+                            ArrayList<ForumList> listTemps=gson.fromJson(jsonTemp, listType);
+                            forumLists.clear();
+                            forumLists.addAll(listTemps);
+                            if (getActivity() != null) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        forumAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
                         }
-                    }
+                    }catch (Exception e){/**/}
                 }
             });
             thread.start();
