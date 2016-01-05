@@ -1,8 +1,11 @@
 package com.dtf.daanx;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,10 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.PointTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -41,6 +49,7 @@ public class ForumContentActivity extends BaseActivity {
     CommitAdapter commitAdapter;
     String id;
     Bundle bundle;
+    TinyDB first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,11 +107,43 @@ public class ForumContentActivity extends BaseActivity {
                         superListview.setDivider(ContextCompat.getDrawable(ForumContentActivity.this, R.color.grey_600));
                         int pixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
                         superListview.setDividerHeight(pixels);
+                        superListview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                                String base64="";
+                                try{
+                                    base64=new String(Base64.decode(forumContents.get((int)id).content.getBytes("UTF-8"),Base64.DEFAULT),"UTF-8");
+                                }catch (Exception e){/**/}
+                                Document doc = Jsoup.parse(base64);
+                                String tempBody=doc.text();
+                                ClipData clip = ClipData.newPlainText(tempBody,tempBody);
+                                clipboard.setPrimaryClip(clip);
+                                Toast.makeText(getApplicationContext(), "複製完成", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
 //                        setListViewHeightBasedOnChildren(superListview,getResources().getDisplayMetrics());
                     }
                 });
             }
         }).start();
+
+        first=new TinyDB("first-content",ForumContentActivity.this);
+        first.putInt("num", first.getInt("num") + 1);
+
+        if(first.getInt("num")==1){
+            ViewTarget target = new ViewTarget(R.id.commit_list, this);
+            new ShowcaseView.Builder(ForumContentActivity.this)
+                    .setTarget(target)
+                    .withNewStyleShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setContentTitle("留言")
+                    .setContentText("長按可以複製")
+                    .hideOnTouchOutside()
+                    .blockAllTouches()
+                    .build();
+        }
     }
 
     public String networkRun(final View view,String url){
@@ -283,7 +324,6 @@ public class ForumContentActivity extends BaseActivity {
                         Gson gson = new Gson();
                         final Type listType = new TypeToken<ArrayList<ForumContent>>() {}.getType();
                         ArrayList<ForumContent> temps = gson.fromJson(networkRun(findViewById(android.R.id.content), "https://api.dacsc.club/daany/forum/main/id/"+id), listType);
-                        temps.remove(0);
                         forumContents.clear();
                         forumContents.addAll(temps);
                         runOnUiThread(new Runnable() {

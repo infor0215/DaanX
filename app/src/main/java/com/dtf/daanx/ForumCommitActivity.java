@@ -395,7 +395,7 @@ public class ForumCommitActivity extends BaseActivity {
                     .withNewStyleShowcase()
                     .setStyle(R.style.CustomShowcaseTheme2)
                     .setContentTitle("送出")
-                    .setContentText("考量舊版送出鍵容易誤按/n新版改至跟FB相同位置")
+                    .setContentText("考量舊版送出鍵容易誤按\n新版改至跟FB相同位置")
                     .hideOnTouchOutside()
                     .blockAllTouches()
                     .build();

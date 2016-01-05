@@ -693,32 +693,38 @@ public class ListviewFragment extends Fragment {
         }
 
         @Override
-        public View getView(int position,View convertView,ViewGroup parent){
+        public View getView(int position,View convertView,ViewGroup parent) {
             ViewHolder holder;
 
-            if(convertView==null){
-                convertView=inflater.inflate(R.layout.post_row,null);
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.post_row, null);
                 //Log.i("status","if");
 
-                holder=new ViewHolder();
-                holder.image=(TextView) convertView.findViewById(R.id.image1);
-                holder.title=(TextView) convertView.findViewById(R.id.title1);
-                holder.content=(TextView) convertView.findViewById(R.id.content1);
+                holder = new ViewHolder();
+                holder.image = (TextView) convertView.findViewById(R.id.image1);
+                holder.title = (TextView) convertView.findViewById(R.id.title1);
+                holder.content = (TextView) convertView.findViewById(R.id.content1);
 
                 convertView.setTag(holder);
 
-            }else {
-                holder=(ViewHolder)convertView.getTag();
+            } else {
+                holder = (ViewHolder) convertView.getTag();
                 //Log.i("status","else");
             }
 
-            ForumList forumList=list.get(position);
+            ForumList forumList = list.get(position);
             //Log.i("status",String.valueOf( postList.getWriter().charAt(0)));
 
             holder.image.setText(String.valueOf(forumList.getWriter().charAt(0)));
 
-            int view=Integer.parseInt(forumList.view);
-            if(view>500){
+            int view = Integer.parseInt(forumList.view);
+            if(view>1000){
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.attend_bg_red));
+                } else {
+                    holder.image.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.attend_bg_red));
+                }
+            }else if(view>500){
                 if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                     holder.image.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.grade_bg_red));
                 } else {
