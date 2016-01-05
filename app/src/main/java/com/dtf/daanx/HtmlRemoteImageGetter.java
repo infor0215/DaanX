@@ -104,10 +104,10 @@ public class HtmlRemoteImageGetter implements ImageGetter {
             }
             // redraw the image by invalidating the container
             TextView textView=(TextView)imageGetter.container;
-            textView.setWidth(result.getIntrinsicWidth());
-            textView.setHeight(result.getIntrinsicHeight());
-            textView.setText(textView.getText());
+//            textView.setWidth(result.getIntrinsicWidth());
+//            textView.setHeight(result.getIntrinsicHeight());
             imageGetter.container.invalidate();
+            textView.setText(textView.getText());
         }
 
         /**
